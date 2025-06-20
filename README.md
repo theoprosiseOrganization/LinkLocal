@@ -85,3 +85,71 @@ You should also identify optional / nice-to-have functionalities that would be d
 - User can see personalized recommendations based on their interests and location  
 - User can develop a recommendation engine using collaborative filtering or content-based filtering  
 - User can suggest activities based on user interests, location, and past interactions
+
+---
+
+# Screen Archetypes
+
+- **Home Page:**  
+  - Map list of nearby people  
+  - Big button to encourage users to create event  
+  - Friends nearby notification
+
+- **Suggested Events Page:**  
+  - Grid or carousel showcasing 3–4 suggested events/friends with images, titles, and brief descriptions
+
+- **Create Event Page:**  
+  - Form to input details — name, date, time, location, and description
+
+- **Profile Page:**  
+  - User information — editable  
+  - List of all user-created events and friends list
+
+- **Friends Tab:**  
+  - Suggest friends
+
+- **Event Page:**  
+  - Detailed view of a certain event  
+  - Many use cases and highly modular
+
+---
+
+# Data Model
+
+### Users Table
+
+- `ID`: Unique identifier for each user  
+- `Name`: Store the user's name  
+- `Email`: For login  
+- `Password`: Hashed and salted for security  
+- `Avatar`: URL or binary data for the user's profile picture  
+- `Location (GeoJSON)`: Current or default location of the user  
+- `Friends (ID)`: Store friend relationships via IDs (many-to-many, stored in a separate table)  
+- `Preferences Data`: Used for personalizing recommendations  
+- `Events (ID)`: References to event IDs user has created or joined (many-to-many)
+
+### Events Table
+
+- `ID`: Unique identifier for each event  
+- `User who posted (ID)`: Foreign key reference to creator  
+- `Images`: URLs or binary data for event images  
+- `Text Description`: Detailed event description  
+- `GeoJSON Data`: Location info for mapping
+
+---
+
+# Database
+
+- **PostgreSQL** with **PostGIS** for geospatial queries and map-based functionalities
+
+---
+
+# API
+
+- **Google Maps API** for map rendering, directions, and geocoding
+
+---
+
+# Backend
+
+- **Express.js** and **Node.js**
