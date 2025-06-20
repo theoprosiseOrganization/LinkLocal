@@ -94,31 +94,31 @@ You should also identify optional / nice-to-have functionalities that would be d
   - Map list of nearby people  
   - Big button to encourage users to create event  
   - Friends nearby notification
- ![Home Page](./images/homePage.jpg)
+ ![Home Page](./images/home.png)
 
 - **Suggested Page:**  
   - Grid or carousel showcasing 3–4 suggested events/friends with images, titles, and brief descriptions
-  ![Suggested Page](./images/suggested.jpg)
+  ![Suggested Page](./images/suggested.png)
 
 - **Create Event Page:**  
   - Form to input details — name, date, time, location, and description
- ![Create Event Page](./images/create.jpg)
+ ![Create Event Page](./images/createEvent.png)
 
 - **Profile Page:**  
   - User information — editable  
   - List of all user-created events and friends list
- ![Profile Page](./images/profile.jpg)
+ ![Profile Page](./images/profile.png)
 
 - **Friends Page:**  
   - List of friends
   - Search form to find new friends
-  ![Friends Page](./images/friends.jpg)
+  ![Friends Page](./images/friends.png)
 
 
 - **Event Page:**  
   - Detailed view of a certain event  
   - Many use cases and highly modular
-  ![Event Page](./images/event.jpg)
+  ![Event Page](./images/event.png)
 
 ---
 
