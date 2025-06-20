@@ -1,6 +1,8 @@
 # LinkLocal
 Repository for capstone project. Geospatial social media for everyone.
 
+[Project Planning Doc](https://docs.google.com/document/d/1IzVixf38Zmvk7Wrw93jVC6rlOulZEJLKhD5qWValPNU/edit?usp=sharing)
+
 # Overview
 
 **People Connection** is a web application designed to facilitate connections and activities among friends when they are geographically close. It uses geolocation and mapping technology to notify users when friends are nearby, enabling them to plan activities and meetups. The app addresses the challenge of coordinating spontaneous meetups and activities among friends who are in close proximity but may not be aware of each other's presence, as well as allows users in new areas to have the knowledge of an experienced local.
@@ -123,29 +125,154 @@ You should also identify optional / nice-to-have functionalities that would be d
 ---
 
 # Data Model
+=====================
 
 ### Users Table
 
-- `ID`: Unique identifier for each user  
-- `Name`: Store the user's name  
-- `Email`: For login  
-- `Password`: Hashed and salted for security  
-- `Avatar`: URL or binary data for the user's profile picture  
-- `Location (GeoJSON)`: Current or default location of the user  
-- `Friends (ID)`: Store friend relationships via IDs (many-to-many, stored in a separate table)  
-- `Preferences Data`: Used for personalizing recommendations  
-- `Events (ID)`: References to event IDs user has created or joined (many-to-many)
-- `Liked Events (ID)`: References to event IDs user has liked (many-to-many)
+| Field Name | Description |
+| --- | --- |
+| ID | Unique identifier for each user. |
+| Name | Store the user's name. |
+| Email | For login |
+| Password | Hashed and salted for security |
+| Avatar | URL or binary data for the user's profile picture. |
+| Location (GeoJSON) | Current or default location of the user, which can be used for map features. |
+| Friends (ID) | Store friend relationships using IDs, possibly in a separate table to handle many-to-many relationships. |
+| Preferences Data | Useful for personalizing user experiences, such as suggesting events. |
+| Events (ID) | Store event IDs that the user has created or is interested in. This could also be managed in a separate table to handle many-to-many relationships. |
+| Liked Events (ID) | Store event IDs that the user has liked. |
 
 ### Events Table
 
-- `ID`: Unique identifier for each event  
-- `User who posted (ID)`: Foreign key reference to creator  
-- `Images`: URLs or binary data for event images  
-- `Text Description`: Detailed event description  
-- `GeoJSON Data`: Location info for mapping
-- `Liked By (ID)`: References to user IDs that have liked the event (many-to-many)
+| Field Name | Description |
+| --- | --- |
+| ID | Unique identifier for each event. |
+| User who posted (ID) | Reference to the user ID who created the event. |
+| Images | URLs or binary data for event images. |
+| Text Description | Detailed description of the event. |
+| GeoJSON Data | Store location data in GeoJSON format for easy integration with mapping services. |
+| Likes (ID) | Store user ID for users who have liked this specific event.
 
+---
+
+# Users Endpoints
+
+
+#### GET /users
+
+* Retrieves a list of all users.
+* Expected parameters: None
+* Returns: JSON array of user objects
+
+#### GET /users/:id
+
+* Retrieves a single user by ID.
+* Expected parameters:
+	+ id: Unique identifier for the user
+* Returns: JSON user object
+
+#### POST /users
+
+* Creates a new user.
+* Expected parameters:
+	+ name: User's name
+	+ email: User's email
+	+ password: User's password (hashed and salted)
+	+ avatar: URL or binary data for the user's profile picture
+	+ location: GeoJSON data for the user's current or default location
+* Returns: JSON user object with generated ID
+
+#### PUT /users/:id
+
+* Updates an existing user.
+* Expected parameters:
+	+ id: Unique identifier for the user
+	+ name: Updated user's name
+	+ email: Updated user's email
+	+ password: Updated user's password (hashed and salted)
+	+ avatar: Updated URL or binary data for the user's profile picture
+	+ location: Updated GeoJSON data for the user's current or default location
+* Returns: JSON user object with updated fields
+
+#### DELETE /users/:id
+
+* Deletes a user by ID.
+* Expected parameters:
+	+ id: Unique identifier for the user
+* Returns: Success message
+
+#### GET /users/:id/friends
+
+* Retrieves a list of friends for a user.
+* Expected parameters:
+	+ id: Unique identifier for the user
+* Returns: JSON array of friend objects
+
+#### POST /users/:id/friends
+
+* Adds a new friend to a user's friends list.
+* Expected parameters:
+	+ id: Unique identifier for the user
+	+ friend_id: Unique identifier for the friend to add
+* Returns: JSON friend object with added relationship
+
+#### DELETE /users/:id/friends/:friend_id
+
+* Removes a friend from a user's friends list.
+* Expected parameters:
+	+ id: Unique identifier for the user
+	+ friend_id: Unique identifier for the friend to remove
+* Returns: Success message
+
+#### GET /users/:id/preferences
+
+* Retrieves a user's preferences data.
+* Expected parameters:
+	+ id: Unique identifier for the user
+* Returns: JSON preferences object
+
+#### PUT /users/:id/preferences
+
+* Updates a user's preferences data.
+* Expected parameters:
+	+ id: Unique identifier for the user
+	+ preferences_data: Updated preferences data
+* Returns: JSON preferences object with updated fields
+
+#### GET /users/:id/events
+
+* Retrieves a list of events created or interested in by a user.
+* Expected parameters:
+	+ id: Unique identifier for the user
+* Returns: JSON array of event objects
+
+#### POST /users/:id/events
+
+* Creates a new event for a user.
+* Expected parameters:
+	+ id: Unique identifier for the user
+	+ event_data: Event data (see Events Endpoints)
+* Returns: JSON event object with generated ID
+
+#### GET /users/:id/liked_events
+
+* Retrieves a list of events liked by a user.
+* Expected parameters:
+	+ id: Unique identifier for the user
+* Returns: JSON array of event objects
+
+#### POST /users/:id/liked_events
+
+* Likes an event for a user.
+* Expected parameters:
+	+ id: Unique identifier for the user
+	+ event_id: Unique identifier for the event to like
+* Returns: JSON event object with added like relationship
+
+#### DELETE /users/:id/likedevents/:eventid
+
+* Unlikes an event for a user.
+* Expected parameters:
 ---
 
 # Database
