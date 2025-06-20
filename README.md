@@ -94,23 +94,31 @@ You should also identify optional / nice-to-have functionalities that would be d
   - Map list of nearby people  
   - Big button to encourage users to create event  
   - Friends nearby notification
+ ![Home Page](./images/homePage.jpg)
 
-- **Suggested Events Page:**  
+- **Suggested Page:**  
   - Grid or carousel showcasing 3–4 suggested events/friends with images, titles, and brief descriptions
+  ![Suggested Page](./images/suggested.jpg)
 
 - **Create Event Page:**  
   - Form to input details — name, date, time, location, and description
+ ![Create Event Page](./images/create.jpg)
 
 - **Profile Page:**  
   - User information — editable  
   - List of all user-created events and friends list
+ ![Profile Page](./images/profile.jpg)
 
-- **Friends Tab:**  
-  - Suggest friends
+- **Friends Page:**  
+  - List of friends
+  - Search form to find new friends
+  ![Friends Page](./images/friends.jpg)
+
 
 - **Event Page:**  
   - Detailed view of a certain event  
   - Many use cases and highly modular
+  ![Event Page](./images/event.jpg)
 
 ---
 
@@ -127,6 +135,7 @@ You should also identify optional / nice-to-have functionalities that would be d
 - `Friends (ID)`: Store friend relationships via IDs (many-to-many, stored in a separate table)  
 - `Preferences Data`: Used for personalizing recommendations  
 - `Events (ID)`: References to event IDs user has created or joined (many-to-many)
+- `Liked Events (ID)`: References to event IDs user has liked (many-to-many)
 
 ### Events Table
 
@@ -135,6 +144,7 @@ You should also identify optional / nice-to-have functionalities that would be d
 - `Images`: URLs or binary data for event images  
 - `Text Description`: Detailed event description  
 - `GeoJSON Data`: Location info for mapping
+- `Liked By (ID)`: References to user IDs that have liked the event (many-to-many)
 
 ---
 
