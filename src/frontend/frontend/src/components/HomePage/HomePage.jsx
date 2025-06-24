@@ -1,12 +1,9 @@
-import NavHeader from "../NavHeader/NavHeader";
+import Layout from "../Layout/Layout";
 
 export default function HomePage() {
-
   return (
     <>
-      <NavHeader />
-      <main className="main-content">
-      </main>
+      <Layout> HOME PAGE </Layout>
     </>
   );
 }

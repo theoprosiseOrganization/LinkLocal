@@ -1,0 +1,34 @@
+.nav-header {
+  width: 100vw;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  background: #1a202c; 
+  border-bottom: 1px solid #2d3748;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.5rem 0;
+}
+
+.nav-header .navigation-menu {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  justify-content: center;
+}
+
+.navigation-menu__link,
+.nav-header a {
+  color: #f7fafc; 
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  transition: background 0.2s;
+}
+
+.navigation-menu__link:hover,
+.nav-header a:hover {
+  background: #2d3748;
+  border-radius: 4px;
+}
