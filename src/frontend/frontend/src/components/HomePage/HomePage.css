@@ -1,0 +1,19 @@
+.homepage-split {
+  display: flex;
+  height: 100vh;
+}
+
+.homepage-left,
+.homepage-right {
+  flex: 1;
+  display: flex;
+  align-items: stretch;
+}
+
+.homepage-left {
+  border-right: 1px solid #e2e8f0;
+}
+
+.homepage-right {
+  padding: 2rem;
+}
