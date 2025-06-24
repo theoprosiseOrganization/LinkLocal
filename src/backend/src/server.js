@@ -13,6 +13,7 @@ app.use(cors());
 
 app.use("/users", userRoutes);
 app.use("/events", eventRoutes);
+app.use("/auth", authRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {});
