@@ -7,15 +7,16 @@ import ProfilePage from "./components/ProfilePage/ProfilePage";
 import FriendsPage from "./components/FriendsPage/FriendsPage";
 import SignInPage from "./components/SignInPage/SignInPage";
 import SingUpPage from "./components/SignUpPage/SignUpPage";
+import WithAuth from "./components/WithAuth/WithAuth";
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/suggested" element={<SuggestedPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/friends" element={<FriendsPage />} />
+        <Route path="/suggested" element={<WithAuth> <SuggestedPage /> </WithAuth>} />
+        <Route path="/profile" element={<WithAuth> <ProfilePage /> </WithAuth>} />
+        <Route path="/friends" element={<WithAuth> <FriendsPage /> </WithAuth>} />
         <Route path="/signin" element={<SignInPage />} />
         <Route path="/signup" element={<SingUpPage />} />
       </Routes>

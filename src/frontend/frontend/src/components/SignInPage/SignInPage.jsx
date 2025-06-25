@@ -41,14 +41,14 @@ export default function SignInPage() {
                   </div>
                   <Input id="password" type="password" required />
                 </div>
+                <div className="grid gap-2">
+                  <Button type="submit" className="w-full">
+                    Sign In
+                  </Button>
+                </div>
               </div>
             </form>
           </CardContent>
-          <CardFooter className="flex-col gap-2">
-            <Button type="submit" className="w-full">
-              Login
-            </Button>
-          </CardFooter>
         </Card>
       </div>
     </Layout>
