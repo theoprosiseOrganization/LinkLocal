@@ -1,0 +1,15 @@
+.event-card {
+  background: #1a202c;
+  color: #f7fafc;
+  border: 1px solid #2d3748;
+}
+
+.event-card .card-title,
+.event-card .card-description,
+.event-card .card-content {
+  color: #f7fafc;
+}
+
+.event-card-button{
+    color: white;
+}
