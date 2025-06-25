@@ -30,6 +30,7 @@ exports.signup = async (req, res) => {
       preferences: "",
     },
   });
+  req.session.userId = newUser.id;
   res.status(201).json({ message: "User created successfully!" });
 };
 
@@ -53,7 +54,20 @@ exports.login = async (req, res) => {
 };
 
 exports.logout = async (req, res) => {
-  // Implementation of logout logic can vary based on how sessions or tokens are managed
-  // This will depend on further featuring
-  res.json({ message: "Logout successful!" });
+  req.session.destroy((err) => {
+    if (err) {
+      return res.status(500).json({ error: "Logout failed." });
+    }
+    res.clearCookie("connect.sid");
+    res.json({ message: "Logout successful!" });
+  });
+};
+
+// Check if the user is logged in
+exports.me = async (req, res) => {
+  if (req.session && req.session.userId) {
+    res.json({ userId: req.session.userId });
+  } else {
+    res.status(401).json({ error: "Unauthorized" });
+  }
 };
