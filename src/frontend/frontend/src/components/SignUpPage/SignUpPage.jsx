@@ -4,7 +4,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "../../../components/ui/card";
@@ -80,7 +79,7 @@ export default function SignUpPage() {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="email">Location</Label>
+                  <Label htmlFor="location">Location</Label>
                   <Input
                     id="location"
                     value={formData.location}
