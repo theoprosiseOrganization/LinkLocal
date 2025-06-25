@@ -36,7 +36,12 @@ export default function NavHeader() {
           </NavigationMenuItem>
           <NavigationMenuItem>
             <NavigationMenuLink asChild>
-              <Link to="/auth">Login/Logout</Link>
+              <Link to="/signin">Sign In</Link>
+            </NavigationMenuLink>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
+            <NavigationMenuLink asChild>
+              <Link to="/signup">Sign Up</Link>
             </NavigationMenuLink>
           </NavigationMenuItem>
         </NavigationMenuList>

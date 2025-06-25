@@ -2,6 +2,7 @@ const { PrismaClient } = require("../../generated/prisma");
 
 const prisma = new PrismaClient();
 const bcrypt = require("bcrypt");
+const express = require("express");
 
 exports.signup = async (req, res) => {
   const { name, email, password, location, preferences } = req.body;
@@ -47,6 +48,7 @@ exports.login = async (req, res) => {
   if (!isValidPassword) {
     return res.status(400).json({ error: "Invalid email or password." });
   }
+  req.session.userId = user.id;
   res.json({ message: "Login successful!" });
 };
 

@@ -5,7 +5,8 @@ import HomePage from "./components/HomePage/HomePage";
 import SuggestedPage from "./components/SuggestedPage/SuggestedPage";
 import ProfilePage from "./components/ProfilePage/ProfilePage";
 import FriendsPage from "./components/FriendsPage/FriendsPage";
-import AuthPage from "./components/AuthPage/AuthPage";
+import SignInPage from "./components/SignInPage/SignInPage";
+import SingUpPage from "./components/SignUpPage/SignUpPage";
 
 function App() {
   return (
@@ -15,7 +16,8 @@ function App() {
         <Route path="/suggested" element={<SuggestedPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/friends" element={<FriendsPage />} />
-        <Route path="/auth" element={<AuthPage />} />
+        <Route path="/signin" element={<SignInPage />} />
+        <Route path="/signup" element={<SingUpPage />} />
       </Routes>
     </Router>
   );
