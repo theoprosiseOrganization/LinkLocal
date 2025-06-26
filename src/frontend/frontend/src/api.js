@@ -30,3 +30,15 @@ export async function loginUser(data) {
   }
   return response;
 }
+
+export async function logoutUser() {
+  const res = await fetch(`${URL}/auth/logout`, {
+    method: "POST",
+    credentials: "include",
+  });
+  const response = await res.json();
+  if (!res.ok) {
+    throw new Error(response.error || "Failed to logout");
+  }
+  return response;
+}
