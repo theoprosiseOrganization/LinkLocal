@@ -23,13 +23,13 @@ exports.getEventById = async (req, res) => {
 };
 
 exports.createEvent = async (req, res) => {
-  const { userId, images, location, textDescription } = req.body;
-  if (!userId || !images || !location || !textDescription) {
+  const { userId, images, location, textDescription, title } = req.body;
+  if (!userId || !images || !location || !textDescription || !title) {
     return res.status(400).json({ error: "All fields are required." });
   }
   try {
     const event = await prisma.event.create({
-      data: { userId, images, location, textDescription },
+      data: { userId, images, location, textDescription, title },
     });
     res.status(201).json(event);
   } catch (error) {

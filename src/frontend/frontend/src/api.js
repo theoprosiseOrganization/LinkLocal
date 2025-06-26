@@ -44,7 +44,7 @@ export async function logoutUser() {
 }
 
 export async function createEvent(data) {
-  const res = await fetch(`${URL}/events`, {
+  const res = await fetch(`${URL}/events/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
