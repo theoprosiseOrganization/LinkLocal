@@ -34,15 +34,15 @@ export default function CreateEventPage() {
   /**
    *  Handles the form submission for creating an event.
    *   It fetches the userId from the session, then calls the createEvent function
-   *   with the event data. If successful, it resets the form and alerts the user 
-   * 
+   *   with the event data. If successful, it resets the form and alerts the user
+   *
    *  @param {Event} e - The event object triggered by the form submission.
    *  @returns {Promise<void>} A promise that resolves when the event is created.
    *  @throws {Error} If the user session cannot be fetched or if the event
    *  creation fails.
    *  @example
-   *  handleSubmit(event);  
-   * 
+   *  handleSubmit(event);
+   *
    */
 
   const handleSubmit = async (e) => {
