@@ -23,6 +23,8 @@ import { Input } from "../../../components/ui/input";
 import { Label } from "../../../components/ui/label";
 import React, { useState } from "react";
 import { loginUser } from "../../../src/api";
+import { useNavigate } from "react-router";
+
 
 /**
  * SignInPage component function.
@@ -79,6 +81,8 @@ export default function SignInPage() {
       alert(error.message);
     }
   };
+
+  const navigate = useNavigate();
 
   return (
     <Layout>
