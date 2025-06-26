@@ -1,14 +1,15 @@
 /**
- * Component that allows users to sign in to their account.
+ * Sign In Page component.
  *
- * It sends a request to the `/auth/signin` endpoint to authenticate the user.
- * If authenticated, it redirects to the profile; otherwise, it alerts with an error and prepares for another submission.
+ * This component renders a sign in form, allowing users to enter their email and password to access their account.
+ * It includes form validation to ensure that both fields are filled out before submission.
+ * Upon successful login, it redirects the user to their profile page.
  *
  * @component
- * @param {Object}  props - Component props.
- * @param {React.ReactNode} 
- * @returns {React.ReactNode} The rendered children if authenticated, a loading indicator while checking, or null if not authenticated.
+ * @example
+ * <SignInPage />
  */
+
 import Layout from "../Layout/Layout";
 import { Button } from "../../../components/ui/button";
 import {
@@ -23,17 +24,42 @@ import { Label } from "../../../components/ui/label";
 import React, { useState } from "react";
 import { loginUser } from "../../../src/api";
 
+/**
+ * SignInPage component function.
+ *
+ * @function SignInPage
+ * @returns {JSX.Element} The JSX element representing the sign in page.
+ */
 export default function SignInPage() {
+  /**
+   * State variable to store the user's login data (email and password).
+   *
+   * @type {Object}
+   * @property {string} email - The user's email address.
+   * @property {string} password - The user's password.
+   */
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+
+  /**
+   * Updates user data on changes to the form input fields.
+   *
+   * @param {Event} e - The event object triggered by the input field change.
+   */
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.id]: e.target.value,
     });
   };
+
+  /**
+   * Checks the form submission and redirects to profile if successful.
+   *
+   * @param {Event} e - The event object triggered by the form submission.
+   */
   const handleSubmit = (e) => {
     e.preventDefault();
     const { email, password } = formData;
