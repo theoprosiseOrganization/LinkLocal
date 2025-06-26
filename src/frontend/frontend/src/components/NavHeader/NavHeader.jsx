@@ -8,6 +8,7 @@ import {
 import "./NavHeader.css";
 
 import { Link } from "react-router-dom";
+import { logoutUser } from "../../../src/api";
 
 export default function NavHeader() {
   return (
@@ -36,7 +37,17 @@ export default function NavHeader() {
           </NavigationMenuItem>
           <NavigationMenuItem>
             <NavigationMenuLink asChild>
-              <Link to="/auth">Login/Logout</Link>
+              <Link to="/signin">Sign In</Link>
+            </NavigationMenuLink>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
+            <NavigationMenuLink asChild>
+              <Link to="/signup">Sign Up</Link>
+            </NavigationMenuLink>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
+            <NavigationMenuLink asChild>
+              <Link onClick={logoutUser}>Logout</Link>
             </NavigationMenuLink>
           </NavigationMenuItem>
         </NavigationMenuList>

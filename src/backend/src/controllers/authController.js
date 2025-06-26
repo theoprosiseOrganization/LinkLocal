@@ -2,10 +2,11 @@ const { PrismaClient } = require("../../generated/prisma");
 
 const prisma = new PrismaClient();
 const bcrypt = require("bcrypt");
+const express = require("express");
 
 exports.signup = async (req, res) => {
-  const { name, email, password, location, preferences } = req.body;
-  if (!name || !email || !password || !location || !preferences) {
+  const { name, email, password, location } = req.body;
+  if (!name || !email || !password || !location) {
     return res.status(400).json({ error: "All fields are required." });
   }
   if (password.length < 7) {
@@ -26,9 +27,10 @@ exports.signup = async (req, res) => {
       email,
       password: hashedPassword,
       location,
-      preferences,
+      preferences: "",
     },
   });
+  req.session.userId = newUser.id;
   res.status(201).json({ message: "User created successfully!" });
 };
 
@@ -47,11 +49,25 @@ exports.login = async (req, res) => {
   if (!isValidPassword) {
     return res.status(400).json({ error: "Invalid email or password." });
   }
+  req.session.userId = user.id;
   res.json({ message: "Login successful!" });
 };
 
 exports.logout = async (req, res) => {
-  // Implementation of logout logic can vary based on how sessions or tokens are managed
-  // This will depend on further featuring
-  res.json({ message: "Logout successful!" });
+  req.session.destroy((err) => {
+    if (err) {
+      return res.status(500).json({ error: "Logout failed." });
+    }
+    res.clearCookie("connect.sid");
+    res.json({ message: "Logout successful!" });
+  });
+};
+
+// Check if the user is logged in
+exports.me = async (req, res) => {
+  if (req.session && req.session.userId) {
+    res.json({ userId: req.session.userId });
+  } else {
+    res.status(401).json({ error: "Unauthorized" });
+  }
 };
