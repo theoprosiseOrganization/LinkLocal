@@ -11,8 +11,11 @@ import { Input } from "../../../components/ui/input";
 import { Label } from "../../../components/ui/label";
 import React, { use, useState } from "react";
 import { createUser } from "../../../src/api";
+import { useNavigate } from "react-router";
 
 export default function SignUpPage() {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     userName: "",
     location: "",
@@ -48,8 +51,9 @@ export default function SignUpPage() {
         email,
         password,
       });
-      alert(response.message);
-      // Redirect or perform further actions after successful signup
+      // Redirect to profile page after successful signup
+      alert("Signed up successfully!");
+      navigate("/profile");
     } catch (error) {
       alert(error.message);
     }

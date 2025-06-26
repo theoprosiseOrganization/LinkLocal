@@ -1,3 +1,14 @@
+/**
+ * Component that allows users to sign in to their account.
+ *
+ * It sends a request to the `/auth/signin` endpoint to authenticate the user.
+ * If authenticated, it redirects to the profile; otherwise, it alerts with an error and prepares for another submission.
+ *
+ * @component
+ * @param {Object}  props - Component props.
+ * @param {React.ReactNode} 
+ * @returns {React.ReactNode} The rendered children if authenticated, a loading indicator while checking, or null if not authenticated.
+ */
 import Layout from "../Layout/Layout";
 import { Button } from "../../../components/ui/button";
 import {
@@ -35,7 +46,9 @@ export default function SignInPage() {
         email,
         password,
       });
-      alert(response.message);
+      // Redirect to profile page after successful login
+      alert("Signed in successfully!");
+      navigate("/profile");
     } catch (error) {
       alert(error.message);
     }
