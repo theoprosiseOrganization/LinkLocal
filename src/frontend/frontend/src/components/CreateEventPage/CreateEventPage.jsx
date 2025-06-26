@@ -29,8 +29,38 @@ export default function CreateEventPage() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Fetch userId from session
+    let userId = null;
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_DB_URL || "http://localhost:3000"}/auth/me`,
+        { method: "POST", credentials: "include" }
+      );
+      if (res.ok) {
+        const data = await res.json();
+        userId = data.userId;
+      }
+    } catch (err) {
+      alert("Could not get user session.");
+      return;
+    }
+
+    try {
+      await createEvent({
+        userId,
+        images: [""],
+        location: eventData.location,
+        textDescription: eventData.description,
+        title: eventData.title,
+      });
+      alert("Event created!");
+      setEventData({ title: "", description: "", location: "", images: [] });
+    } catch (err) {
+      alert(err.message);
+    }
   };
 
   return (
