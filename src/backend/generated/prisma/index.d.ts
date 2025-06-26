@@ -2241,6 +2241,7 @@ export namespace Prisma {
   export type EventMinAggregateOutputType = {
     id: string | null
     userId: string | null
+    title: string | null
     location: string | null
     textDescription: string | null
   }
@@ -2248,6 +2249,7 @@ export namespace Prisma {
   export type EventMaxAggregateOutputType = {
     id: string | null
     userId: string | null
+    title: string | null
     location: string | null
     textDescription: string | null
   }
@@ -2255,6 +2257,7 @@ export namespace Prisma {
   export type EventCountAggregateOutputType = {
     id: number
     userId: number
+    title: number
     images: number
     location: number
     textDescription: number
@@ -2265,6 +2268,7 @@ export namespace Prisma {
   export type EventMinAggregateInputType = {
     id?: true
     userId?: true
+    title?: true
     location?: true
     textDescription?: true
   }
@@ -2272,6 +2276,7 @@ export namespace Prisma {
   export type EventMaxAggregateInputType = {
     id?: true
     userId?: true
+    title?: true
     location?: true
     textDescription?: true
   }
@@ -2279,6 +2284,7 @@ export namespace Prisma {
   export type EventCountAggregateInputType = {
     id?: true
     userId?: true
+    title?: true
     images?: true
     location?: true
     textDescription?: true
@@ -2360,6 +2366,7 @@ export namespace Prisma {
   export type EventGroupByOutputType = {
     id: string
     userId: string
+    title: string
     images: string[]
     location: string
     textDescription: string
@@ -2385,6 +2392,7 @@ export namespace Prisma {
   export type EventSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     userId?: boolean
+    title?: boolean
     images?: boolean
     location?: boolean
     textDescription?: boolean
@@ -2396,6 +2404,7 @@ export namespace Prisma {
   export type EventSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     userId?: boolean
+    title?: boolean
     images?: boolean
     location?: boolean
     textDescription?: boolean
@@ -2405,6 +2414,7 @@ export namespace Prisma {
   export type EventSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     userId?: boolean
+    title?: boolean
     images?: boolean
     location?: boolean
     textDescription?: boolean
@@ -2414,12 +2424,13 @@ export namespace Prisma {
   export type EventSelectScalar = {
     id?: boolean
     userId?: boolean
+    title?: boolean
     images?: boolean
     location?: boolean
     textDescription?: boolean
   }
 
-  export type EventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "images" | "location" | "textDescription", ExtArgs["result"]["event"]>
+  export type EventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "title" | "images" | "location" | "textDescription", ExtArgs["result"]["event"]>
   export type EventInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     likes?: boolean | Event$likesArgs<ExtArgs>
@@ -2441,6 +2452,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       userId: string
+      title: string
       images: string[]
       location: string
       textDescription: string
@@ -2871,6 +2883,7 @@ export namespace Prisma {
   interface EventFieldRefs {
     readonly id: FieldRef<"Event", 'String'>
     readonly userId: FieldRef<"Event", 'String'>
+    readonly title: FieldRef<"Event", 'String'>
     readonly images: FieldRef<"Event", 'String[]'>
     readonly location: FieldRef<"Event", 'String'>
     readonly textDescription: FieldRef<"Event", 'String'>
@@ -3342,6 +3355,7 @@ export namespace Prisma {
   export const EventScalarFieldEnum: {
     id: 'id',
     userId: 'userId',
+    title: 'title',
     images: 'images',
     location: 'location',
     textDescription: 'textDescription'
@@ -3490,6 +3504,7 @@ export namespace Prisma {
     NOT?: EventWhereInput | EventWhereInput[]
     id?: StringFilter<"Event"> | string
     userId?: StringFilter<"Event"> | string
+    title?: StringFilter<"Event"> | string
     images?: StringNullableListFilter<"Event">
     location?: StringFilter<"Event"> | string
     textDescription?: StringFilter<"Event"> | string
@@ -3500,6 +3515,7 @@ export namespace Prisma {
   export type EventOrderByWithRelationInput = {
     id?: SortOrder
     userId?: SortOrder
+    title?: SortOrder
     images?: SortOrder
     location?: SortOrder
     textDescription?: SortOrder
@@ -3513,6 +3529,7 @@ export namespace Prisma {
     OR?: EventWhereInput[]
     NOT?: EventWhereInput | EventWhereInput[]
     userId?: StringFilter<"Event"> | string
+    title?: StringFilter<"Event"> | string
     images?: StringNullableListFilter<"Event">
     location?: StringFilter<"Event"> | string
     textDescription?: StringFilter<"Event"> | string
@@ -3523,6 +3540,7 @@ export namespace Prisma {
   export type EventOrderByWithAggregationInput = {
     id?: SortOrder
     userId?: SortOrder
+    title?: SortOrder
     images?: SortOrder
     location?: SortOrder
     textDescription?: SortOrder
@@ -3537,6 +3555,7 @@ export namespace Prisma {
     NOT?: EventScalarWhereWithAggregatesInput | EventScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Event"> | string
     userId?: StringWithAggregatesFilter<"Event"> | string
+    title?: StringWithAggregatesFilter<"Event"> | string
     images?: StringNullableListFilter<"Event">
     location?: StringWithAggregatesFilter<"Event"> | string
     textDescription?: StringWithAggregatesFilter<"Event"> | string
@@ -3630,6 +3649,7 @@ export namespace Prisma {
 
   export type EventCreateInput = {
     id?: string
+    title: string
     images?: EventCreateimagesInput | string[]
     location: string
     textDescription: string
@@ -3640,6 +3660,7 @@ export namespace Prisma {
   export type EventUncheckedCreateInput = {
     id?: string
     userId: string
+    title: string
     images?: EventCreateimagesInput | string[]
     location: string
     textDescription: string
@@ -3648,6 +3669,7 @@ export namespace Prisma {
 
   export type EventUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
     images?: EventUpdateimagesInput | string[]
     location?: StringFieldUpdateOperationsInput | string
     textDescription?: StringFieldUpdateOperationsInput | string
@@ -3658,6 +3680,7 @@ export namespace Prisma {
   export type EventUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
     images?: EventUpdateimagesInput | string[]
     location?: StringFieldUpdateOperationsInput | string
     textDescription?: StringFieldUpdateOperationsInput | string
@@ -3667,6 +3690,7 @@ export namespace Prisma {
   export type EventCreateManyInput = {
     id?: string
     userId: string
+    title: string
     images?: EventCreateimagesInput | string[]
     location: string
     textDescription: string
@@ -3674,6 +3698,7 @@ export namespace Prisma {
 
   export type EventUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
     images?: EventUpdateimagesInput | string[]
     location?: StringFieldUpdateOperationsInput | string
     textDescription?: StringFieldUpdateOperationsInput | string
@@ -3682,6 +3707,7 @@ export namespace Prisma {
   export type EventUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
     images?: EventUpdateimagesInput | string[]
     location?: StringFieldUpdateOperationsInput | string
     textDescription?: StringFieldUpdateOperationsInput | string
@@ -3824,6 +3850,7 @@ export namespace Prisma {
   export type EventCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
+    title?: SortOrder
     images?: SortOrder
     location?: SortOrder
     textDescription?: SortOrder
@@ -3832,6 +3859,7 @@ export namespace Prisma {
   export type EventMaxOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
+    title?: SortOrder
     location?: SortOrder
     textDescription?: SortOrder
   }
@@ -3839,6 +3867,7 @@ export namespace Prisma {
   export type EventMinOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
+    title?: SortOrder
     location?: SortOrder
     textDescription?: SortOrder
   }
@@ -4216,6 +4245,7 @@ export namespace Prisma {
 
   export type EventCreateWithoutUserInput = {
     id?: string
+    title: string
     images?: EventCreateimagesInput | string[]
     location: string
     textDescription: string
@@ -4224,6 +4254,7 @@ export namespace Prisma {
 
   export type EventUncheckedCreateWithoutUserInput = {
     id?: string
+    title: string
     images?: EventCreateimagesInput | string[]
     location: string
     textDescription: string
@@ -4242,6 +4273,7 @@ export namespace Prisma {
 
   export type EventCreateWithoutLikesInput = {
     id?: string
+    title: string
     images?: EventCreateimagesInput | string[]
     location: string
     textDescription: string
@@ -4251,6 +4283,7 @@ export namespace Prisma {
   export type EventUncheckedCreateWithoutLikesInput = {
     id?: string
     userId: string
+    title: string
     images?: EventCreateimagesInput | string[]
     location: string
     textDescription: string
@@ -4328,6 +4361,7 @@ export namespace Prisma {
     NOT?: EventScalarWhereInput | EventScalarWhereInput[]
     id?: StringFilter<"Event"> | string
     userId?: StringFilter<"Event"> | string
+    title?: StringFilter<"Event"> | string
     images?: StringNullableListFilter<"Event">
     location?: StringFilter<"Event"> | string
     textDescription?: StringFilter<"Event"> | string
@@ -4466,6 +4500,7 @@ export namespace Prisma {
 
   export type EventCreateManyUserInput = {
     id?: string
+    title: string
     images?: EventCreateimagesInput | string[]
     location: string
     textDescription: string
@@ -4545,6 +4580,7 @@ export namespace Prisma {
 
   export type EventUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
     images?: EventUpdateimagesInput | string[]
     location?: StringFieldUpdateOperationsInput | string
     textDescription?: StringFieldUpdateOperationsInput | string
@@ -4553,6 +4589,7 @@ export namespace Prisma {
 
   export type EventUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
     images?: EventUpdateimagesInput | string[]
     location?: StringFieldUpdateOperationsInput | string
     textDescription?: StringFieldUpdateOperationsInput | string
@@ -4561,6 +4598,7 @@ export namespace Prisma {
 
   export type EventUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
     images?: EventUpdateimagesInput | string[]
     location?: StringFieldUpdateOperationsInput | string
     textDescription?: StringFieldUpdateOperationsInput | string
@@ -4568,6 +4606,7 @@ export namespace Prisma {
 
   export type EventUpdateWithoutLikesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
     images?: EventUpdateimagesInput | string[]
     location?: StringFieldUpdateOperationsInput | string
     textDescription?: StringFieldUpdateOperationsInput | string
@@ -4577,6 +4616,7 @@ export namespace Prisma {
   export type EventUncheckedUpdateWithoutLikesInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
     images?: EventUpdateimagesInput | string[]
     location?: StringFieldUpdateOperationsInput | string
     textDescription?: StringFieldUpdateOperationsInput | string
@@ -4585,6 +4625,7 @@ export namespace Prisma {
   export type EventUncheckedUpdateManyWithoutLikesInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
     images?: EventUpdateimagesInput | string[]
     location?: StringFieldUpdateOperationsInput | string
     textDescription?: StringFieldUpdateOperationsInput | string
