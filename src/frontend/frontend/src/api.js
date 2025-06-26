@@ -42,3 +42,19 @@ export async function logoutUser() {
   }
   return response;
 }
+
+export async function createEvent(data) {
+  const res = await fetch(`${URL}/events/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(data),
+  });
+  const response = await res.json();
+  if (!res.ok) {
+    throw new Error(response.error || "Failed to create event");
+  }
+  return response;
+}

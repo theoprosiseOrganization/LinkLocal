@@ -133,6 +133,7 @@ exports.Prisma.UserScalarFieldEnum = {
 exports.Prisma.EventScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
+  title: 'title',
   images: 'images',
   location: 'location',
   textDescription: 'textDescription'
