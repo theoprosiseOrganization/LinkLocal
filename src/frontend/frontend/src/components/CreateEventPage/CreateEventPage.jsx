@@ -1,8 +1,10 @@
 /**
  *  CreateEventPage.jsx
- *  This component renders the Create Event page - a form for users to fill in the information about an event.
- *  In the future it will need to handle image uploads and possibly more complex event data.
- *  It will also require more styling and layout adjustments to fit the overall design of the application.
+ *  This component renders the Create Event page - a form for users to fill in the
+ *   information about an event.
+ *   In the future it will need to handle image uploads and possibly more complex event data.
+ *   It will also require more styling and layout adjustments to fit the
+ *   overall design of the application.
  *
  *  @component CreateEventPage
  *  @example
