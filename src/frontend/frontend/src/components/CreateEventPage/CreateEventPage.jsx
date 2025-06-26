@@ -1,6 +1,8 @@
 /**
  *  CreateEventPage.jsx
  *  This component renders the Create Event page - a form for users to fill in the information about an event.
+ *  In the future it will need to handle image uploads and possibly more complex event data.
+ *  It will also require more styling and layout adjustments to fit the overall design of the application.
  *
  *  @component CreateEventPage
  *  @example
@@ -28,6 +30,20 @@ export default function CreateEventPage() {
       [e.target.id]: e.target.value,
     });
   };
+
+  /**
+   *  Handles the form submission for creating an event.
+   *   It fetches the userId from the session, then calls the createEvent function
+   *   with the event data. If successful, it resets the form and alerts the user 
+   * 
+   *  @param {Event} e - The event object triggered by the form submission.
+   *  @returns {Promise<void>} A promise that resolves when the event is created.
+   *  @throws {Error} If the user session cannot be fetched or if the event
+   *  creation fails.
+   *  @example
+   *  handleSubmit(event);  
+   * 
+   */
 
   const handleSubmit = async (e) => {
     e.preventDefault();
