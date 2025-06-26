@@ -12,6 +12,7 @@ import { Input } from "../../../components/ui/input";
 import { Label } from "../../../components/ui/label";
 import { Button } from "../../../components/ui/button";
 import React, { useState } from "react";
+import { createEvent } from "../../../src/api";
 
 export default function CreateEventPage() {
   const [eventData, setEventData] = useState({
@@ -72,9 +73,17 @@ export default function CreateEventPage() {
               required
             />
           </div>
+          <div className="grid w-full max-w-sm items-center gap-3">
+            <Label htmlFor="picture">Picture</Label>
+            <Input id="picture" type="file" />
+          </div>
           <div className="grid gap-2">
             <Button type="submit" className="w-full">
               Create Event
+            </Button>
+            {/* Placeholder for share event functionality */}
+            <Button className={"w-full"} variant="outline">
+              Share Event
             </Button>
           </div>
         </div>
