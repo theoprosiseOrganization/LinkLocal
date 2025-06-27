@@ -8,6 +8,7 @@
  * @component
  * @example
  * <SignInPage />
+ * @returns {JSX.Element} The rendered SignInPage component.
  */
 
 import Layout from "../Layout/Layout";
@@ -22,9 +23,8 @@ import {
 import { Input } from "../../../components/ui/input";
 import { Label } from "../../../components/ui/label";
 import React, { useState } from "react";
-import { loginUser } from "../../../src/api";
+import { loginUser } from "../../api";
 import { useNavigate } from "react-router";
-
 
 /**
  * SignInPage component function.

@@ -11,17 +11,18 @@
  *  <CreateEventPage />
  *  @returns {JSX.Element} A component containing the Create Event page content.
  */
+
 import Layout from "../Layout/Layout";
 import { Input } from "../../../components/ui/input";
 import { Label } from "../../../components/ui/label";
 import { Button } from "../../../components/ui/button";
 import React, { useState } from "react";
-import { createEvent } from "../../../src/api";
+import { createEvent } from "../../api";
 
 export default function CreateEventPage() {
   const [eventData, setEventData] = useState({
     title: "",
-    description: "",
+    textDescription: "",
     location: "",
     images: [],
   });
@@ -46,7 +47,6 @@ export default function CreateEventPage() {
    *  handleSubmit(event);
    *
    */
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -71,11 +71,16 @@ export default function CreateEventPage() {
         userId,
         images: [""],
         location: eventData.location,
-        textDescription: eventData.description,
+        textDescription: eventData.textDescription,
         title: eventData.title,
       });
       alert("Event created!");
-      setEventData({ title: "", description: "", location: "", images: [] });
+      setEventData({
+        title: "",
+        textDescription: "",
+        location: "",
+        images: [],
+      });
     } catch (err) {
       alert(err.message);
     }
@@ -111,10 +116,10 @@ export default function CreateEventPage() {
             />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="description">Event Description</Label>
+            <Label htmlFor="textDescription">Event Description</Label>
             <Input
-              id="description"
-              value={eventData.description}
+              id="textDescription"
+              value={eventData.textDescription}
               onChange={handleChange}
               type="text"
               placeholder="Describe your event"

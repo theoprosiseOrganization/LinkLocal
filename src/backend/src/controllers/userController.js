@@ -39,11 +39,18 @@ exports.createUser = async (req, res) => {
 };
 
 exports.updateUser = async (req, res) => {
-  const { name, email, avatar, location, preferences } = req.body;
+  const updateData = {};
+  if (req.body.name !== undefined) updateData.name = req.body.name;
+  if (req.body.email !== undefined) updateData.email = req.body.email;
+  if (req.body.avatar !== undefined) updateData.avatar = req.body.avatar;
+  if (req.body.location !== undefined) updateData.location = req.body.location;
+  if (req.body.preferences !== undefined)
+    updateData.preferences = req.body.preferences;
+
   try {
     const user = await prisma.user.update({
       where: { id: req.params.id },
-      data: { name, email, avatar, location, preferences },
+      data: updateData,
     });
     res.json(user);
   } catch (error) {

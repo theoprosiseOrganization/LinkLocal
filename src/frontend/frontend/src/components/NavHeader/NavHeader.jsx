@@ -8,7 +8,7 @@ import {
 import "./NavHeader.css";
 
 import { Link } from "react-router-dom";
-import { logoutUser } from "../../../src/api";
+import { logoutUser } from "../../api";
 
 export default function NavHeader() {
   return (
