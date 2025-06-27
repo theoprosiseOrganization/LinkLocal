@@ -2,7 +2,7 @@ import Layout from "../Layout/Layout";
 import CreateEventButton from "../CreateEventPage/CreateEventButton";
 import VerticalEvents from "../VerticalEvents/VerticalEvents";
 import "./ProfilePage.css";
-import { getUserById, getUserEvents } from "../../../src/api";
+import { getUserById, getUserEvents, getSessionUserId } from "../../../src/api";
 import React, { use, useEffect, useState } from "react";
 
 export default function ProfilePage() {
@@ -12,25 +12,11 @@ export default function ProfilePage() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        // Get userId from session
-        const res = await fetch(
-          `${
-            import.meta.env.VITE_API_DB_URL || "http://localhost:3000"
-          }/auth/me`,
-          { method: "POST", credentials: "include" }
-        );
-        if (!res.ok) throw new Error("Not authenticated");
-        const data = await res.json();
-        const userId = data.userId;
-
-        // Fetch user data by ID
+        const userId = await getSessionUserId();
         const user = await getUserById(userId);
         setUserData(user);
-
-        // Fetch user events
         const events = await getUserEvents(userId);
         setUserEvents(events);
-        console.log("User Events:", userEvents);
       } catch (err) {
         setUserData(null);
       }
@@ -43,7 +29,7 @@ export default function ProfilePage() {
       <div className="homepage-split">
         <div className="homepage-left">
           Your Events
-          <VerticalEvents />
+          <VerticalEvents events={userEvents} />
           <CreateEventButton />
         </div>
         <div className="homepage-right">

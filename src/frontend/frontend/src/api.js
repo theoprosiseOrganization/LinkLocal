@@ -86,3 +86,15 @@ export async function getUserById(userId) {
   }
   return response;
 }
+
+export async function getSessionUserId() {
+  const res = await fetch(`${URL}/auth/me`, {
+    method: "POST",
+    credentials: "include",
+  });
+  if (!res.ok) {
+    throw new Error("Not authenticated");
+  }
+  const data = await res.json();
+  return data.userId;
+}
