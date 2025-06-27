@@ -59,6 +59,20 @@ export async function createEvent(data) {
   return response;
 }
 
+export async function getAllEvents() {
+  const res = await fetch(`${URL}/events`, {
+    method: "GET", 
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  const response = await res.json();
+  if (!res.ok) {
+    throw new Error(response.error || "Failed to fetch events");
+  }
+  return response;
+}
+
 export async function getUserEvents(userId) {
   const res = await fetch(`${URL}/users/${userId}/events`, {
     method: "GET",

@@ -68,7 +68,7 @@ export default function ProfilePage() {
     <Layout>
       <div className="homepage-split">
         <div className="homepage-left">
-          Your Events
+          <h2 className="events-title">Your Events</h2>
           <VerticalEvents events={userEvents} />
           <CreateEventButton />
         </div>
@@ -118,10 +118,15 @@ export default function ProfilePage() {
             </DialogContent>
           </Dialog>
           {userData ? (
-            <div>
-              <h2>{userData.name}</h2>
-              <p>Email: {userData.email}</p>
-              <p>Location: {userData.location}</p>
+            <div className="profile-card">
+              <div className="profile-avatar">
+                {userData.name ? userData.name[0].toUpperCase() : "?"}
+              </div>
+              <div className="profile-info">
+                <h2>{userData.name}</h2>
+                <p>{userData.email}</p>
+                <p>{userData.location}</p>
+              </div>
             </div>
           ) : (
             <div>No User Data Found...</div>
