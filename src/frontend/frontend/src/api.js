@@ -98,3 +98,18 @@ export async function getSessionUserId() {
   const data = await res.json();
   return data.userId;
 }
+
+export async function updateUserProfile(userId, data) {
+  const res = await fetch(`${URL}/users/${userId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+  const response = await res.json();
+  if (!res.ok) {
+    throw new Error(response.error || "Failed to update user profile");
+  }
+  return response;
+}
