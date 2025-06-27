@@ -8,6 +8,7 @@
  * @component
  * @example
  * <SignInPage />
+ * @returns {JSX.Element} The rendered SignInPage component.
  */
 
 import Layout from "../Layout/Layout";

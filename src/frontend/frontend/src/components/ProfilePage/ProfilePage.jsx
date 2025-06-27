@@ -119,14 +119,14 @@ export default function ProfilePage() {
               <Button variant="outline">Edit Profile</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Edit Profile</DialogTitle>
+                <DialogDescription>
+                  Make changes to your profile here. Click save when you&apos;re
+                  done.
+                </DialogDescription>
+              </DialogHeader>
               <form onSubmit={handleProfileUpdate}>
-                <DialogHeader>
-                  <DialogTitle>Edit Profile</DialogTitle>
-                  <DialogDescription>
-                    Make changes to your profile here. Click save when
-                    you&apos;re done.
-                  </DialogDescription>
-                </DialogHeader>
                 <div className="grid gap-4">
                   <div className="grid gap-3">
                     <Label htmlFor="username-1">Username</Label>
@@ -137,10 +137,8 @@ export default function ProfilePage() {
                       onChange={(e) => setEditName(e.target.value)}
                     />
                   </div>
-                </div>
-                <div className="grid gap-4">
                   <div className="grid gap-3">
-                    <Label htmlFor="username-1">Location</Label>
+                    <Label htmlFor="location-1">Location</Label>
                     <Input
                       id="location-1"
                       name="location"
@@ -149,12 +147,14 @@ export default function ProfilePage() {
                     />
                   </div>
                 </div>
-                <DialogFooter>
+                <div className="mt-6 flex justify-end gap-2">
                   <DialogClose asChild>
                     <Button variant="outline">Cancel</Button>
                   </DialogClose>
+                  <DialogClose asChild>
                   <Button type="submit">Save changes</Button>
-                </DialogFooter>
+                  </DialogClose>
+                </div>
               </form>
             </DialogContent>
           </Dialog>
