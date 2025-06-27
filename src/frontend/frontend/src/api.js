@@ -58,3 +58,31 @@ export async function createEvent(data) {
   }
   return response;
 }
+
+export async function getUserEvents(userId) {
+  const res = await fetch(`${URL}/users/${userId}/events`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  const response = await res.json();
+  if (!res.ok) {
+    throw new Error(response.error || "Failed to fetch user events");
+  }
+  return response;
+}
+
+export async function getUserById(userId) {
+  const res = await fetch(`${URL}/users/${userId}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  const response = await res.json();
+  if (!res.ok) {
+    throw new Error(response.error || "Failed to fetch user");
+  }
+  return response;
+}
