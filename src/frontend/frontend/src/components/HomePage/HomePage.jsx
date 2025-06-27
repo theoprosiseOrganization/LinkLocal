@@ -13,7 +13,7 @@
  */
 
 import Layout from "../Layout/Layout";
-import Map from "../Map/Map";
+import MapComponent from "../MapComponent/MapComponent";
 import "./HomePage.css";
 import VerticalEvents from "../VerticalEvents/VerticalEvents";
 import { getAllEvents } from "../../api";
@@ -38,7 +38,7 @@ export default function HomePage() {
     <Layout>
       <div className="homepage-split">
         <div className="homepage-left">
-          <Map />
+          <MapComponent />
         </div>
         <div className="homepage-right">
           <VerticalEvents events={eventsToDisplay} />
