@@ -1,3 +1,16 @@
+/**
+ * ProfilePage.jsx
+ * This component displays the user's profile information and their events.
+ * It allows the user to edit their profile details such as name and location.
+ * The profile information is fetched from the API, and the user can update it through a dialog.
+ * The user's events are displayed in a vertical carousel format.
+ *
+ * @component
+ * @example
+ * <ProfilePage />
+ * @returns {JSX.Element} The rendered ProfilePage component.
+ */
+
 import Layout from "../Layout/Layout";
 import CreateEventButton from "../CreateEventPage/CreateEventButton";
 import VerticalEvents from "../VerticalEvents/VerticalEvents";
@@ -29,6 +42,12 @@ export default function ProfilePage() {
   const [editName, setEditName] = useState("");
   const [editLocation, setEditLocation] = useState("");
 
+  /**
+   * useEffect hook to fetch user data and events when the component mounts.
+   * It retrieves the user ID from the session, fetches the user data and their events
+   * from the API, and updates the state accordingly.
+   * If the user data cannot be fetched, it sets the userData state to null.
+   */
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -51,6 +70,14 @@ export default function ProfilePage() {
     }
   }, [userData]);
 
+  /**
+   * This function handles the profile update when the user submits the edit form.
+   * It prevents the default form submission behavior, calls the API to update the user profile,
+   * and updates the local state with the new profile information.
+   * If the update fails, it alerts the user with an error message.
+   *
+   * @param {Event} e - The event object triggered by the form submission.
+   */
   const handleProfileUpdate = async (e) => {
     e.preventDefault();
     try {

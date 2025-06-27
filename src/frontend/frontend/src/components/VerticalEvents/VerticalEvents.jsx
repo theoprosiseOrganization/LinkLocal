@@ -1,3 +1,18 @@
+/**
+ * VerticalEvents Component
+ * 
+ * This component displays a vertical carousel of events.
+ * Each event is represented by an EventCard component.
+ * The carousel allows users to scroll through events vertically.
+ * If there are no events, a message is displayed indicating that there are no events to show
+ * 
+ * @component
+ * @example
+ * <VerticalEvents events={eventsArray} />
+ * * @param {Array} events - An array of event objects to be displayed in the carousel.
+ * * @returns {JSX.Element} The JSX element representing the vertical events carousel.
+ */
+
 import {
   Carousel,
   CarouselContent,

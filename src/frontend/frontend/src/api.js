@@ -61,7 +61,7 @@ export async function createEvent(data) {
 
 export async function getAllEvents() {
   const res = await fetch(`${URL}/events`, {
-    method: "GET", 
+    method: "GET",
     headers: {
       "Content-Type": "application/json",
     },
@@ -101,6 +101,14 @@ export async function getUserById(userId) {
   return response;
 }
 
+/**
+ * This function retrieves the user ID of the currently authenticated user.
+ * It sends a POST request to the `/auth/me` endpoint, which is expected to return the user ID of the authenticated user.
+ * If the user is not authenticated, it throws an error.
+ *
+ * @returns {Promise<string>} Returns the user ID of the currently authenticated user.
+ * @throws {Error} Throws an error if the user is not authenticated.
+ */
 export async function getSessionUserId() {
   const res = await fetch(`${URL}/auth/me`, {
     method: "POST",

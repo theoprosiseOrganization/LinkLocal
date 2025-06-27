@@ -1,3 +1,17 @@
+/**
+ * HomePage Component
+ * 
+ * This component serves as the main landing page of the application.
+ * It displays a map on the left side and a list of events on the right side.
+ * It currently displays all events fetched from the API.
+ * The map is currently a placeholder and will be replaced with an actual map implementation.
+ * 
+ * @component
+ * @example
+ * <HomePage />
+ * * @returns {JSX.Element} The rendered HomePage component.
+ */
+
 import Layout from "../Layout/Layout";
 import Map from "../Map/Map";
 import "./HomePage.css"; 
