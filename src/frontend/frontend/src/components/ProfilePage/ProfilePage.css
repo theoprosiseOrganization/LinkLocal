@@ -1,10 +1,10 @@
-.homepage-split {
+.profilepage-split {
   display: flex;
   height: 100vh;
 }
 
-.homepage-left,
-.homepage-right {
+.profilepage-left,
+.profilepage-right {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -12,14 +12,13 @@
   justify-content: center;
 }
 
-
-.homepage-left {
+.profilepage-left {
   border-right: 1px solid #e2e8f0;
   padding: 2rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 5rem; 
+  gap: 5rem;
 }
 
 .events-title {
@@ -29,7 +28,7 @@
   letter-spacing: 0.01em;
 }
 
-.homepage-right {
+.profilepage-right {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -73,7 +72,7 @@
   margin-bottom: 1.5rem;
 }
 
-.homepage-right {
+.profilepage-right {
   background: linear-gradient(135deg, #f0f4f8 0%, #e0e7ef 100%);
   min-height: 100vh;
   display: flex;

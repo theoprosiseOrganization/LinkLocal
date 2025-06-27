@@ -20,7 +20,7 @@ import {
   getUserEvents,
   getSessionUserId,
   updateUserProfile,
-} from "../../../src/api";
+} from "../../api";
 import React, { use, useEffect, useState } from "react";
 import { Button } from "../../../components/ui/button";
 import {
@@ -93,13 +93,27 @@ export default function ProfilePage() {
 
   return (
     <Layout>
-      <div className="homepage-split">
-        <div className="homepage-left">
+      <div className="profilepage-split">
+        <div className="profilepage-left">
           <h2 className="events-title">Your Events</h2>
           <VerticalEvents events={userEvents} />
           <CreateEventButton />
         </div>
-        <div className="homepage-right">
+        <div className="profilepage-right">
+          {userData ? (
+            <div className="profile-card">
+              <div className="profile-avatar">
+                {userData.name ? userData.name[0].toUpperCase() : "?"}
+              </div>
+              <div className="profile-info">
+                <h2>{userData.name}</h2>
+                <p>{userData.email}</p>
+                <p>{userData.location}</p>
+              </div>
+            </div>
+          ) : (
+            <div>No User Data Found...</div>
+          )}
           <Dialog>
             <DialogTrigger asChild>
               <Button variant="outline">Edit Profile</Button>
@@ -144,20 +158,6 @@ export default function ProfilePage() {
               </form>
             </DialogContent>
           </Dialog>
-          {userData ? (
-            <div className="profile-card">
-              <div className="profile-avatar">
-                {userData.name ? userData.name[0].toUpperCase() : "?"}
-              </div>
-              <div className="profile-info">
-                <h2>{userData.name}</h2>
-                <p>{userData.email}</p>
-                <p>{userData.location}</p>
-              </div>
-            </div>
-          ) : (
-            <div>No User Data Found...</div>
-          )}
         </div>
       </div>
     </Layout>

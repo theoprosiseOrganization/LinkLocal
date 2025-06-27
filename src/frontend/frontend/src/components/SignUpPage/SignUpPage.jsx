@@ -10,7 +10,7 @@ import {
 import { Input } from "../../../components/ui/input";
 import { Label } from "../../../components/ui/label";
 import React, { use, useState } from "react";
-import { createUser } from "../../../src/api";
+import { createUser } from "../../api";
 import { useNavigate } from "react-router";
 
 export default function SignUpPage() {

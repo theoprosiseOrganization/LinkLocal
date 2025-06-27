@@ -16,7 +16,7 @@ export default function EventCard({ event }) {
     <Card className="event-card">
       <CardHeader>
         <CardTitle>{event.title || "Untitled Event"}</CardTitle>
-        <CardDescription>{event.description || "No description"}</CardDescription>
+        <CardDescription>{event.textDescription || "No description"}</CardDescription>
         <CardAction>
           <Button variant="link" className="event-card-button">View Event</Button>
         </CardAction>
