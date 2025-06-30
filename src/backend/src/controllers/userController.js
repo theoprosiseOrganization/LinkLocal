@@ -48,15 +48,19 @@ exports.createUser = async (req, res) => {
 
 const createUserLocation = async (userId, latitude, longitude, address) => {
   const point = `POINT(${longitude} ${latitude})`;
-  await prisma.$queryRaw`
-    INSERT INTO "UserLocation" ("userId", "streetAddress", "location")
-    VALUES (${userId}::uuid, ${address}, ST_GeomFromText(${point}, 4326))`;
+  await prisma.$executeRawUnsafe(
+    `INSERT INTO "user_locations" ("userId", "streetAddress", "location")
+     VALUES ($1::uuid, $2, ST_GeomFromText($3, 4326))`,
+    userId,
+    address,
+    point
+  );
 };
 
 const updateUserLocation = async (userId, latitude, longitude, address) => {
   const point = `POINT(${longitude} ${latitude})`;
   await prisma.$queryRaw`
-    UPDATE "UserLocation"
+    UPDATE "user_locations"
     SET "location" = ST_GeomFromText(${point}, 4326)
     , "streetAddress" = ${address}
     WHERE "userId" = ${userId}::uuid`;
