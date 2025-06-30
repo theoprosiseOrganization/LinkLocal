@@ -15,26 +15,55 @@ datasource db {
 }
 
 model User {
-  id          String  @id @default(uuid())
+  id          String        @id @default(uuid()) @db.Uuid
   name        String
-  email       String  @unique
+  email       String        @unique
   password    String
   avatar      String?
-  location    String
   preferences String
-  friends     User[]  @relation("friends")
-  friendOf    User[]  @relation("friends")
-  events      Event[] @relation("UserEvents") // Name this relation
-  likedEvents Event[] @relation("LikedEvents")
+  friends     User[]        @relation("friends")
+  friendOf    User[]        @relation("friends")
+  events      Event[]       @relation("UserEvents")
+  likedEvents Event[]       @relation("LikedEvents")
+  polygons    UserPoly[]    @relation("UserPoly")
+  geoLocation UserLocation? // Link to spatial location
+}
+
+model UserLocation {
+  id            String                              @id @default(uuid()) @db.Uuid
+  location      Unsupported("geometry(Point,4326)") // PostGIS geometry type
+  streetAddress String
+  user          User                                @relation(fields: [userId], references: [id])
+  userId        String                              @unique @db.Uuid
+
+  @@map("user_locations")
+}
+
+model UserPoly {
+  id         String                                @id @default(uuid()) @db.Uuid
+  polygon    Unsupported("geometry(Polygon,4326)")
+  userId     String                                @unique @db.Uuid
+  user       User                                  @relation("UserPoly", fields: [userId], references: [id])
+  activeFlag String
 }
 
 model Event {
-  id              String   @id @default(uuid())
-  userId          String
-  user            User     @relation("UserEvents", fields: [userId], references: [id]) // Name matches User.events
+  id              String         @id @default(uuid()) @db.Uuid
+  userId          String         @unique @db.Uuid
+  user            User           @relation("UserEvents", fields: [userId], references: [id])
   title           String
   images          String[]
-  location        String
   textDescription String
-  likes           User[]   @relation("LikedEvents") // Name matches User.likedEvents
+  likes           User[]         @relation("LikedEvents")
+  geoLocation     EventLocation? // Link to spatial location
+}
+
+model EventLocation {
+  id            String                              @id @default(uuid()) @db.Uuid
+  location      Unsupported("geometry(Point,4326)")
+  streetAddress String
+  event         Event                               @relation(fields: [eventId], references: [id])
+  eventId       String                              @unique @db.Uuid
+
+  @@map("event_locations")
 }

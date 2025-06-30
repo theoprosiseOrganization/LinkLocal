@@ -126,8 +126,19 @@ exports.Prisma.UserScalarFieldEnum = {
   email: 'email',
   password: 'password',
   avatar: 'avatar',
-  location: 'location',
   preferences: 'preferences'
+};
+
+exports.Prisma.UserLocationScalarFieldEnum = {
+  id: 'id',
+  streetAddress: 'streetAddress',
+  userId: 'userId'
+};
+
+exports.Prisma.UserPolyScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  activeFlag: 'activeFlag'
 };
 
 exports.Prisma.EventScalarFieldEnum = {
@@ -135,8 +146,13 @@ exports.Prisma.EventScalarFieldEnum = {
   userId: 'userId',
   title: 'title',
   images: 'images',
-  location: 'location',
   textDescription: 'textDescription'
+};
+
+exports.Prisma.EventLocationScalarFieldEnum = {
+  id: 'id',
+  streetAddress: 'streetAddress',
+  eventId: 'eventId'
 };
 
 exports.Prisma.SortOrder = {
@@ -157,7 +173,10 @@ exports.Prisma.NullsOrder = {
 
 exports.Prisma.ModelName = {
   User: 'User',
-  Event: 'Event'
+  UserLocation: 'UserLocation',
+  UserPoly: 'UserPoly',
+  Event: 'Event',
+  EventLocation: 'EventLocation'
 };
 
 /**
