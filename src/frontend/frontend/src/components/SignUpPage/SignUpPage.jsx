@@ -18,7 +18,8 @@ export default function SignUpPage() {
 
   const [formData, setFormData] = useState({
     userName: "",
-    location: "",
+    // location stores { address, latitude, longitude }
+    location: {},
     email: "",
     password: "",
   });
@@ -58,6 +59,21 @@ export default function SignUpPage() {
       alert(error.message);
     }
   };
+
+  const placeAutocomplete = new google.maps.places.AutocompleteElement();
+  placeAutocomplete.id = "location";
+  placeAutocomplete.locationBias = center;
+  const locationInput = document.getElementById("location");
+  locationInput.appendChild(placeAutocomplete);
+
+  placeAutocomplete.addListener("gmp-select", ({ placeGuess }) => {
+    const place = placeGuess.toPlace();
+    place.fetchFields({
+      fields: ["displayName", "formattedAddress", "location"],
+    });
+    locationAddress = place.formattedAddress;
+    locationCoords = place.location;
+  });
 
   return (
     <Layout>

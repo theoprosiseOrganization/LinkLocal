@@ -22,6 +22,7 @@ exports.getUserById = async (req, res) => {
 };
 
 exports.createUser = async (req, res) => {
+  // location stores { address, latitude, longitude }
   const { name, email, password, avatar, location, preferences } = req.body;
   if (!name || !email || !password || !location || !preferences) {
     return res
@@ -30,12 +31,35 @@ exports.createUser = async (req, res) => {
   }
   try {
     const user = await prisma.user.create({
-      data: { name, email, password, avatar, location, preferences },
+      data: { name, email, password, avatar, preferences },
     });
+    //wait for the user to be created before creating the location
+    await createUserLocation(
+      user.id,
+      location.latitude,
+      location.longitude,
+      location.address
+    );
     res.status(201).json(user);
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }
+};
+
+const createUserLocation = async (userId, latitude, longitude, address) => {
+  const point = `POINT(${longitude} ${latitude})`;
+  await prisma.$queryRaw`
+    INSERT INTO "UserLocation" ("userId", "streetAddress", "location")
+    VALUES (${userId}::uuid, ${address}, ST_GeomFromText(${point}, 4326))`;
+};
+
+const updateUserLocation = async (userId, latitude, longitude, address) => {
+  const point = `POINT(${longitude} ${latitude})`;
+  await prisma.$queryRaw`
+    UPDATE "UserLocation"
+    SET "location" = ST_GeomFromText(${point}, 4326)
+    , "streetAddress" = ${address}
+    WHERE "userId" = ${userId}::uuid`;
 };
 
 exports.updateUser = async (req, res) => {
@@ -43,7 +67,6 @@ exports.updateUser = async (req, res) => {
   if (req.body.name !== undefined) updateData.name = req.body.name;
   if (req.body.email !== undefined) updateData.email = req.body.email;
   if (req.body.avatar !== undefined) updateData.avatar = req.body.avatar;
-  if (req.body.location !== undefined) updateData.location = req.body.location;
   if (req.body.preferences !== undefined)
     updateData.preferences = req.body.preferences;
 
@@ -52,6 +75,16 @@ exports.updateUser = async (req, res) => {
       where: { id: req.params.id },
       data: updateData,
     });
+
+    if (req.body.location) {
+      await updateUserLocation(
+        req.params.id,
+        req.body.location.latitude,
+        req.body.location.longitude,
+        req.body.location.address
+      );
+    }
+
     res.json(user);
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
