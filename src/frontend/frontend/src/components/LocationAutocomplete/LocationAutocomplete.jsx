@@ -53,8 +53,6 @@ const LocationAutocomplete = ({ onPlaceSelect }) => {
       "gmp-select",
       async ({ placePrediction }) => {
         const place = placePrediction.toPlace();
-        console.log("Selected place:", place);
-
         await place.fetchFields({
           fields: ["displayName", "formattedAddress", "location"],
         });

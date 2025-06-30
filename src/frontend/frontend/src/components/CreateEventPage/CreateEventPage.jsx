@@ -18,12 +18,15 @@ import { Label } from "../../../components/ui/label";
 import { Button } from "../../../components/ui/button";
 import React, { useState } from "react";
 import { createEvent } from "../../api";
+import LocationAutocomplete from "../LocationAutocomplete/LocationAutocomplete";
+import { APIProvider } from "@vis.gl/react-google-maps";
 
 export default function CreateEventPage() {
   const [eventData, setEventData] = useState({
     title: "",
     textDescription: "",
-    location: "",
+    // location stores { address, latitude, longitude }
+    location: { address: "", latitude: 0, longitude: 0 },
     images: [],
   });
 
@@ -87,60 +90,66 @@ export default function CreateEventPage() {
   };
 
   return (
-    <Layout>
-      Create Event Page
-      <form onSubmit={handleSubmit}>
-        <div className="flex flex-col gap-6">
-          <div className="grid gap-2">
-            <Label htmlFor="title">Event Title</Label>
-            <Input
-              id="title"
-              value={eventData.title}
-              onChange={handleChange}
-              type="text"
-              placeholder="Fun Event"
-              required
-            />
-          </div>
-          <div className="grid gap-2">
-            <div className="flex items-center">
-              <Label htmlFor="location">Location</Label>
+    <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
+      <Layout>
+        Create Event Page
+        <form onSubmit={handleSubmit}>
+          <div className="flex flex-col gap-6">
+            <div className="grid gap-2">
+              <Label htmlFor="title">Event Title</Label>
+              <Input
+                id="title"
+                value={eventData.title}
+                onChange={handleChange}
+                type="text"
+                placeholder="Fun Event"
+                required
+              />
             </div>
-            <Input
-              id="location"
-              type="text"
-              value={eventData.location}
-              onChange={handleChange}
-              placeholder="123 Main St, City, Country"
-              required
-            />
+            <div className="grid gap-2">
+              <div className="flex items-center">
+                <Label htmlFor="location">Location</Label>
+              </div>
+              <LocationAutocomplete
+                onPlaceSelect={(place) => {
+                  setEventData({
+                    ...eventData,
+                    location: {
+                      address: place.Dg.formattedAddress,
+                      latitude: place.Dg.location.lat,
+                      longitude: place.Dg.location.lng,
+                    },
+                  });
+                }}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="textDescription">Event Description</Label>
+              <Input
+                id="textDescription"
+                value={eventData.textDescription}
+                onChange={handleChange}
+                type="text"
+                placeholder="Describe your event"
+                required
+              />
+            </div>
+            <div className="grid w-full max-w-sm items-center gap-3">
+              <Label htmlFor="picture">Picture</Label>
+              <Input id="picture" type="file" />
+            </div>
+            <div className="grid gap-2">
+              <Button type="submit" className="w-full">
+                Create Event
+              </Button>
+              {/* Placeholder for share event functionality */}
+              <Button className={"w-full"} variant="outline">
+                Share Event
+              </Button>
+            </div>
           </div>
-          <div className="grid gap-2">
-            <Label htmlFor="textDescription">Event Description</Label>
-            <Input
-              id="textDescription"
-              value={eventData.textDescription}
-              onChange={handleChange}
-              type="text"
-              placeholder="Describe your event"
-              required
-            />
-          </div>
-          <div className="grid w-full max-w-sm items-center gap-3">
-            <Label htmlFor="picture">Picture</Label>
-            <Input id="picture" type="file" />
-          </div>
-          <div className="grid gap-2">
-            <Button type="submit" className="w-full">
-              Create Event
-            </Button>
-            {/* Placeholder for share event functionality */}
-            <Button className={"w-full"} variant="outline">
-              Share Event
-            </Button>
-          </div>
-        </div>
-      </form>
-    </Layout>
+        </form>
+      </Layout>
+    </APIProvider>
   );
 }

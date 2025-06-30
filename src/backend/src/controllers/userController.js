@@ -196,10 +196,35 @@ exports.getUserCreatedEvents = async (req, res) => {
     const events = await prisma.event.findMany({
       where: { userId: req.params.id },
     });
+    // Attach location to each event (if not already a field)
+    await Promise.all(
+      events.map(async (event) => {
+        const location = await getEventLocation(event.id);
+        event.location = location; // will be null if not found
+      })
+    );
     res.json(events);
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }
+};
+
+const getEventLocation = async (eventId) => {
+  const result = await prisma.$queryRaw`
+    SELECT "streetAddress", ST_AsText("location") AS location
+    FROM "event_locations"
+    WHERE "eventId" = ${eventId}::uuid`;
+  if (!result || result.length === 0) return null;
+  const { streetAddress, location } = result[0];
+  // location is in format "POINT(lon lat)"
+  const match = location.match(/POINT\(([-\d.]+) ([-\d.]+)\)/);
+  if (!match) return null;
+  const [, longitude, latitude] = match;
+  return {
+    address: streetAddress,
+    latitude: parseFloat(latitude),
+    longitude: parseFloat(longitude),
+  };
 };
 
 exports.createUserEvent = async (req, res) => {
