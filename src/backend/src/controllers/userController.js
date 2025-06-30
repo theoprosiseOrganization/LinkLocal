@@ -15,10 +15,31 @@ exports.getUserById = async (req, res) => {
   try {
     const user = await prisma.user.findUnique({ where: { id: req.params.id } });
     if (!user) return res.status(404).json({ error: "User not found" });
+    // Fetch user location
+    const location = await getUserLocation(user.id);
+    user.location = location; // will be null if not found
     res.json(user);
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }
+};
+
+const getUserLocation = async (userId) => {
+  const result = await prisma.$queryRaw`
+    SELECT "streetAddress", ST_AsText("location") AS location
+    FROM "user_locations"
+    WHERE "userId" = ${userId}::uuid`;
+  if (!result || result.length === 0) return null;
+  const { streetAddress, location } = result[0];
+  // location is in format "POINT(lon lat)"
+  const match = location.match(/POINT\(([-\d.]+) ([-\d.]+)\)/);
+  if (!match) return null;
+  const [, longitude, latitude] = match;
+  return {
+    address: streetAddress,
+    latitude: parseFloat(latitude),
+    longitude: parseFloat(longitude),
+  };
 };
 
 exports.createUser = async (req, res) => {

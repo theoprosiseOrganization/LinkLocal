@@ -108,7 +108,7 @@ export default function ProfilePage() {
               <div className="profile-info">
                 <h2>{userData.name}</h2>
                 <p>{userData.email}</p>
-                <p>{userData.location}</p>
+                <p>{userData.location.address}</p>
               </div>
             </div>
           ) : (
