@@ -15,6 +15,7 @@ const {
   likeEvent,
   getUserLikedEvents,
   unlikeEvent,
+  searchUsers,
 } = require("../controllers/userController");
 
 const router = express.Router();
@@ -25,6 +26,8 @@ router.get("/:id", getUserById);
 router.post("/", createUser);
 router.put("/:id", updateUser);
 router.delete("/:id", deleteUser);
+
+router.post("/search", searchUsers)
 
 // Friends
 router.get("/:id/friends", getUserFriends);

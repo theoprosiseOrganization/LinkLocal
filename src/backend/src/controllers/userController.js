@@ -281,3 +281,29 @@ exports.unlikeEvent = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+exports.searchUsers = async (req, res) => {
+  const { query } = req.body;
+  if (!query) {
+    return res.status(400).json({ error: "Query is required." });
+  }
+  try {
+    const users = await prisma.user.findMany({
+      where: {
+        OR: [
+          { name: { contains: query, mode: "insensitive" } },
+          { email: { contains: query, mode: "insensitive" } },
+        ],
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        avatar: true,
+      },
+    });
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
