@@ -2,6 +2,12 @@
  * SearchModal.jsx
  * This component provides a search modal for searching friends.
  * It includes a search input and displays search results.
+ * It allows users to search for friends by name or email and view their profiles.
+ * 
+ * @component
+ * @example
+ * <SearchModal />
+ * @returns {JSX.Element} The rendered SearchModal component.
  */
 import React from "react";
 
@@ -28,7 +34,7 @@ import {
 import { Input } from "../../../components/ui/input";
 import { Label } from "../../../components/ui/label";
 
-import { searchForUsers } from "../../api";
+import { searchForUsers, addUserFriend } from "../../api";
 
 export default function SearchModal() {
   const [open, setOpen] = React.useState(false);
@@ -51,11 +57,10 @@ export default function SearchModal() {
       setFriendsResults(results);
     } catch (error) {
       setFriendsResults([]);
-      console.error("Error searching for users:", error);
+      // Add error handling at some point
     }
   };
 
-  console.log("SearchModal rendered with results:", friendsResults);
   return (
     <>
       <Command className="rounded-lg border shadow-md md:min-w-[450px]">
@@ -68,16 +73,20 @@ export default function SearchModal() {
         <CommandList>
           {friendsResults.map((friend) => (
             <CommandItem key={friend.id} value={friend.id}>
-              {friend.name} ({friend.email})
               <Dialog>
                 <DialogTrigger asChild>
                   <Button variant="outline" className="ml-2">
-                    View Profile
+                    {friend.name} ({friend.email})
                   </Button>
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
-                    <DialogTitle>{friend.name}</DialogTitle>
+                    <DialogTitle>
+                        {friend.name}
+                        <Button variant="outline" className="ml-2" onClick={() => addUserFriend(friend.id)}>
+                            Follow User
+                        </Button>
+                    </DialogTitle>
                     <DialogDescription>Email: {friend.email}</DialogDescription>
                   </DialogHeader>
                   <div className="space-y-4">

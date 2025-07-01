@@ -132,6 +132,13 @@ exports.getUserFriends = async (req, res) => {
       where: { id: req.params.id },
       include: { friends: true },
     });
+    // add user location to each friend
+    await Promise.all(
+      user.friends.map(async (friend) => {
+        const location = await getUserLocation(friend.id);
+        friend.location = location; // will be null if not found
+      })
+    );
     res.json(user?.friends || []);
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });

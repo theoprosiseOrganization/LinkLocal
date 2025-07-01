@@ -1,6 +1,3 @@
--- Install PostGIS extension
-CREATE EXTENSION IF NOT EXISTS postgis;
-
 -- CreateTable
 CREATE TABLE "User" (
     "id" UUID NOT NULL,
@@ -11,6 +8,14 @@ CREATE TABLE "User" (
     "preferences" TEXT NOT NULL,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Follows" (
+    "followerId" UUID NOT NULL,
+    "followingId" UUID NOT NULL,
+
+    CONSTRAINT "Follows_pkey" PRIMARY KEY ("followerId","followingId")
 );
 
 -- CreateTable
@@ -55,14 +60,6 @@ CREATE TABLE "event_locations" (
 );
 
 -- CreateTable
-CREATE TABLE "_friends" (
-    "A" UUID NOT NULL,
-    "B" UUID NOT NULL,
-
-    CONSTRAINT "_friends_AB_pkey" PRIMARY KEY ("A","B")
-);
-
--- CreateTable
 CREATE TABLE "_LikedEvents" (
     "A" UUID NOT NULL,
     "B" UUID NOT NULL,
@@ -80,16 +77,16 @@ CREATE UNIQUE INDEX "user_locations_userId_key" ON "user_locations"("userId");
 CREATE UNIQUE INDEX "UserPoly_userId_key" ON "UserPoly"("userId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Event_userId_key" ON "Event"("userId");
-
--- CreateIndex
 CREATE UNIQUE INDEX "event_locations_eventId_key" ON "event_locations"("eventId");
 
 -- CreateIndex
-CREATE INDEX "_friends_B_index" ON "_friends"("B");
-
--- CreateIndex
 CREATE INDEX "_LikedEvents_B_index" ON "_LikedEvents"("B");
+
+-- AddForeignKey
+ALTER TABLE "Follows" ADD CONSTRAINT "Follows_followerId_fkey" FOREIGN KEY ("followerId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Follows" ADD CONSTRAINT "Follows_followingId_fkey" FOREIGN KEY ("followingId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "user_locations" ADD CONSTRAINT "user_locations_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -102,12 +99,6 @@ ALTER TABLE "Event" ADD CONSTRAINT "Event_userId_fkey" FOREIGN KEY ("userId") RE
 
 -- AddForeignKey
 ALTER TABLE "event_locations" ADD CONSTRAINT "event_locations_eventId_fkey" FOREIGN KEY ("eventId") REFERENCES "Event"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_friends" ADD CONSTRAINT "_friends_A_fkey" FOREIGN KEY ("A") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_friends" ADD CONSTRAINT "_friends_B_fkey" FOREIGN KEY ("B") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_LikedEvents" ADD CONSTRAINT "_LikedEvents_A_fkey" FOREIGN KEY ("A") REFERENCES "Event"("id") ON DELETE CASCADE ON UPDATE CASCADE;

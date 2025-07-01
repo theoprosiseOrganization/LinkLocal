@@ -129,6 +129,11 @@ exports.Prisma.UserScalarFieldEnum = {
   preferences: 'preferences'
 };
 
+exports.Prisma.FollowsScalarFieldEnum = {
+  followerId: 'followerId',
+  followingId: 'followingId'
+};
+
 exports.Prisma.UserLocationScalarFieldEnum = {
   id: 'id',
   streetAddress: 'streetAddress',
@@ -173,6 +178,7 @@ exports.Prisma.NullsOrder = {
 
 exports.Prisma.ModelName = {
   User: 'User',
+  Follows: 'Follows',
   UserLocation: 'UserLocation',
   UserPoly: 'UserPoly',
   Event: 'Event',

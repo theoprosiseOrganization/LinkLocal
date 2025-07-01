@@ -150,3 +150,32 @@ export async function searchForUsers(query) {
   }
   return response;
 }
+
+export async function getUserFriends(userId) {
+  const res = await fetch(`${URL}/users/${userId}/friends`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  const response = await res.json();
+  if (!res.ok) {
+    throw new Error(response.error || "Failed to fetch user friends");
+  }
+  return response;
+}
+
+export async function addUserFriend(userId, friendId) {
+  const res = await fetch(`${URL}/users/${userId}/friends`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ friendId }),
+  });
+  const response = await res.json();
+  if (!res.ok) {
+    throw new Error(response.error || "Failed to add user friend");
+  }
+  return response;
+}
