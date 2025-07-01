@@ -179,3 +179,18 @@ export async function addUserFriend(userId, friendId) {
   }
   return response;
 }
+
+export async function followUser(followerId, followingId) {
+  const res = await fetch(`${URL}/users/${followerId}/following`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ followingId }),
+  });
+  const response = await res.json();
+  if (!res.ok) {
+    throw new Error(response.error || "Failed to follow user");
+  }
+  return response;
+}

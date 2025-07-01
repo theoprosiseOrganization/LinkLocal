@@ -8,18 +8,21 @@
  * Displays a list of friends under the search bar
  *
  */
-import { Search } from "lucide-react";
 import Layout from "../Layout/Layout";
 import SearchModal from "../SearchModal/SearchModal";
-import FriendsGrid from "./FriendsGrid";
+import PeopleGrid from "./PeopleGrid";
 
 export default function FriendsPage() {
   return (
     <Layout>
       <div className="friendspage-header">
         <SearchModal />
-        Your Friends
-        <FriendsGrid />
+        <div className="friendspage-left">
+          <PeopleGrid type="Followers" />
+        </div>
+        <div className="friendspage-right">
+          <PeopleGrid type="Following" />
+        </div>
       </div>
     </Layout>
   );

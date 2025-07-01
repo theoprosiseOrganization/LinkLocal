@@ -7,9 +7,10 @@ import { getUserById, getUserFriends, getSessionUserId } from "../../api";
 import React, { useEffect, useState } from "react";
 import "../ProfilePage/ProfilePage.css";
 
-export default function FriendsGrid() {
+export default function PeopleGrid(props) {
+  const type = props.type || "followers";
   const [userData, setUserData] = useState(null);
-  const [userFriends, setUserFriends] = useState([]);
+  const [userPeople, setUserPeople] = useState([]);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -17,8 +18,8 @@ export default function FriendsGrid() {
         const userId = await getSessionUserId();
         const user = await getUserById(userId);
         setUserData(user);
-        const friends = await getUserFriends(userId);
-        setUserFriends(friends);
+        const people = "";//await getUserFriends(userId);
+        setUserPeople(friends);
       } catch (err) {
         setUserData(null);
       }
@@ -28,7 +29,7 @@ export default function FriendsGrid() {
 
   return (
     <>
-      <h2 className="events-title">Your Friends</h2>
+      <h2 className="events-title">{type}</h2>
       <div
         style={{
           display: "flex",
@@ -37,10 +38,10 @@ export default function FriendsGrid() {
           justifyContent: "center",
         }}
       >
-        {userFriends.length === 0 ? (
+        {userPeople.length === 0 ? (
           <div>No friends found.</div>
         ) : (
-          userFriends.map((friend) => (
+          userPeople.map((friend) => (
             <div
               className="profile-card"
               key={friend.id}

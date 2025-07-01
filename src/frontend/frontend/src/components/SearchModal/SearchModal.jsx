@@ -3,13 +3,13 @@
  * This component provides a search modal for searching friends.
  * It includes a search input and displays search results.
  * It allows users to search for friends by name or email and view their profiles.
- * 
+ *
  * @component
  * @example
  * <SearchModal />
  * @returns {JSX.Element} The rendered SearchModal component.
  */
-import React from "react";
+import React, { useEffect, useRef } from "react";
 
 import {
   Command,
@@ -34,11 +34,26 @@ import {
 import { Input } from "../../../components/ui/input";
 import { Label } from "../../../components/ui/label";
 
-import { searchForUsers, addUserFriend } from "../../api";
+import {
+  searchForUsers,
+  followUser,
+  getSessionUserId,
+  addUserFriend,
+} from "../../api";
 
 export default function SearchModal() {
   const [open, setOpen] = React.useState(false);
   const [friendsResults, setFriendsResults] = React.useState([]);
+  const [currentUserId, setCurrentUserId] = React.useState(null);
+  const [selectedFriend, setSelectedFriend] = React.useState(null);
+  const inputRef = React.useRef(null);
+
+  //I want to focus the input everytime the query changes 
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [open]);
 
   /**
    * This function handles the search input change.
@@ -61,10 +76,33 @@ export default function SearchModal() {
     }
   };
 
+  useEffect(() => {
+    const fetchCurrentUserId = async () => {
+      try {
+        const userId = await getSessionUserId();
+        setCurrentUserId(userId);
+      } catch (error) {
+        // Handle error if unable to fetch user ID
+      }
+    };
+    fetchCurrentUserId();
+  }, []);
+
+  const handleFollow = async (followingId) => {
+    if (!currentUserId) return;
+    try {
+      await followUser(currentUserId, followingId);
+      // Handle successful follow action
+    } catch (e) {
+      // Handle error
+    }
+  };
+
   return (
     <>
       <Command className="rounded-lg border shadow-md md:min-w-[450px]">
         <CommandInput
+          ref={inputRef}
           placeholder="Search for friends..."
           onValueChange={handleSearchChange}
         />
@@ -73,31 +111,45 @@ export default function SearchModal() {
         <CommandList>
           {friendsResults.map((friend) => (
             <CommandItem key={friend.id} value={friend.id}>
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button variant="outline" className="ml-2">
-                    {friend.name} ({friend.email})
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>
-                        {friend.name}
-                        <Button variant="outline" className="ml-2" onClick={() => addUserFriend(friend.id)}>
-                            Follow User
-                        </Button>
-                    </DialogTitle>
-                    <DialogDescription>Email: {friend.email}</DialogDescription>
-                  </DialogHeader>
-                  <div className="space-y-4">
-                    <Label>Name</Label>
-                  </div>
-                </DialogContent>
-              </Dialog>
+              <Button
+                variant="outline"
+                className="ml-2"
+                onClick={() => {
+                  setSelectedFriend(friend);
+                  setOpen(true);
+                }}
+              >
+                {friend.name} ({friend.email})
+              </Button>
             </CommandItem>
           ))}
         </CommandList>
       </Command>
+      {selectedFriend && (
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>
+                {selectedFriend.name}
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="ml-2"
+                  onClick={() => handleFollow(selectedFriend.id)}
+                >
+                  Follow User
+                </Button>
+              </DialogTitle>
+              <DialogDescription>
+                Email: {selectedFriend.email}
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4">
+              <Label>Name</Label>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
     </>
   );
 }

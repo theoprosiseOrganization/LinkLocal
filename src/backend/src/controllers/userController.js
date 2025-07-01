@@ -314,3 +314,50 @@ exports.searchUsers = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+// Follow another user
+exports.followUser = async (req, res) => {
+  const followerId = req.params.id; // current user
+  const { followingId } = req.body; // user to follow
+  if (!followingId) {
+    return res.status(400).json({ error: "followingId is required" });
+  }
+  if (followerId === followingId) {
+    return res.status(400).json({ error: "You cannot follow yourself" });
+  }
+  try {
+    // Create a Follows record
+    await prisma.follows.create({
+      data: {
+        followerId,
+        followingId,
+      },
+    });
+    res.json({ message: "User followed" });
+  } catch (error) {
+    if (error.code === "P2002") {
+      // Unique constraint failed (already following)
+      return res.status(409).json({ error: "Already following this user" });
+    }
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+// Unfollow a user
+exports.unfollowUser = async (req, res) => {
+  const followerId = req.params.id;
+  const followingId = req.params.following_id;
+  try {
+    await prisma.follows.delete({
+      where: {
+        followerId_followingId: {
+          followerId,
+          followingId,
+        },
+      },
+    });
+    res.json({ message: "User unfollowed" });
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
