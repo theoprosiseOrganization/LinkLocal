@@ -15,8 +15,8 @@ import PeopleGrid from "./PeopleGrid";
 export default function FriendsPage() {
   return (
     <Layout>
-      <div className="friendspage-header">
         <SearchModal />
+        <div className="friendspage-split">
         <div className="friendspage-left">
           <PeopleGrid type="Followers" />
         </div>

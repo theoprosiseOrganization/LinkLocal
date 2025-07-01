@@ -361,3 +361,29 @@ exports.unfollowUser = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+exports.getUserFollowers = async (req, res) => {
+  const userId = req.params.id;
+  try {
+    const followers = await prisma.follows.findMany({
+      where: { followingId: userId },
+      include: { follower: true }, // Include follower details
+    });
+    res.json(followers.map((f) => f.follower));
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+exports.getUserFollowing = async (req, res) => {
+  const userId = req.params.id;
+  try {
+    const following = await prisma.follows.findMany({
+      where: { followerId: userId },
+      include: { following: true }, // Include following details
+    });
+    res.json(following.map((f) => f.following));
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};

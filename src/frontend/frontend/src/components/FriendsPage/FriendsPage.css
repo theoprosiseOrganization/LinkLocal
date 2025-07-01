@@ -1,0 +1,21 @@
+.friendspage-split {
+  display: flex;
+  height: 100vh;
+}
+
+.friendspage-left,
+.friendspage-right {
+  flex: 1;
+  display: flex;
+  align-items: stretch;
+}
+
+.friendspage-left {
+  border-right: 1px solid #e2e8f0;
+}
+
+.friendspage-right {
+  display: flex;
+  justify-content: center;
+  align-items: center;    
+}

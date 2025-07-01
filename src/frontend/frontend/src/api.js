@@ -194,3 +194,31 @@ export async function followUser(followerId, followingId) {
   }
   return response;
 }
+
+export async function getUserFollowing(userId) {
+  const res = await fetch(`${URL}/users/${userId}/following`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  const response = await res.json();
+  if (!res.ok) {
+    throw new Error(response.error || "Failed to fetch user following");
+  }
+  return response;
+}
+
+export async function getUserFollowers(userId) {
+  const res = await fetch(`${URL}/users/${userId}/followers`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  const response = await res.json();
+  if (!res.ok) {
+    throw new Error(response.error || "Failed to fetch user followers");
+  }
+  return response;
+}

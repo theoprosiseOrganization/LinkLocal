@@ -18,6 +18,8 @@ const {
   searchUsers,
   followUser,
   unfollowUser,
+  getUserFollowers,
+  getUserFollowing,
 } = require("../controllers/userController");
 
 const router = express.Router();
@@ -49,8 +51,10 @@ router.get("/:id/liked_events", getUserLikedEvents);
 router.post("/:id/liked_events", likeEvent);
 router.delete("/:id/liked_events/:event_id", unlikeEvent);
 
-// Follow/Unfollow endpoints
+// Follow endpoints
 router.post("/:id/following", followUser); // follow user
 router.delete("/:id/following/:following_id", unfollowUser); // unfollow user
+router.get("/:id/followers", getUserFollowers); // get followers
+router.get("/:id/following", getUserFollowing); // get following users
 
 module.exports = router;

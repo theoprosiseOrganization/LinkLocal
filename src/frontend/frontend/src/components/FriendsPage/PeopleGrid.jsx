@@ -3,12 +3,17 @@
  *
  */
 
-import { getUserById, getUserFriends, getSessionUserId } from "../../api";
+import {
+  getUserById,
+  getUserFollowers,
+  getUserFollowing,
+  getSessionUserId,
+} from "../../api";
 import React, { useEffect, useState } from "react";
 import "../ProfilePage/ProfilePage.css";
 
 export default function PeopleGrid(props) {
-  const type = props.type || "followers";
+  const type = props.type || "Followers";
   const [userData, setUserData] = useState(null);
   const [userPeople, setUserPeople] = useState([]);
 
@@ -17,9 +22,15 @@ export default function PeopleGrid(props) {
       try {
         const userId = await getSessionUserId();
         const user = await getUserById(userId);
+        let people = [];
         setUserData(user);
-        const people = "";//await getUserFriends(userId);
-        setUserPeople(friends);
+        if (type === "Followers") {
+          people = await getUserFollowers(userId);
+        }
+        if (type === "Following") {
+          people = await getUserFollowing(userId);
+        }
+        setUserPeople(people);
       } catch (err) {
         setUserData(null);
       }
@@ -41,19 +52,19 @@ export default function PeopleGrid(props) {
         {userPeople.length === 0 ? (
           <div>No friends found.</div>
         ) : (
-          userPeople.map((friend) => (
+          userPeople.map((person) => (
             <div
               className="profile-card"
-              key={friend.id}
+              key={person.id}
               style={{ minWidth: 240 }}
             >
               <div className="profile-avatar">
-                {friend.name ? friend.name[0].toUpperCase() : "?"}
+                {person.name ? person.name[0].toUpperCase() : "?"}
               </div>
               <div className="profile-info">
-                <h2>{friend.name}</h2>
-                <p>{friend.email}</p>
-                <p>{friend.location && friend.location.address}</p>
+                <h2>{person.name}</h2>
+                <p>{person.email}</p>
+                <p>{person.location && person.location.address}</p>
               </div>
             </div>
           ))
