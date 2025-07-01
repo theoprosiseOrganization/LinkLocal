@@ -135,3 +135,18 @@ export async function updateUserProfile(userId, data) {
   }
   return response;
 }
+
+export async function searchForUsers(query) {
+  const res = await fetch(`${URL}/users/search`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ query }),
+  });
+  const response = await res.json();
+  if (!res.ok) {
+    throw new Error(response.error || "Failed to search for users");
+  }
+  return response;
+}
