@@ -1,3 +1,12 @@
+/**
+ * User Controller
+ * Handles CRUD operations for users, including friends, events, and preferences.
+ * Uses Prisma ORM for database interactions.
+ * 
+ * Need to remove unused functions and clean up the code.
+ * 
+ * @module userController
+ */
 const { PrismaClient } = require("../../generated/prisma");
 const prisma = new PrismaClient();
 

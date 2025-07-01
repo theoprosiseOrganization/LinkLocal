@@ -3,6 +3,8 @@
  * This component provides a search modal for searching friends.
  * It includes a search input and displays search results.
  * It allows users to search for friends by name or email and view their profiles.
+ * It also allows users to follow other users directly from the search results.
+ * It uses the Command component for search functionality and Dialog for displaying user details.
  *
  * @component
  * @example
@@ -96,7 +98,7 @@ export default function SearchModal() {
       <Command>
         <CommandInput
           ref={inputRef}
-          placeholder="Search for friends..."
+          placeholder="Search for users by name or email..."
           onValueChange={handleSearchChange}
         />
         <CommandList>
