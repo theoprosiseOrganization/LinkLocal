@@ -6521,17 +6521,17 @@ export namespace Prisma {
 
   export type EventWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    userId?: string
     AND?: EventWhereInput | EventWhereInput[]
     OR?: EventWhereInput[]
     NOT?: EventWhereInput | EventWhereInput[]
+    userId?: UuidFilter<"Event"> | string
     title?: StringFilter<"Event"> | string
     images?: StringNullableListFilter<"Event">
     textDescription?: StringFilter<"Event"> | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     likes?: UserListRelationFilter
     geoLocation?: XOR<EventLocationNullableScalarRelationFilter, EventLocationWhereInput> | null
-  }, "id" | "userId">
+  }, "id">
 
   export type EventOrderByWithAggregationInput = {
     id?: SortOrder
