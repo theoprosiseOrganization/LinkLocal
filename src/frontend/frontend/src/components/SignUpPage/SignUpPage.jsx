@@ -1,3 +1,16 @@
+/**
+ * SignUpPage.jsx
+ * This component renders a sign-up form for new users to create an account.
+ * It includes fields for user name, location (with Google Places autocomplete), email, and password.
+ * Upon successful submission, it creates a new user and redirects to the profile page.
+ *
+ * @component
+ * @example
+ * <SignUpPage />
+ * @returns {JSX.Element} The rendered SignUpPage component.
+ */
+
+import LocationAutocomplete from "../LocationAutocomplete/LocationAutocomplete";
 import Layout from "../Layout/Layout";
 import { Button } from "../../../components/ui/button";
 import {
@@ -9,16 +22,18 @@ import {
 } from "../../../components/ui/card";
 import { Input } from "../../../components/ui/input";
 import { Label } from "../../../components/ui/label";
-import React, { use, useState } from "react";
+import React, {useState } from "react";
 import { createUser } from "../../api";
 import { useNavigate } from "react-router";
+import { APIProvider } from "@vis.gl/react-google-maps";
 
 export default function SignUpPage() {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     userName: "",
-    location: "",
+    // location stores { address, latitude, longitude }
+    location: { address: "", latitude: 0, longitude: 0 },
     email: "",
     password: "",
   });
@@ -60,6 +75,7 @@ export default function SignUpPage() {
   };
 
   return (
+    <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
     <Layout>
       <div className="flex items-center justify-center h-screen bg-gray-100">
         <Card className="w-full max-w-sm">
@@ -84,13 +100,17 @@ export default function SignUpPage() {
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="location">Location</Label>
-                  <Input
-                    id="location"
-                    value={formData.location}
-                    onChange={handleChange}
-                    type="location"
-                    placeholder="San Francisco, CA"
-                    required
+                  <LocationAutocomplete
+                    onPlaceSelect={(place) => {
+                      setFormData({
+                        ...formData,
+                        location: {
+                          address: place.Dg.formattedAddress,
+                          latitude: place.Dg.location.lat,
+                          longitude: place.Dg.location.lng,
+                        },
+                      });
+                    }}
                   />
                 </div>
                 <div className="grid gap-2">
@@ -127,5 +147,6 @@ export default function SignUpPage() {
         </Card>
       </div>
     </Layout>
+    </APIProvider>
   );
 }

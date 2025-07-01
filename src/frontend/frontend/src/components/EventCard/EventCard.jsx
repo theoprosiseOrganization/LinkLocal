@@ -22,7 +22,8 @@ import { Button } from "../../../components/ui/button";
 import "./EventCard.css";
 
 export default function EventCard({ event }) {
-  if (!event) return null;
+  if (!event) return null;        
+
   return (
     <Card className="event-card">
       <CardHeader>
@@ -37,7 +38,7 @@ export default function EventCard({ event }) {
         </CardAction>
       </CardHeader>
       <CardContent>
-        <p>{event.location || "No location"}</p>
+        <p>{event.location.address || "No location"}</p>
       </CardContent>
     </Card>
   );

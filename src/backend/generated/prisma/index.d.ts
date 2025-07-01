@@ -19,10 +19,25 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
  */
 export type User = $Result.DefaultSelection<Prisma.$UserPayload>
 /**
+ * Model UserLocation
+ * 
+ */
+export type UserLocation = $Result.DefaultSelection<Prisma.$UserLocationPayload>
+/**
+ * Model UserPoly
+ * 
+ */
+export type UserPoly = $Result.DefaultSelection<Prisma.$UserPolyPayload>
+/**
  * Model Event
  * 
  */
 export type Event = $Result.DefaultSelection<Prisma.$EventPayload>
+/**
+ * Model EventLocation
+ * 
+ */
+export type EventLocation = $Result.DefaultSelection<Prisma.$EventLocationPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -160,6 +175,26 @@ export class PrismaClient<
   get user(): Prisma.UserDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.userLocation`: Exposes CRUD operations for the **UserLocation** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more UserLocations
+    * const userLocations = await prisma.userLocation.findMany()
+    * ```
+    */
+  get userLocation(): Prisma.UserLocationDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.userPoly`: Exposes CRUD operations for the **UserPoly** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more UserPolies
+    * const userPolies = await prisma.userPoly.findMany()
+    * ```
+    */
+  get userPoly(): Prisma.UserPolyDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.event`: Exposes CRUD operations for the **Event** model.
     * Example usage:
     * ```ts
@@ -168,6 +203,16 @@ export class PrismaClient<
     * ```
     */
   get event(): Prisma.EventDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.eventLocation`: Exposes CRUD operations for the **EventLocation** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more EventLocations
+    * const eventLocations = await prisma.eventLocation.findMany()
+    * ```
+    */
+  get eventLocation(): Prisma.EventLocationDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -609,7 +654,10 @@ export namespace Prisma {
 
   export const ModelName: {
     User: 'User',
-    Event: 'Event'
+    UserLocation: 'UserLocation',
+    UserPoly: 'UserPoly',
+    Event: 'Event',
+    EventLocation: 'EventLocation'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -628,7 +676,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "event"
+      modelProps: "user" | "userLocation" | "userPoly" | "event" | "eventLocation"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -706,6 +754,122 @@ export namespace Prisma {
           }
         }
       }
+      UserLocation: {
+        payload: Prisma.$UserLocationPayload<ExtArgs>
+        fields: Prisma.UserLocationFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.UserLocationFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserLocationPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.UserLocationFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserLocationPayload>
+          }
+          findFirst: {
+            args: Prisma.UserLocationFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserLocationPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.UserLocationFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserLocationPayload>
+          }
+          findMany: {
+            args: Prisma.UserLocationFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserLocationPayload>[]
+          }
+          delete: {
+            args: Prisma.UserLocationDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserLocationPayload>
+          }
+          update: {
+            args: Prisma.UserLocationUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserLocationPayload>
+          }
+          deleteMany: {
+            args: Prisma.UserLocationDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.UserLocationUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.UserLocationUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserLocationPayload>[]
+          }
+          aggregate: {
+            args: Prisma.UserLocationAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateUserLocation>
+          }
+          groupBy: {
+            args: Prisma.UserLocationGroupByArgs<ExtArgs>
+            result: $Utils.Optional<UserLocationGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.UserLocationCountArgs<ExtArgs>
+            result: $Utils.Optional<UserLocationCountAggregateOutputType> | number
+          }
+        }
+      }
+      UserPoly: {
+        payload: Prisma.$UserPolyPayload<ExtArgs>
+        fields: Prisma.UserPolyFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.UserPolyFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPolyPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.UserPolyFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPolyPayload>
+          }
+          findFirst: {
+            args: Prisma.UserPolyFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPolyPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.UserPolyFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPolyPayload>
+          }
+          findMany: {
+            args: Prisma.UserPolyFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPolyPayload>[]
+          }
+          delete: {
+            args: Prisma.UserPolyDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPolyPayload>
+          }
+          update: {
+            args: Prisma.UserPolyUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPolyPayload>
+          }
+          deleteMany: {
+            args: Prisma.UserPolyDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.UserPolyUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.UserPolyUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPolyPayload>[]
+          }
+          aggregate: {
+            args: Prisma.UserPolyAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateUserPoly>
+          }
+          groupBy: {
+            args: Prisma.UserPolyGroupByArgs<ExtArgs>
+            result: $Utils.Optional<UserPolyGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.UserPolyCountArgs<ExtArgs>
+            result: $Utils.Optional<UserPolyCountAggregateOutputType> | number
+          }
+        }
+      }
       Event: {
         payload: Prisma.$EventPayload<ExtArgs>
         fields: Prisma.EventFieldRefs
@@ -777,6 +941,64 @@ export namespace Prisma {
           count: {
             args: Prisma.EventCountArgs<ExtArgs>
             result: $Utils.Optional<EventCountAggregateOutputType> | number
+          }
+        }
+      }
+      EventLocation: {
+        payload: Prisma.$EventLocationPayload<ExtArgs>
+        fields: Prisma.EventLocationFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.EventLocationFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventLocationPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.EventLocationFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventLocationPayload>
+          }
+          findFirst: {
+            args: Prisma.EventLocationFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventLocationPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.EventLocationFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventLocationPayload>
+          }
+          findMany: {
+            args: Prisma.EventLocationFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventLocationPayload>[]
+          }
+          delete: {
+            args: Prisma.EventLocationDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventLocationPayload>
+          }
+          update: {
+            args: Prisma.EventLocationUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventLocationPayload>
+          }
+          deleteMany: {
+            args: Prisma.EventLocationDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.EventLocationUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.EventLocationUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventLocationPayload>[]
+          }
+          aggregate: {
+            args: Prisma.EventLocationAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateEventLocation>
+          }
+          groupBy: {
+            args: Prisma.EventLocationGroupByArgs<ExtArgs>
+            result: $Utils.Optional<EventLocationGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.EventLocationCountArgs<ExtArgs>
+            result: $Utils.Optional<EventLocationCountAggregateOutputType> | number
           }
         }
       }
@@ -865,7 +1087,10 @@ export namespace Prisma {
   }
   export type GlobalOmitConfig = {
     user?: UserOmit
+    userLocation?: UserLocationOmit
+    userPoly?: UserPolyOmit
     event?: EventOmit
+    eventLocation?: EventLocationOmit
   }
 
   /* Types for Logging */
@@ -964,6 +1189,7 @@ export namespace Prisma {
     friendOf: number
     events: number
     likedEvents: number
+    polygons: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -971,6 +1197,7 @@ export namespace Prisma {
     friendOf?: boolean | UserCountOutputTypeCountFriendOfArgs
     events?: boolean | UserCountOutputTypeCountEventsArgs
     likedEvents?: boolean | UserCountOutputTypeCountLikedEventsArgs
+    polygons?: boolean | UserCountOutputTypeCountPolygonsArgs
   }
 
   // Custom InputTypes
@@ -1010,6 +1237,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountLikedEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: EventWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountPolygonsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserPolyWhereInput
   }
 
 
@@ -1064,7 +1298,6 @@ export namespace Prisma {
     email: string | null
     password: string | null
     avatar: string | null
-    location: string | null
     preferences: string | null
   }
 
@@ -1074,7 +1307,6 @@ export namespace Prisma {
     email: string | null
     password: string | null
     avatar: string | null
-    location: string | null
     preferences: string | null
   }
 
@@ -1084,7 +1316,6 @@ export namespace Prisma {
     email: number
     password: number
     avatar: number
-    location: number
     preferences: number
     _all: number
   }
@@ -1096,7 +1327,6 @@ export namespace Prisma {
     email?: true
     password?: true
     avatar?: true
-    location?: true
     preferences?: true
   }
 
@@ -1106,7 +1336,6 @@ export namespace Prisma {
     email?: true
     password?: true
     avatar?: true
-    location?: true
     preferences?: true
   }
 
@@ -1116,7 +1345,6 @@ export namespace Prisma {
     email?: true
     password?: true
     avatar?: true
-    location?: true
     preferences?: true
     _all?: true
   }
@@ -1199,7 +1427,6 @@ export namespace Prisma {
     email: string
     password: string
     avatar: string | null
-    location: string
     preferences: string
     _count: UserCountAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
@@ -1226,12 +1453,13 @@ export namespace Prisma {
     email?: boolean
     password?: boolean
     avatar?: boolean
-    location?: boolean
     preferences?: boolean
     friends?: boolean | User$friendsArgs<ExtArgs>
     friendOf?: boolean | User$friendOfArgs<ExtArgs>
     events?: boolean | User$eventsArgs<ExtArgs>
     likedEvents?: boolean | User$likedEventsArgs<ExtArgs>
+    polygons?: boolean | User$polygonsArgs<ExtArgs>
+    geoLocation?: boolean | User$geoLocationArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -1241,7 +1469,6 @@ export namespace Prisma {
     email?: boolean
     password?: boolean
     avatar?: boolean
-    location?: boolean
     preferences?: boolean
   }, ExtArgs["result"]["user"]>
 
@@ -1251,7 +1478,6 @@ export namespace Prisma {
     email?: boolean
     password?: boolean
     avatar?: boolean
-    location?: boolean
     preferences?: boolean
   }, ExtArgs["result"]["user"]>
 
@@ -1261,16 +1487,17 @@ export namespace Prisma {
     email?: boolean
     password?: boolean
     avatar?: boolean
-    location?: boolean
     preferences?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "password" | "avatar" | "location" | "preferences", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "password" | "avatar" | "preferences", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     friends?: boolean | User$friendsArgs<ExtArgs>
     friendOf?: boolean | User$friendOfArgs<ExtArgs>
     events?: boolean | User$eventsArgs<ExtArgs>
     likedEvents?: boolean | User$likedEventsArgs<ExtArgs>
+    polygons?: boolean | User$polygonsArgs<ExtArgs>
+    geoLocation?: boolean | User$geoLocationArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -1283,6 +1510,8 @@ export namespace Prisma {
       friendOf: Prisma.$UserPayload<ExtArgs>[]
       events: Prisma.$EventPayload<ExtArgs>[]
       likedEvents: Prisma.$EventPayload<ExtArgs>[]
+      polygons: Prisma.$UserPolyPayload<ExtArgs>[]
+      geoLocation: Prisma.$UserLocationPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -1290,7 +1519,6 @@ export namespace Prisma {
       email: string
       password: string
       avatar: string | null
-      location: string
       preferences: string
     }, ExtArgs["result"]["user"]>
     composites: {}
@@ -1690,6 +1918,8 @@ export namespace Prisma {
     friendOf<T extends User$friendOfArgs<ExtArgs> = {}>(args?: Subset<T, User$friendOfArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     events<T extends User$eventsArgs<ExtArgs> = {}>(args?: Subset<T, User$eventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     likedEvents<T extends User$likedEventsArgs<ExtArgs> = {}>(args?: Subset<T, User$likedEventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    polygons<T extends User$polygonsArgs<ExtArgs> = {}>(args?: Subset<T, User$polygonsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPolyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    geoLocation<T extends User$geoLocationArgs<ExtArgs> = {}>(args?: Subset<T, User$geoLocationArgs<ExtArgs>>): Prisma__UserLocationClient<$Result.GetResult<Prisma.$UserLocationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1724,7 +1954,6 @@ export namespace Prisma {
     readonly email: FieldRef<"User", 'String'>
     readonly password: FieldRef<"User", 'String'>
     readonly avatar: FieldRef<"User", 'String'>
-    readonly location: FieldRef<"User", 'String'>
     readonly preferences: FieldRef<"User", 'String'>
   }
     
@@ -2210,6 +2439,49 @@ export namespace Prisma {
   }
 
   /**
+   * User.polygons
+   */
+  export type User$polygonsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPoly
+     */
+    select?: UserPolySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPoly
+     */
+    omit?: UserPolyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPolyInclude<ExtArgs> | null
+    where?: UserPolyWhereInput
+    orderBy?: UserPolyOrderByWithRelationInput | UserPolyOrderByWithRelationInput[]
+    cursor?: UserPolyWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UserPolyScalarFieldEnum | UserPolyScalarFieldEnum[]
+  }
+
+  /**
+   * User.geoLocation
+   */
+  export type User$geoLocationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserLocation
+     */
+    select?: UserLocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserLocation
+     */
+    omit?: UserLocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserLocationInclude<ExtArgs> | null
+    where?: UserLocationWhereInput
+  }
+
+  /**
    * User without action
    */
   export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2229,6 +2501,1738 @@ export namespace Prisma {
 
 
   /**
+   * Model UserLocation
+   */
+
+  export type AggregateUserLocation = {
+    _count: UserLocationCountAggregateOutputType | null
+    _min: UserLocationMinAggregateOutputType | null
+    _max: UserLocationMaxAggregateOutputType | null
+  }
+
+  export type UserLocationMinAggregateOutputType = {
+    id: string | null
+    streetAddress: string | null
+    userId: string | null
+  }
+
+  export type UserLocationMaxAggregateOutputType = {
+    id: string | null
+    streetAddress: string | null
+    userId: string | null
+  }
+
+  export type UserLocationCountAggregateOutputType = {
+    id: number
+    streetAddress: number
+    userId: number
+    _all: number
+  }
+
+
+  export type UserLocationMinAggregateInputType = {
+    id?: true
+    streetAddress?: true
+    userId?: true
+  }
+
+  export type UserLocationMaxAggregateInputType = {
+    id?: true
+    streetAddress?: true
+    userId?: true
+  }
+
+  export type UserLocationCountAggregateInputType = {
+    id?: true
+    streetAddress?: true
+    userId?: true
+    _all?: true
+  }
+
+  export type UserLocationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UserLocation to aggregate.
+     */
+    where?: UserLocationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserLocations to fetch.
+     */
+    orderBy?: UserLocationOrderByWithRelationInput | UserLocationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: UserLocationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserLocations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserLocations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned UserLocations
+    **/
+    _count?: true | UserLocationCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: UserLocationMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: UserLocationMaxAggregateInputType
+  }
+
+  export type GetUserLocationAggregateType<T extends UserLocationAggregateArgs> = {
+        [P in keyof T & keyof AggregateUserLocation]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateUserLocation[P]>
+      : GetScalarType<T[P], AggregateUserLocation[P]>
+  }
+
+
+
+
+  export type UserLocationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserLocationWhereInput
+    orderBy?: UserLocationOrderByWithAggregationInput | UserLocationOrderByWithAggregationInput[]
+    by: UserLocationScalarFieldEnum[] | UserLocationScalarFieldEnum
+    having?: UserLocationScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: UserLocationCountAggregateInputType | true
+    _min?: UserLocationMinAggregateInputType
+    _max?: UserLocationMaxAggregateInputType
+  }
+
+  export type UserLocationGroupByOutputType = {
+    id: string
+    streetAddress: string
+    userId: string
+    _count: UserLocationCountAggregateOutputType | null
+    _min: UserLocationMinAggregateOutputType | null
+    _max: UserLocationMaxAggregateOutputType | null
+  }
+
+  type GetUserLocationGroupByPayload<T extends UserLocationGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<UserLocationGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof UserLocationGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], UserLocationGroupByOutputType[P]>
+            : GetScalarType<T[P], UserLocationGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type UserLocationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    streetAddress?: boolean
+    userId?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["userLocation"]>
+
+
+  export type UserLocationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    streetAddress?: boolean
+    userId?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["userLocation"]>
+
+  export type UserLocationSelectScalar = {
+    id?: boolean
+    streetAddress?: boolean
+    userId?: boolean
+  }
+
+  export type UserLocationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "streetAddress" | "userId", ExtArgs["result"]["userLocation"]>
+  export type UserLocationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type UserLocationIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $UserLocationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "UserLocation"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      streetAddress: string
+      userId: string
+    }, ExtArgs["result"]["userLocation"]>
+    composites: {}
+  }
+
+  type UserLocationGetPayload<S extends boolean | null | undefined | UserLocationDefaultArgs> = $Result.GetResult<Prisma.$UserLocationPayload, S>
+
+  type UserLocationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<UserLocationFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: UserLocationCountAggregateInputType | true
+    }
+
+  export interface UserLocationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['UserLocation'], meta: { name: 'UserLocation' } }
+    /**
+     * Find zero or one UserLocation that matches the filter.
+     * @param {UserLocationFindUniqueArgs} args - Arguments to find a UserLocation
+     * @example
+     * // Get one UserLocation
+     * const userLocation = await prisma.userLocation.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends UserLocationFindUniqueArgs>(args: SelectSubset<T, UserLocationFindUniqueArgs<ExtArgs>>): Prisma__UserLocationClient<$Result.GetResult<Prisma.$UserLocationPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one UserLocation that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {UserLocationFindUniqueOrThrowArgs} args - Arguments to find a UserLocation
+     * @example
+     * // Get one UserLocation
+     * const userLocation = await prisma.userLocation.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends UserLocationFindUniqueOrThrowArgs>(args: SelectSubset<T, UserLocationFindUniqueOrThrowArgs<ExtArgs>>): Prisma__UserLocationClient<$Result.GetResult<Prisma.$UserLocationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first UserLocation that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserLocationFindFirstArgs} args - Arguments to find a UserLocation
+     * @example
+     * // Get one UserLocation
+     * const userLocation = await prisma.userLocation.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends UserLocationFindFirstArgs>(args?: SelectSubset<T, UserLocationFindFirstArgs<ExtArgs>>): Prisma__UserLocationClient<$Result.GetResult<Prisma.$UserLocationPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first UserLocation that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserLocationFindFirstOrThrowArgs} args - Arguments to find a UserLocation
+     * @example
+     * // Get one UserLocation
+     * const userLocation = await prisma.userLocation.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends UserLocationFindFirstOrThrowArgs>(args?: SelectSubset<T, UserLocationFindFirstOrThrowArgs<ExtArgs>>): Prisma__UserLocationClient<$Result.GetResult<Prisma.$UserLocationPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more UserLocations that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserLocationFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all UserLocations
+     * const userLocations = await prisma.userLocation.findMany()
+     * 
+     * // Get first 10 UserLocations
+     * const userLocations = await prisma.userLocation.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const userLocationWithIdOnly = await prisma.userLocation.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends UserLocationFindManyArgs>(args?: SelectSubset<T, UserLocationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserLocationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Delete a UserLocation.
+     * @param {UserLocationDeleteArgs} args - Arguments to delete one UserLocation.
+     * @example
+     * // Delete one UserLocation
+     * const UserLocation = await prisma.userLocation.delete({
+     *   where: {
+     *     // ... filter to delete one UserLocation
+     *   }
+     * })
+     * 
+     */
+    delete<T extends UserLocationDeleteArgs>(args: SelectSubset<T, UserLocationDeleteArgs<ExtArgs>>): Prisma__UserLocationClient<$Result.GetResult<Prisma.$UserLocationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one UserLocation.
+     * @param {UserLocationUpdateArgs} args - Arguments to update one UserLocation.
+     * @example
+     * // Update one UserLocation
+     * const userLocation = await prisma.userLocation.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends UserLocationUpdateArgs>(args: SelectSubset<T, UserLocationUpdateArgs<ExtArgs>>): Prisma__UserLocationClient<$Result.GetResult<Prisma.$UserLocationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more UserLocations.
+     * @param {UserLocationDeleteManyArgs} args - Arguments to filter UserLocations to delete.
+     * @example
+     * // Delete a few UserLocations
+     * const { count } = await prisma.userLocation.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends UserLocationDeleteManyArgs>(args?: SelectSubset<T, UserLocationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more UserLocations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserLocationUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many UserLocations
+     * const userLocation = await prisma.userLocation.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends UserLocationUpdateManyArgs>(args: SelectSubset<T, UserLocationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more UserLocations and returns the data updated in the database.
+     * @param {UserLocationUpdateManyAndReturnArgs} args - Arguments to update many UserLocations.
+     * @example
+     * // Update many UserLocations
+     * const userLocation = await prisma.userLocation.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more UserLocations and only return the `id`
+     * const userLocationWithIdOnly = await prisma.userLocation.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends UserLocationUpdateManyAndReturnArgs>(args: SelectSubset<T, UserLocationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserLocationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+
+    /**
+     * Count the number of UserLocations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserLocationCountArgs} args - Arguments to filter UserLocations to count.
+     * @example
+     * // Count the number of UserLocations
+     * const count = await prisma.userLocation.count({
+     *   where: {
+     *     // ... the filter for the UserLocations we want to count
+     *   }
+     * })
+    **/
+    count<T extends UserLocationCountArgs>(
+      args?: Subset<T, UserLocationCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], UserLocationCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a UserLocation.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserLocationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends UserLocationAggregateArgs>(args: Subset<T, UserLocationAggregateArgs>): Prisma.PrismaPromise<GetUserLocationAggregateType<T>>
+
+    /**
+     * Group by UserLocation.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserLocationGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends UserLocationGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: UserLocationGroupByArgs['orderBy'] }
+        : { orderBy?: UserLocationGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, UserLocationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetUserLocationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the UserLocation model
+   */
+  readonly fields: UserLocationFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for UserLocation.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__UserLocationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the UserLocation model
+   */
+  interface UserLocationFieldRefs {
+    readonly id: FieldRef<"UserLocation", 'String'>
+    readonly streetAddress: FieldRef<"UserLocation", 'String'>
+    readonly userId: FieldRef<"UserLocation", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * UserLocation findUnique
+   */
+  export type UserLocationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserLocation
+     */
+    select?: UserLocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserLocation
+     */
+    omit?: UserLocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserLocationInclude<ExtArgs> | null
+    /**
+     * Filter, which UserLocation to fetch.
+     */
+    where: UserLocationWhereUniqueInput
+  }
+
+  /**
+   * UserLocation findUniqueOrThrow
+   */
+  export type UserLocationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserLocation
+     */
+    select?: UserLocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserLocation
+     */
+    omit?: UserLocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserLocationInclude<ExtArgs> | null
+    /**
+     * Filter, which UserLocation to fetch.
+     */
+    where: UserLocationWhereUniqueInput
+  }
+
+  /**
+   * UserLocation findFirst
+   */
+  export type UserLocationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserLocation
+     */
+    select?: UserLocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserLocation
+     */
+    omit?: UserLocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserLocationInclude<ExtArgs> | null
+    /**
+     * Filter, which UserLocation to fetch.
+     */
+    where?: UserLocationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserLocations to fetch.
+     */
+    orderBy?: UserLocationOrderByWithRelationInput | UserLocationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UserLocations.
+     */
+    cursor?: UserLocationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserLocations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserLocations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserLocations.
+     */
+    distinct?: UserLocationScalarFieldEnum | UserLocationScalarFieldEnum[]
+  }
+
+  /**
+   * UserLocation findFirstOrThrow
+   */
+  export type UserLocationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserLocation
+     */
+    select?: UserLocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserLocation
+     */
+    omit?: UserLocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserLocationInclude<ExtArgs> | null
+    /**
+     * Filter, which UserLocation to fetch.
+     */
+    where?: UserLocationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserLocations to fetch.
+     */
+    orderBy?: UserLocationOrderByWithRelationInput | UserLocationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UserLocations.
+     */
+    cursor?: UserLocationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserLocations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserLocations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserLocations.
+     */
+    distinct?: UserLocationScalarFieldEnum | UserLocationScalarFieldEnum[]
+  }
+
+  /**
+   * UserLocation findMany
+   */
+  export type UserLocationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserLocation
+     */
+    select?: UserLocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserLocation
+     */
+    omit?: UserLocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserLocationInclude<ExtArgs> | null
+    /**
+     * Filter, which UserLocations to fetch.
+     */
+    where?: UserLocationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserLocations to fetch.
+     */
+    orderBy?: UserLocationOrderByWithRelationInput | UserLocationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing UserLocations.
+     */
+    cursor?: UserLocationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserLocations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserLocations.
+     */
+    skip?: number
+    distinct?: UserLocationScalarFieldEnum | UserLocationScalarFieldEnum[]
+  }
+
+  /**
+   * UserLocation update
+   */
+  export type UserLocationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserLocation
+     */
+    select?: UserLocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserLocation
+     */
+    omit?: UserLocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserLocationInclude<ExtArgs> | null
+    /**
+     * The data needed to update a UserLocation.
+     */
+    data: XOR<UserLocationUpdateInput, UserLocationUncheckedUpdateInput>
+    /**
+     * Choose, which UserLocation to update.
+     */
+    where: UserLocationWhereUniqueInput
+  }
+
+  /**
+   * UserLocation updateMany
+   */
+  export type UserLocationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update UserLocations.
+     */
+    data: XOR<UserLocationUpdateManyMutationInput, UserLocationUncheckedUpdateManyInput>
+    /**
+     * Filter which UserLocations to update
+     */
+    where?: UserLocationWhereInput
+    /**
+     * Limit how many UserLocations to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * UserLocation updateManyAndReturn
+   */
+  export type UserLocationUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserLocation
+     */
+    select?: UserLocationSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserLocation
+     */
+    omit?: UserLocationOmit<ExtArgs> | null
+    /**
+     * The data used to update UserLocations.
+     */
+    data: XOR<UserLocationUpdateManyMutationInput, UserLocationUncheckedUpdateManyInput>
+    /**
+     * Filter which UserLocations to update
+     */
+    where?: UserLocationWhereInput
+    /**
+     * Limit how many UserLocations to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserLocationIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * UserLocation delete
+   */
+  export type UserLocationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserLocation
+     */
+    select?: UserLocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserLocation
+     */
+    omit?: UserLocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserLocationInclude<ExtArgs> | null
+    /**
+     * Filter which UserLocation to delete.
+     */
+    where: UserLocationWhereUniqueInput
+  }
+
+  /**
+   * UserLocation deleteMany
+   */
+  export type UserLocationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UserLocations to delete
+     */
+    where?: UserLocationWhereInput
+    /**
+     * Limit how many UserLocations to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * UserLocation without action
+   */
+  export type UserLocationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserLocation
+     */
+    select?: UserLocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserLocation
+     */
+    omit?: UserLocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserLocationInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model UserPoly
+   */
+
+  export type AggregateUserPoly = {
+    _count: UserPolyCountAggregateOutputType | null
+    _min: UserPolyMinAggregateOutputType | null
+    _max: UserPolyMaxAggregateOutputType | null
+  }
+
+  export type UserPolyMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    activeFlag: string | null
+  }
+
+  export type UserPolyMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    activeFlag: string | null
+  }
+
+  export type UserPolyCountAggregateOutputType = {
+    id: number
+    userId: number
+    activeFlag: number
+    _all: number
+  }
+
+
+  export type UserPolyMinAggregateInputType = {
+    id?: true
+    userId?: true
+    activeFlag?: true
+  }
+
+  export type UserPolyMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    activeFlag?: true
+  }
+
+  export type UserPolyCountAggregateInputType = {
+    id?: true
+    userId?: true
+    activeFlag?: true
+    _all?: true
+  }
+
+  export type UserPolyAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UserPoly to aggregate.
+     */
+    where?: UserPolyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserPolies to fetch.
+     */
+    orderBy?: UserPolyOrderByWithRelationInput | UserPolyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: UserPolyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserPolies from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserPolies.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned UserPolies
+    **/
+    _count?: true | UserPolyCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: UserPolyMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: UserPolyMaxAggregateInputType
+  }
+
+  export type GetUserPolyAggregateType<T extends UserPolyAggregateArgs> = {
+        [P in keyof T & keyof AggregateUserPoly]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateUserPoly[P]>
+      : GetScalarType<T[P], AggregateUserPoly[P]>
+  }
+
+
+
+
+  export type UserPolyGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserPolyWhereInput
+    orderBy?: UserPolyOrderByWithAggregationInput | UserPolyOrderByWithAggregationInput[]
+    by: UserPolyScalarFieldEnum[] | UserPolyScalarFieldEnum
+    having?: UserPolyScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: UserPolyCountAggregateInputType | true
+    _min?: UserPolyMinAggregateInputType
+    _max?: UserPolyMaxAggregateInputType
+  }
+
+  export type UserPolyGroupByOutputType = {
+    id: string
+    userId: string
+    activeFlag: string
+    _count: UserPolyCountAggregateOutputType | null
+    _min: UserPolyMinAggregateOutputType | null
+    _max: UserPolyMaxAggregateOutputType | null
+  }
+
+  type GetUserPolyGroupByPayload<T extends UserPolyGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<UserPolyGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof UserPolyGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], UserPolyGroupByOutputType[P]>
+            : GetScalarType<T[P], UserPolyGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type UserPolySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    activeFlag?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["userPoly"]>
+
+
+  export type UserPolySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    activeFlag?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["userPoly"]>
+
+  export type UserPolySelectScalar = {
+    id?: boolean
+    userId?: boolean
+    activeFlag?: boolean
+  }
+
+  export type UserPolyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "activeFlag", ExtArgs["result"]["userPoly"]>
+  export type UserPolyInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type UserPolyIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $UserPolyPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "UserPoly"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      activeFlag: string
+    }, ExtArgs["result"]["userPoly"]>
+    composites: {}
+  }
+
+  type UserPolyGetPayload<S extends boolean | null | undefined | UserPolyDefaultArgs> = $Result.GetResult<Prisma.$UserPolyPayload, S>
+
+  type UserPolyCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<UserPolyFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: UserPolyCountAggregateInputType | true
+    }
+
+  export interface UserPolyDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['UserPoly'], meta: { name: 'UserPoly' } }
+    /**
+     * Find zero or one UserPoly that matches the filter.
+     * @param {UserPolyFindUniqueArgs} args - Arguments to find a UserPoly
+     * @example
+     * // Get one UserPoly
+     * const userPoly = await prisma.userPoly.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends UserPolyFindUniqueArgs>(args: SelectSubset<T, UserPolyFindUniqueArgs<ExtArgs>>): Prisma__UserPolyClient<$Result.GetResult<Prisma.$UserPolyPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one UserPoly that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {UserPolyFindUniqueOrThrowArgs} args - Arguments to find a UserPoly
+     * @example
+     * // Get one UserPoly
+     * const userPoly = await prisma.userPoly.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends UserPolyFindUniqueOrThrowArgs>(args: SelectSubset<T, UserPolyFindUniqueOrThrowArgs<ExtArgs>>): Prisma__UserPolyClient<$Result.GetResult<Prisma.$UserPolyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first UserPoly that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserPolyFindFirstArgs} args - Arguments to find a UserPoly
+     * @example
+     * // Get one UserPoly
+     * const userPoly = await prisma.userPoly.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends UserPolyFindFirstArgs>(args?: SelectSubset<T, UserPolyFindFirstArgs<ExtArgs>>): Prisma__UserPolyClient<$Result.GetResult<Prisma.$UserPolyPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first UserPoly that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserPolyFindFirstOrThrowArgs} args - Arguments to find a UserPoly
+     * @example
+     * // Get one UserPoly
+     * const userPoly = await prisma.userPoly.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends UserPolyFindFirstOrThrowArgs>(args?: SelectSubset<T, UserPolyFindFirstOrThrowArgs<ExtArgs>>): Prisma__UserPolyClient<$Result.GetResult<Prisma.$UserPolyPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more UserPolies that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserPolyFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all UserPolies
+     * const userPolies = await prisma.userPoly.findMany()
+     * 
+     * // Get first 10 UserPolies
+     * const userPolies = await prisma.userPoly.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const userPolyWithIdOnly = await prisma.userPoly.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends UserPolyFindManyArgs>(args?: SelectSubset<T, UserPolyFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPolyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Delete a UserPoly.
+     * @param {UserPolyDeleteArgs} args - Arguments to delete one UserPoly.
+     * @example
+     * // Delete one UserPoly
+     * const UserPoly = await prisma.userPoly.delete({
+     *   where: {
+     *     // ... filter to delete one UserPoly
+     *   }
+     * })
+     * 
+     */
+    delete<T extends UserPolyDeleteArgs>(args: SelectSubset<T, UserPolyDeleteArgs<ExtArgs>>): Prisma__UserPolyClient<$Result.GetResult<Prisma.$UserPolyPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one UserPoly.
+     * @param {UserPolyUpdateArgs} args - Arguments to update one UserPoly.
+     * @example
+     * // Update one UserPoly
+     * const userPoly = await prisma.userPoly.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends UserPolyUpdateArgs>(args: SelectSubset<T, UserPolyUpdateArgs<ExtArgs>>): Prisma__UserPolyClient<$Result.GetResult<Prisma.$UserPolyPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more UserPolies.
+     * @param {UserPolyDeleteManyArgs} args - Arguments to filter UserPolies to delete.
+     * @example
+     * // Delete a few UserPolies
+     * const { count } = await prisma.userPoly.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends UserPolyDeleteManyArgs>(args?: SelectSubset<T, UserPolyDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more UserPolies.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserPolyUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many UserPolies
+     * const userPoly = await prisma.userPoly.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends UserPolyUpdateManyArgs>(args: SelectSubset<T, UserPolyUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more UserPolies and returns the data updated in the database.
+     * @param {UserPolyUpdateManyAndReturnArgs} args - Arguments to update many UserPolies.
+     * @example
+     * // Update many UserPolies
+     * const userPoly = await prisma.userPoly.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more UserPolies and only return the `id`
+     * const userPolyWithIdOnly = await prisma.userPoly.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends UserPolyUpdateManyAndReturnArgs>(args: SelectSubset<T, UserPolyUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPolyPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+
+    /**
+     * Count the number of UserPolies.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserPolyCountArgs} args - Arguments to filter UserPolies to count.
+     * @example
+     * // Count the number of UserPolies
+     * const count = await prisma.userPoly.count({
+     *   where: {
+     *     // ... the filter for the UserPolies we want to count
+     *   }
+     * })
+    **/
+    count<T extends UserPolyCountArgs>(
+      args?: Subset<T, UserPolyCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], UserPolyCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a UserPoly.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserPolyAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends UserPolyAggregateArgs>(args: Subset<T, UserPolyAggregateArgs>): Prisma.PrismaPromise<GetUserPolyAggregateType<T>>
+
+    /**
+     * Group by UserPoly.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserPolyGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends UserPolyGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: UserPolyGroupByArgs['orderBy'] }
+        : { orderBy?: UserPolyGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, UserPolyGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetUserPolyGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the UserPoly model
+   */
+  readonly fields: UserPolyFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for UserPoly.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__UserPolyClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the UserPoly model
+   */
+  interface UserPolyFieldRefs {
+    readonly id: FieldRef<"UserPoly", 'String'>
+    readonly userId: FieldRef<"UserPoly", 'String'>
+    readonly activeFlag: FieldRef<"UserPoly", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * UserPoly findUnique
+   */
+  export type UserPolyFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPoly
+     */
+    select?: UserPolySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPoly
+     */
+    omit?: UserPolyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPolyInclude<ExtArgs> | null
+    /**
+     * Filter, which UserPoly to fetch.
+     */
+    where: UserPolyWhereUniqueInput
+  }
+
+  /**
+   * UserPoly findUniqueOrThrow
+   */
+  export type UserPolyFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPoly
+     */
+    select?: UserPolySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPoly
+     */
+    omit?: UserPolyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPolyInclude<ExtArgs> | null
+    /**
+     * Filter, which UserPoly to fetch.
+     */
+    where: UserPolyWhereUniqueInput
+  }
+
+  /**
+   * UserPoly findFirst
+   */
+  export type UserPolyFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPoly
+     */
+    select?: UserPolySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPoly
+     */
+    omit?: UserPolyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPolyInclude<ExtArgs> | null
+    /**
+     * Filter, which UserPoly to fetch.
+     */
+    where?: UserPolyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserPolies to fetch.
+     */
+    orderBy?: UserPolyOrderByWithRelationInput | UserPolyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UserPolies.
+     */
+    cursor?: UserPolyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserPolies from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserPolies.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserPolies.
+     */
+    distinct?: UserPolyScalarFieldEnum | UserPolyScalarFieldEnum[]
+  }
+
+  /**
+   * UserPoly findFirstOrThrow
+   */
+  export type UserPolyFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPoly
+     */
+    select?: UserPolySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPoly
+     */
+    omit?: UserPolyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPolyInclude<ExtArgs> | null
+    /**
+     * Filter, which UserPoly to fetch.
+     */
+    where?: UserPolyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserPolies to fetch.
+     */
+    orderBy?: UserPolyOrderByWithRelationInput | UserPolyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UserPolies.
+     */
+    cursor?: UserPolyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserPolies from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserPolies.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserPolies.
+     */
+    distinct?: UserPolyScalarFieldEnum | UserPolyScalarFieldEnum[]
+  }
+
+  /**
+   * UserPoly findMany
+   */
+  export type UserPolyFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPoly
+     */
+    select?: UserPolySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPoly
+     */
+    omit?: UserPolyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPolyInclude<ExtArgs> | null
+    /**
+     * Filter, which UserPolies to fetch.
+     */
+    where?: UserPolyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserPolies to fetch.
+     */
+    orderBy?: UserPolyOrderByWithRelationInput | UserPolyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing UserPolies.
+     */
+    cursor?: UserPolyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserPolies from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserPolies.
+     */
+    skip?: number
+    distinct?: UserPolyScalarFieldEnum | UserPolyScalarFieldEnum[]
+  }
+
+  /**
+   * UserPoly update
+   */
+  export type UserPolyUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPoly
+     */
+    select?: UserPolySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPoly
+     */
+    omit?: UserPolyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPolyInclude<ExtArgs> | null
+    /**
+     * The data needed to update a UserPoly.
+     */
+    data: XOR<UserPolyUpdateInput, UserPolyUncheckedUpdateInput>
+    /**
+     * Choose, which UserPoly to update.
+     */
+    where: UserPolyWhereUniqueInput
+  }
+
+  /**
+   * UserPoly updateMany
+   */
+  export type UserPolyUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update UserPolies.
+     */
+    data: XOR<UserPolyUpdateManyMutationInput, UserPolyUncheckedUpdateManyInput>
+    /**
+     * Filter which UserPolies to update
+     */
+    where?: UserPolyWhereInput
+    /**
+     * Limit how many UserPolies to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * UserPoly updateManyAndReturn
+   */
+  export type UserPolyUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPoly
+     */
+    select?: UserPolySelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPoly
+     */
+    omit?: UserPolyOmit<ExtArgs> | null
+    /**
+     * The data used to update UserPolies.
+     */
+    data: XOR<UserPolyUpdateManyMutationInput, UserPolyUncheckedUpdateManyInput>
+    /**
+     * Filter which UserPolies to update
+     */
+    where?: UserPolyWhereInput
+    /**
+     * Limit how many UserPolies to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPolyIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * UserPoly delete
+   */
+  export type UserPolyDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPoly
+     */
+    select?: UserPolySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPoly
+     */
+    omit?: UserPolyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPolyInclude<ExtArgs> | null
+    /**
+     * Filter which UserPoly to delete.
+     */
+    where: UserPolyWhereUniqueInput
+  }
+
+  /**
+   * UserPoly deleteMany
+   */
+  export type UserPolyDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UserPolies to delete
+     */
+    where?: UserPolyWhereInput
+    /**
+     * Limit how many UserPolies to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * UserPoly without action
+   */
+  export type UserPolyDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPoly
+     */
+    select?: UserPolySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPoly
+     */
+    omit?: UserPolyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPolyInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model Event
    */
 
@@ -2242,7 +4246,6 @@ export namespace Prisma {
     id: string | null
     userId: string | null
     title: string | null
-    location: string | null
     textDescription: string | null
   }
 
@@ -2250,7 +4253,6 @@ export namespace Prisma {
     id: string | null
     userId: string | null
     title: string | null
-    location: string | null
     textDescription: string | null
   }
 
@@ -2259,7 +4261,6 @@ export namespace Prisma {
     userId: number
     title: number
     images: number
-    location: number
     textDescription: number
     _all: number
   }
@@ -2269,7 +4270,6 @@ export namespace Prisma {
     id?: true
     userId?: true
     title?: true
-    location?: true
     textDescription?: true
   }
 
@@ -2277,7 +4277,6 @@ export namespace Prisma {
     id?: true
     userId?: true
     title?: true
-    location?: true
     textDescription?: true
   }
 
@@ -2286,7 +4285,6 @@ export namespace Prisma {
     userId?: true
     title?: true
     images?: true
-    location?: true
     textDescription?: true
     _all?: true
   }
@@ -2368,7 +4366,6 @@ export namespace Prisma {
     userId: string
     title: string
     images: string[]
-    location: string
     textDescription: string
     _count: EventCountAggregateOutputType | null
     _min: EventMinAggregateOutputType | null
@@ -2394,10 +4391,10 @@ export namespace Prisma {
     userId?: boolean
     title?: boolean
     images?: boolean
-    location?: boolean
     textDescription?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     likes?: boolean | Event$likesArgs<ExtArgs>
+    geoLocation?: boolean | Event$geoLocationArgs<ExtArgs>
     _count?: boolean | EventCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["event"]>
 
@@ -2406,7 +4403,6 @@ export namespace Prisma {
     userId?: boolean
     title?: boolean
     images?: boolean
-    location?: boolean
     textDescription?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["event"]>
@@ -2416,7 +4412,6 @@ export namespace Prisma {
     userId?: boolean
     title?: boolean
     images?: boolean
-    location?: boolean
     textDescription?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["event"]>
@@ -2426,14 +4421,14 @@ export namespace Prisma {
     userId?: boolean
     title?: boolean
     images?: boolean
-    location?: boolean
     textDescription?: boolean
   }
 
-  export type EventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "title" | "images" | "location" | "textDescription", ExtArgs["result"]["event"]>
+  export type EventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "title" | "images" | "textDescription", ExtArgs["result"]["event"]>
   export type EventInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     likes?: boolean | Event$likesArgs<ExtArgs>
+    geoLocation?: boolean | Event$geoLocationArgs<ExtArgs>
     _count?: boolean | EventCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type EventIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2448,13 +4443,13 @@ export namespace Prisma {
     objects: {
       user: Prisma.$UserPayload<ExtArgs>
       likes: Prisma.$UserPayload<ExtArgs>[]
+      geoLocation: Prisma.$EventLocationPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       userId: string
       title: string
       images: string[]
-      location: string
       textDescription: string
     }, ExtArgs["result"]["event"]>
     composites: {}
@@ -2852,6 +4847,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     likes<T extends Event$likesArgs<ExtArgs> = {}>(args?: Subset<T, Event$likesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    geoLocation<T extends Event$geoLocationArgs<ExtArgs> = {}>(args?: Subset<T, Event$geoLocationArgs<ExtArgs>>): Prisma__EventLocationClient<$Result.GetResult<Prisma.$EventLocationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2885,7 +4881,6 @@ export namespace Prisma {
     readonly userId: FieldRef<"Event", 'String'>
     readonly title: FieldRef<"Event", 'String'>
     readonly images: FieldRef<"Event", 'String[]'>
-    readonly location: FieldRef<"Event", 'String'>
     readonly textDescription: FieldRef<"Event", 'String'>
   }
     
@@ -3307,6 +5302,25 @@ export namespace Prisma {
   }
 
   /**
+   * Event.geoLocation
+   */
+  export type Event$geoLocationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EventLocation
+     */
+    select?: EventLocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EventLocation
+     */
+    omit?: EventLocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EventLocationInclude<ExtArgs> | null
+    where?: EventLocationWhereInput
+  }
+
+  /**
    * Event without action
    */
   export type EventDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3322,6 +5336,872 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: EventInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model EventLocation
+   */
+
+  export type AggregateEventLocation = {
+    _count: EventLocationCountAggregateOutputType | null
+    _min: EventLocationMinAggregateOutputType | null
+    _max: EventLocationMaxAggregateOutputType | null
+  }
+
+  export type EventLocationMinAggregateOutputType = {
+    id: string | null
+    streetAddress: string | null
+    eventId: string | null
+  }
+
+  export type EventLocationMaxAggregateOutputType = {
+    id: string | null
+    streetAddress: string | null
+    eventId: string | null
+  }
+
+  export type EventLocationCountAggregateOutputType = {
+    id: number
+    streetAddress: number
+    eventId: number
+    _all: number
+  }
+
+
+  export type EventLocationMinAggregateInputType = {
+    id?: true
+    streetAddress?: true
+    eventId?: true
+  }
+
+  export type EventLocationMaxAggregateInputType = {
+    id?: true
+    streetAddress?: true
+    eventId?: true
+  }
+
+  export type EventLocationCountAggregateInputType = {
+    id?: true
+    streetAddress?: true
+    eventId?: true
+    _all?: true
+  }
+
+  export type EventLocationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EventLocation to aggregate.
+     */
+    where?: EventLocationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EventLocations to fetch.
+     */
+    orderBy?: EventLocationOrderByWithRelationInput | EventLocationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: EventLocationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EventLocations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EventLocations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned EventLocations
+    **/
+    _count?: true | EventLocationCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: EventLocationMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: EventLocationMaxAggregateInputType
+  }
+
+  export type GetEventLocationAggregateType<T extends EventLocationAggregateArgs> = {
+        [P in keyof T & keyof AggregateEventLocation]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateEventLocation[P]>
+      : GetScalarType<T[P], AggregateEventLocation[P]>
+  }
+
+
+
+
+  export type EventLocationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EventLocationWhereInput
+    orderBy?: EventLocationOrderByWithAggregationInput | EventLocationOrderByWithAggregationInput[]
+    by: EventLocationScalarFieldEnum[] | EventLocationScalarFieldEnum
+    having?: EventLocationScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: EventLocationCountAggregateInputType | true
+    _min?: EventLocationMinAggregateInputType
+    _max?: EventLocationMaxAggregateInputType
+  }
+
+  export type EventLocationGroupByOutputType = {
+    id: string
+    streetAddress: string
+    eventId: string
+    _count: EventLocationCountAggregateOutputType | null
+    _min: EventLocationMinAggregateOutputType | null
+    _max: EventLocationMaxAggregateOutputType | null
+  }
+
+  type GetEventLocationGroupByPayload<T extends EventLocationGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<EventLocationGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof EventLocationGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], EventLocationGroupByOutputType[P]>
+            : GetScalarType<T[P], EventLocationGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type EventLocationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    streetAddress?: boolean
+    eventId?: boolean
+    event?: boolean | EventDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["eventLocation"]>
+
+
+  export type EventLocationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    streetAddress?: boolean
+    eventId?: boolean
+    event?: boolean | EventDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["eventLocation"]>
+
+  export type EventLocationSelectScalar = {
+    id?: boolean
+    streetAddress?: boolean
+    eventId?: boolean
+  }
+
+  export type EventLocationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "streetAddress" | "eventId", ExtArgs["result"]["eventLocation"]>
+  export type EventLocationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    event?: boolean | EventDefaultArgs<ExtArgs>
+  }
+  export type EventLocationIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    event?: boolean | EventDefaultArgs<ExtArgs>
+  }
+
+  export type $EventLocationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "EventLocation"
+    objects: {
+      event: Prisma.$EventPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      streetAddress: string
+      eventId: string
+    }, ExtArgs["result"]["eventLocation"]>
+    composites: {}
+  }
+
+  type EventLocationGetPayload<S extends boolean | null | undefined | EventLocationDefaultArgs> = $Result.GetResult<Prisma.$EventLocationPayload, S>
+
+  type EventLocationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<EventLocationFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: EventLocationCountAggregateInputType | true
+    }
+
+  export interface EventLocationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['EventLocation'], meta: { name: 'EventLocation' } }
+    /**
+     * Find zero or one EventLocation that matches the filter.
+     * @param {EventLocationFindUniqueArgs} args - Arguments to find a EventLocation
+     * @example
+     * // Get one EventLocation
+     * const eventLocation = await prisma.eventLocation.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends EventLocationFindUniqueArgs>(args: SelectSubset<T, EventLocationFindUniqueArgs<ExtArgs>>): Prisma__EventLocationClient<$Result.GetResult<Prisma.$EventLocationPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one EventLocation that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {EventLocationFindUniqueOrThrowArgs} args - Arguments to find a EventLocation
+     * @example
+     * // Get one EventLocation
+     * const eventLocation = await prisma.eventLocation.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends EventLocationFindUniqueOrThrowArgs>(args: SelectSubset<T, EventLocationFindUniqueOrThrowArgs<ExtArgs>>): Prisma__EventLocationClient<$Result.GetResult<Prisma.$EventLocationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first EventLocation that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EventLocationFindFirstArgs} args - Arguments to find a EventLocation
+     * @example
+     * // Get one EventLocation
+     * const eventLocation = await prisma.eventLocation.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends EventLocationFindFirstArgs>(args?: SelectSubset<T, EventLocationFindFirstArgs<ExtArgs>>): Prisma__EventLocationClient<$Result.GetResult<Prisma.$EventLocationPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first EventLocation that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EventLocationFindFirstOrThrowArgs} args - Arguments to find a EventLocation
+     * @example
+     * // Get one EventLocation
+     * const eventLocation = await prisma.eventLocation.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends EventLocationFindFirstOrThrowArgs>(args?: SelectSubset<T, EventLocationFindFirstOrThrowArgs<ExtArgs>>): Prisma__EventLocationClient<$Result.GetResult<Prisma.$EventLocationPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more EventLocations that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EventLocationFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all EventLocations
+     * const eventLocations = await prisma.eventLocation.findMany()
+     * 
+     * // Get first 10 EventLocations
+     * const eventLocations = await prisma.eventLocation.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const eventLocationWithIdOnly = await prisma.eventLocation.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends EventLocationFindManyArgs>(args?: SelectSubset<T, EventLocationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EventLocationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Delete a EventLocation.
+     * @param {EventLocationDeleteArgs} args - Arguments to delete one EventLocation.
+     * @example
+     * // Delete one EventLocation
+     * const EventLocation = await prisma.eventLocation.delete({
+     *   where: {
+     *     // ... filter to delete one EventLocation
+     *   }
+     * })
+     * 
+     */
+    delete<T extends EventLocationDeleteArgs>(args: SelectSubset<T, EventLocationDeleteArgs<ExtArgs>>): Prisma__EventLocationClient<$Result.GetResult<Prisma.$EventLocationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one EventLocation.
+     * @param {EventLocationUpdateArgs} args - Arguments to update one EventLocation.
+     * @example
+     * // Update one EventLocation
+     * const eventLocation = await prisma.eventLocation.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends EventLocationUpdateArgs>(args: SelectSubset<T, EventLocationUpdateArgs<ExtArgs>>): Prisma__EventLocationClient<$Result.GetResult<Prisma.$EventLocationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more EventLocations.
+     * @param {EventLocationDeleteManyArgs} args - Arguments to filter EventLocations to delete.
+     * @example
+     * // Delete a few EventLocations
+     * const { count } = await prisma.eventLocation.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends EventLocationDeleteManyArgs>(args?: SelectSubset<T, EventLocationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more EventLocations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EventLocationUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many EventLocations
+     * const eventLocation = await prisma.eventLocation.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends EventLocationUpdateManyArgs>(args: SelectSubset<T, EventLocationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more EventLocations and returns the data updated in the database.
+     * @param {EventLocationUpdateManyAndReturnArgs} args - Arguments to update many EventLocations.
+     * @example
+     * // Update many EventLocations
+     * const eventLocation = await prisma.eventLocation.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more EventLocations and only return the `id`
+     * const eventLocationWithIdOnly = await prisma.eventLocation.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends EventLocationUpdateManyAndReturnArgs>(args: SelectSubset<T, EventLocationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EventLocationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+
+    /**
+     * Count the number of EventLocations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EventLocationCountArgs} args - Arguments to filter EventLocations to count.
+     * @example
+     * // Count the number of EventLocations
+     * const count = await prisma.eventLocation.count({
+     *   where: {
+     *     // ... the filter for the EventLocations we want to count
+     *   }
+     * })
+    **/
+    count<T extends EventLocationCountArgs>(
+      args?: Subset<T, EventLocationCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], EventLocationCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a EventLocation.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EventLocationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends EventLocationAggregateArgs>(args: Subset<T, EventLocationAggregateArgs>): Prisma.PrismaPromise<GetEventLocationAggregateType<T>>
+
+    /**
+     * Group by EventLocation.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EventLocationGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends EventLocationGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: EventLocationGroupByArgs['orderBy'] }
+        : { orderBy?: EventLocationGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, EventLocationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetEventLocationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the EventLocation model
+   */
+  readonly fields: EventLocationFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for EventLocation.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__EventLocationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    event<T extends EventDefaultArgs<ExtArgs> = {}>(args?: Subset<T, EventDefaultArgs<ExtArgs>>): Prisma__EventClient<$Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the EventLocation model
+   */
+  interface EventLocationFieldRefs {
+    readonly id: FieldRef<"EventLocation", 'String'>
+    readonly streetAddress: FieldRef<"EventLocation", 'String'>
+    readonly eventId: FieldRef<"EventLocation", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * EventLocation findUnique
+   */
+  export type EventLocationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EventLocation
+     */
+    select?: EventLocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EventLocation
+     */
+    omit?: EventLocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EventLocationInclude<ExtArgs> | null
+    /**
+     * Filter, which EventLocation to fetch.
+     */
+    where: EventLocationWhereUniqueInput
+  }
+
+  /**
+   * EventLocation findUniqueOrThrow
+   */
+  export type EventLocationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EventLocation
+     */
+    select?: EventLocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EventLocation
+     */
+    omit?: EventLocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EventLocationInclude<ExtArgs> | null
+    /**
+     * Filter, which EventLocation to fetch.
+     */
+    where: EventLocationWhereUniqueInput
+  }
+
+  /**
+   * EventLocation findFirst
+   */
+  export type EventLocationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EventLocation
+     */
+    select?: EventLocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EventLocation
+     */
+    omit?: EventLocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EventLocationInclude<ExtArgs> | null
+    /**
+     * Filter, which EventLocation to fetch.
+     */
+    where?: EventLocationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EventLocations to fetch.
+     */
+    orderBy?: EventLocationOrderByWithRelationInput | EventLocationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EventLocations.
+     */
+    cursor?: EventLocationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EventLocations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EventLocations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EventLocations.
+     */
+    distinct?: EventLocationScalarFieldEnum | EventLocationScalarFieldEnum[]
+  }
+
+  /**
+   * EventLocation findFirstOrThrow
+   */
+  export type EventLocationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EventLocation
+     */
+    select?: EventLocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EventLocation
+     */
+    omit?: EventLocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EventLocationInclude<ExtArgs> | null
+    /**
+     * Filter, which EventLocation to fetch.
+     */
+    where?: EventLocationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EventLocations to fetch.
+     */
+    orderBy?: EventLocationOrderByWithRelationInput | EventLocationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EventLocations.
+     */
+    cursor?: EventLocationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EventLocations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EventLocations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EventLocations.
+     */
+    distinct?: EventLocationScalarFieldEnum | EventLocationScalarFieldEnum[]
+  }
+
+  /**
+   * EventLocation findMany
+   */
+  export type EventLocationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EventLocation
+     */
+    select?: EventLocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EventLocation
+     */
+    omit?: EventLocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EventLocationInclude<ExtArgs> | null
+    /**
+     * Filter, which EventLocations to fetch.
+     */
+    where?: EventLocationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EventLocations to fetch.
+     */
+    orderBy?: EventLocationOrderByWithRelationInput | EventLocationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing EventLocations.
+     */
+    cursor?: EventLocationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EventLocations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EventLocations.
+     */
+    skip?: number
+    distinct?: EventLocationScalarFieldEnum | EventLocationScalarFieldEnum[]
+  }
+
+  /**
+   * EventLocation update
+   */
+  export type EventLocationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EventLocation
+     */
+    select?: EventLocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EventLocation
+     */
+    omit?: EventLocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EventLocationInclude<ExtArgs> | null
+    /**
+     * The data needed to update a EventLocation.
+     */
+    data: XOR<EventLocationUpdateInput, EventLocationUncheckedUpdateInput>
+    /**
+     * Choose, which EventLocation to update.
+     */
+    where: EventLocationWhereUniqueInput
+  }
+
+  /**
+   * EventLocation updateMany
+   */
+  export type EventLocationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update EventLocations.
+     */
+    data: XOR<EventLocationUpdateManyMutationInput, EventLocationUncheckedUpdateManyInput>
+    /**
+     * Filter which EventLocations to update
+     */
+    where?: EventLocationWhereInput
+    /**
+     * Limit how many EventLocations to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * EventLocation updateManyAndReturn
+   */
+  export type EventLocationUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EventLocation
+     */
+    select?: EventLocationSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the EventLocation
+     */
+    omit?: EventLocationOmit<ExtArgs> | null
+    /**
+     * The data used to update EventLocations.
+     */
+    data: XOR<EventLocationUpdateManyMutationInput, EventLocationUncheckedUpdateManyInput>
+    /**
+     * Filter which EventLocations to update
+     */
+    where?: EventLocationWhereInput
+    /**
+     * Limit how many EventLocations to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EventLocationIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * EventLocation delete
+   */
+  export type EventLocationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EventLocation
+     */
+    select?: EventLocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EventLocation
+     */
+    omit?: EventLocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EventLocationInclude<ExtArgs> | null
+    /**
+     * Filter which EventLocation to delete.
+     */
+    where: EventLocationWhereUniqueInput
+  }
+
+  /**
+   * EventLocation deleteMany
+   */
+  export type EventLocationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EventLocations to delete
+     */
+    where?: EventLocationWhereInput
+    /**
+     * Limit how many EventLocations to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * EventLocation without action
+   */
+  export type EventLocationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EventLocation
+     */
+    select?: EventLocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EventLocation
+     */
+    omit?: EventLocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EventLocationInclude<ExtArgs> | null
   }
 
 
@@ -3345,11 +6225,28 @@ export namespace Prisma {
     email: 'email',
     password: 'password',
     avatar: 'avatar',
-    location: 'location',
     preferences: 'preferences'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+  export const UserLocationScalarFieldEnum: {
+    id: 'id',
+    streetAddress: 'streetAddress',
+    userId: 'userId'
+  };
+
+  export type UserLocationScalarFieldEnum = (typeof UserLocationScalarFieldEnum)[keyof typeof UserLocationScalarFieldEnum]
+
+
+  export const UserPolyScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    activeFlag: 'activeFlag'
+  };
+
+  export type UserPolyScalarFieldEnum = (typeof UserPolyScalarFieldEnum)[keyof typeof UserPolyScalarFieldEnum]
 
 
   export const EventScalarFieldEnum: {
@@ -3357,11 +6254,19 @@ export namespace Prisma {
     userId: 'userId',
     title: 'title',
     images: 'images',
-    location: 'location',
     textDescription: 'textDescription'
   };
 
   export type EventScalarFieldEnum = (typeof EventScalarFieldEnum)[keyof typeof EventScalarFieldEnum]
+
+
+  export const EventLocationScalarFieldEnum: {
+    id: 'id',
+    streetAddress: 'streetAddress',
+    eventId: 'eventId'
+  };
+
+  export type EventLocationScalarFieldEnum = (typeof EventLocationScalarFieldEnum)[keyof typeof EventLocationScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -3428,17 +6333,18 @@ export namespace Prisma {
     AND?: UserWhereInput | UserWhereInput[]
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
-    id?: StringFilter<"User"> | string
+    id?: UuidFilter<"User"> | string
     name?: StringFilter<"User"> | string
     email?: StringFilter<"User"> | string
     password?: StringFilter<"User"> | string
     avatar?: StringNullableFilter<"User"> | string | null
-    location?: StringFilter<"User"> | string
     preferences?: StringFilter<"User"> | string
     friends?: UserListRelationFilter
     friendOf?: UserListRelationFilter
     events?: EventListRelationFilter
     likedEvents?: EventListRelationFilter
+    polygons?: UserPolyListRelationFilter
+    geoLocation?: XOR<UserLocationNullableScalarRelationFilter, UserLocationWhereInput> | null
   }
 
   export type UserOrderByWithRelationInput = {
@@ -3447,12 +6353,13 @@ export namespace Prisma {
     email?: SortOrder
     password?: SortOrder
     avatar?: SortOrderInput | SortOrder
-    location?: SortOrder
     preferences?: SortOrder
     friends?: UserOrderByRelationAggregateInput
     friendOf?: UserOrderByRelationAggregateInput
     events?: EventOrderByRelationAggregateInput
     likedEvents?: EventOrderByRelationAggregateInput
+    polygons?: UserPolyOrderByRelationAggregateInput
+    geoLocation?: UserLocationOrderByWithRelationInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -3464,12 +6371,13 @@ export namespace Prisma {
     name?: StringFilter<"User"> | string
     password?: StringFilter<"User"> | string
     avatar?: StringNullableFilter<"User"> | string | null
-    location?: StringFilter<"User"> | string
     preferences?: StringFilter<"User"> | string
     friends?: UserListRelationFilter
     friendOf?: UserListRelationFilter
     events?: EventListRelationFilter
     likedEvents?: EventListRelationFilter
+    polygons?: UserPolyListRelationFilter
+    geoLocation?: XOR<UserLocationNullableScalarRelationFilter, UserLocationWhereInput> | null
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -3478,7 +6386,6 @@ export namespace Prisma {
     email?: SortOrder
     password?: SortOrder
     avatar?: SortOrderInput | SortOrder
-    location?: SortOrder
     preferences?: SortOrder
     _count?: UserCountOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
@@ -3489,27 +6396,116 @@ export namespace Prisma {
     AND?: UserScalarWhereWithAggregatesInput | UserScalarWhereWithAggregatesInput[]
     OR?: UserScalarWhereWithAggregatesInput[]
     NOT?: UserScalarWhereWithAggregatesInput | UserScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"User"> | string
+    id?: UuidWithAggregatesFilter<"User"> | string
     name?: StringWithAggregatesFilter<"User"> | string
     email?: StringWithAggregatesFilter<"User"> | string
     password?: StringWithAggregatesFilter<"User"> | string
     avatar?: StringNullableWithAggregatesFilter<"User"> | string | null
-    location?: StringWithAggregatesFilter<"User"> | string
     preferences?: StringWithAggregatesFilter<"User"> | string
+  }
+
+  export type UserLocationWhereInput = {
+    AND?: UserLocationWhereInput | UserLocationWhereInput[]
+    OR?: UserLocationWhereInput[]
+    NOT?: UserLocationWhereInput | UserLocationWhereInput[]
+    id?: UuidFilter<"UserLocation"> | string
+    streetAddress?: StringFilter<"UserLocation"> | string
+    userId?: UuidFilter<"UserLocation"> | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type UserLocationOrderByWithRelationInput = {
+    id?: SortOrder
+    streetAddress?: SortOrder
+    userId?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type UserLocationWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    userId?: string
+    AND?: UserLocationWhereInput | UserLocationWhereInput[]
+    OR?: UserLocationWhereInput[]
+    NOT?: UserLocationWhereInput | UserLocationWhereInput[]
+    streetAddress?: StringFilter<"UserLocation"> | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "userId">
+
+  export type UserLocationOrderByWithAggregationInput = {
+    id?: SortOrder
+    streetAddress?: SortOrder
+    userId?: SortOrder
+    _count?: UserLocationCountOrderByAggregateInput
+    _max?: UserLocationMaxOrderByAggregateInput
+    _min?: UserLocationMinOrderByAggregateInput
+  }
+
+  export type UserLocationScalarWhereWithAggregatesInput = {
+    AND?: UserLocationScalarWhereWithAggregatesInput | UserLocationScalarWhereWithAggregatesInput[]
+    OR?: UserLocationScalarWhereWithAggregatesInput[]
+    NOT?: UserLocationScalarWhereWithAggregatesInput | UserLocationScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"UserLocation"> | string
+    streetAddress?: StringWithAggregatesFilter<"UserLocation"> | string
+    userId?: UuidWithAggregatesFilter<"UserLocation"> | string
+  }
+
+  export type UserPolyWhereInput = {
+    AND?: UserPolyWhereInput | UserPolyWhereInput[]
+    OR?: UserPolyWhereInput[]
+    NOT?: UserPolyWhereInput | UserPolyWhereInput[]
+    id?: UuidFilter<"UserPoly"> | string
+    userId?: UuidFilter<"UserPoly"> | string
+    activeFlag?: StringFilter<"UserPoly"> | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type UserPolyOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    activeFlag?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type UserPolyWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    userId?: string
+    AND?: UserPolyWhereInput | UserPolyWhereInput[]
+    OR?: UserPolyWhereInput[]
+    NOT?: UserPolyWhereInput | UserPolyWhereInput[]
+    activeFlag?: StringFilter<"UserPoly"> | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "userId">
+
+  export type UserPolyOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    activeFlag?: SortOrder
+    _count?: UserPolyCountOrderByAggregateInput
+    _max?: UserPolyMaxOrderByAggregateInput
+    _min?: UserPolyMinOrderByAggregateInput
+  }
+
+  export type UserPolyScalarWhereWithAggregatesInput = {
+    AND?: UserPolyScalarWhereWithAggregatesInput | UserPolyScalarWhereWithAggregatesInput[]
+    OR?: UserPolyScalarWhereWithAggregatesInput[]
+    NOT?: UserPolyScalarWhereWithAggregatesInput | UserPolyScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"UserPoly"> | string
+    userId?: UuidWithAggregatesFilter<"UserPoly"> | string
+    activeFlag?: StringWithAggregatesFilter<"UserPoly"> | string
   }
 
   export type EventWhereInput = {
     AND?: EventWhereInput | EventWhereInput[]
     OR?: EventWhereInput[]
     NOT?: EventWhereInput | EventWhereInput[]
-    id?: StringFilter<"Event"> | string
-    userId?: StringFilter<"Event"> | string
+    id?: UuidFilter<"Event"> | string
+    userId?: UuidFilter<"Event"> | string
     title?: StringFilter<"Event"> | string
     images?: StringNullableListFilter<"Event">
-    location?: StringFilter<"Event"> | string
     textDescription?: StringFilter<"Event"> | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     likes?: UserListRelationFilter
+    geoLocation?: XOR<EventLocationNullableScalarRelationFilter, EventLocationWhereInput> | null
   }
 
   export type EventOrderByWithRelationInput = {
@@ -3517,32 +6513,31 @@ export namespace Prisma {
     userId?: SortOrder
     title?: SortOrder
     images?: SortOrder
-    location?: SortOrder
     textDescription?: SortOrder
     user?: UserOrderByWithRelationInput
     likes?: UserOrderByRelationAggregateInput
+    geoLocation?: EventLocationOrderByWithRelationInput
   }
 
   export type EventWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    userId?: string
     AND?: EventWhereInput | EventWhereInput[]
     OR?: EventWhereInput[]
     NOT?: EventWhereInput | EventWhereInput[]
-    userId?: StringFilter<"Event"> | string
     title?: StringFilter<"Event"> | string
     images?: StringNullableListFilter<"Event">
-    location?: StringFilter<"Event"> | string
     textDescription?: StringFilter<"Event"> | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     likes?: UserListRelationFilter
-  }, "id">
+    geoLocation?: XOR<EventLocationNullableScalarRelationFilter, EventLocationWhereInput> | null
+  }, "id" | "userId">
 
   export type EventOrderByWithAggregationInput = {
     id?: SortOrder
     userId?: SortOrder
     title?: SortOrder
     images?: SortOrder
-    location?: SortOrder
     textDescription?: SortOrder
     _count?: EventCountOrderByAggregateInput
     _max?: EventMaxOrderByAggregateInput
@@ -3553,12 +6548,56 @@ export namespace Prisma {
     AND?: EventScalarWhereWithAggregatesInput | EventScalarWhereWithAggregatesInput[]
     OR?: EventScalarWhereWithAggregatesInput[]
     NOT?: EventScalarWhereWithAggregatesInput | EventScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"Event"> | string
-    userId?: StringWithAggregatesFilter<"Event"> | string
+    id?: UuidWithAggregatesFilter<"Event"> | string
+    userId?: UuidWithAggregatesFilter<"Event"> | string
     title?: StringWithAggregatesFilter<"Event"> | string
     images?: StringNullableListFilter<"Event">
-    location?: StringWithAggregatesFilter<"Event"> | string
     textDescription?: StringWithAggregatesFilter<"Event"> | string
+  }
+
+  export type EventLocationWhereInput = {
+    AND?: EventLocationWhereInput | EventLocationWhereInput[]
+    OR?: EventLocationWhereInput[]
+    NOT?: EventLocationWhereInput | EventLocationWhereInput[]
+    id?: UuidFilter<"EventLocation"> | string
+    streetAddress?: StringFilter<"EventLocation"> | string
+    eventId?: UuidFilter<"EventLocation"> | string
+    event?: XOR<EventScalarRelationFilter, EventWhereInput>
+  }
+
+  export type EventLocationOrderByWithRelationInput = {
+    id?: SortOrder
+    streetAddress?: SortOrder
+    eventId?: SortOrder
+    event?: EventOrderByWithRelationInput
+  }
+
+  export type EventLocationWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    eventId?: string
+    AND?: EventLocationWhereInput | EventLocationWhereInput[]
+    OR?: EventLocationWhereInput[]
+    NOT?: EventLocationWhereInput | EventLocationWhereInput[]
+    streetAddress?: StringFilter<"EventLocation"> | string
+    event?: XOR<EventScalarRelationFilter, EventWhereInput>
+  }, "id" | "eventId">
+
+  export type EventLocationOrderByWithAggregationInput = {
+    id?: SortOrder
+    streetAddress?: SortOrder
+    eventId?: SortOrder
+    _count?: EventLocationCountOrderByAggregateInput
+    _max?: EventLocationMaxOrderByAggregateInput
+    _min?: EventLocationMinOrderByAggregateInput
+  }
+
+  export type EventLocationScalarWhereWithAggregatesInput = {
+    AND?: EventLocationScalarWhereWithAggregatesInput | EventLocationScalarWhereWithAggregatesInput[]
+    OR?: EventLocationScalarWhereWithAggregatesInput[]
+    NOT?: EventLocationScalarWhereWithAggregatesInput | EventLocationScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"EventLocation"> | string
+    streetAddress?: StringWithAggregatesFilter<"EventLocation"> | string
+    eventId?: UuidWithAggregatesFilter<"EventLocation"> | string
   }
 
   export type UserCreateInput = {
@@ -3567,12 +6606,13 @@ export namespace Prisma {
     email: string
     password: string
     avatar?: string | null
-    location: string
     preferences: string
     friends?: UserCreateNestedManyWithoutFriendOfInput
     friendOf?: UserCreateNestedManyWithoutFriendsInput
     events?: EventCreateNestedManyWithoutUserInput
     likedEvents?: EventCreateNestedManyWithoutLikesInput
+    polygons?: UserPolyCreateNestedManyWithoutUserInput
+    geoLocation?: UserLocationCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -3581,12 +6621,13 @@ export namespace Prisma {
     email: string
     password: string
     avatar?: string | null
-    location: string
     preferences: string
     friends?: UserUncheckedCreateNestedManyWithoutFriendOfInput
     friendOf?: UserUncheckedCreateNestedManyWithoutFriendsInput
     events?: EventUncheckedCreateNestedManyWithoutUserInput
     likedEvents?: EventUncheckedCreateNestedManyWithoutLikesInput
+    polygons?: UserPolyUncheckedCreateNestedManyWithoutUserInput
+    geoLocation?: UserLocationUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -3595,12 +6636,13 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
-    location?: StringFieldUpdateOperationsInput | string
     preferences?: StringFieldUpdateOperationsInput | string
     friends?: UserUpdateManyWithoutFriendOfNestedInput
     friendOf?: UserUpdateManyWithoutFriendsNestedInput
     events?: EventUpdateManyWithoutUserNestedInput
     likedEvents?: EventUpdateManyWithoutLikesNestedInput
+    polygons?: UserPolyUpdateManyWithoutUserNestedInput
+    geoLocation?: UserLocationUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -3609,12 +6651,13 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
-    location?: StringFieldUpdateOperationsInput | string
     preferences?: StringFieldUpdateOperationsInput | string
     friends?: UserUncheckedUpdateManyWithoutFriendOfNestedInput
     friendOf?: UserUncheckedUpdateManyWithoutFriendsNestedInput
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
     likedEvents?: EventUncheckedUpdateManyWithoutLikesNestedInput
+    polygons?: UserPolyUncheckedUpdateManyWithoutUserNestedInput
+    geoLocation?: UserLocationUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -3623,7 +6666,6 @@ export namespace Prisma {
     email: string
     password: string
     avatar?: string | null
-    location: string
     preferences: string
   }
 
@@ -3633,7 +6675,6 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
-    location?: StringFieldUpdateOperationsInput | string
     preferences?: StringFieldUpdateOperationsInput | string
   }
 
@@ -3643,18 +6684,63 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
-    location?: StringFieldUpdateOperationsInput | string
     preferences?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type UserLocationUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    streetAddress?: StringFieldUpdateOperationsInput | string
+    user?: UserUpdateOneRequiredWithoutGeoLocationNestedInput
+  }
+
+  export type UserLocationUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    streetAddress?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type UserLocationUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    streetAddress?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type UserLocationUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    streetAddress?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type UserPolyUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    activeFlag?: StringFieldUpdateOperationsInput | string
+    user?: UserUpdateOneRequiredWithoutPolygonsNestedInput
+  }
+
+  export type UserPolyUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    activeFlag?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type UserPolyUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    activeFlag?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type UserPolyUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    activeFlag?: StringFieldUpdateOperationsInput | string
   }
 
   export type EventCreateInput = {
     id?: string
     title: string
     images?: EventCreateimagesInput | string[]
-    location: string
     textDescription: string
     user: UserCreateNestedOneWithoutEventsInput
     likes?: UserCreateNestedManyWithoutLikedEventsInput
+    geoLocation?: EventLocationCreateNestedOneWithoutEventInput
   }
 
   export type EventUncheckedCreateInput = {
@@ -3662,19 +6748,19 @@ export namespace Prisma {
     userId: string
     title: string
     images?: EventCreateimagesInput | string[]
-    location: string
     textDescription: string
     likes?: UserUncheckedCreateNestedManyWithoutLikedEventsInput
+    geoLocation?: EventLocationUncheckedCreateNestedOneWithoutEventInput
   }
 
   export type EventUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     images?: EventUpdateimagesInput | string[]
-    location?: StringFieldUpdateOperationsInput | string
     textDescription?: StringFieldUpdateOperationsInput | string
     user?: UserUpdateOneRequiredWithoutEventsNestedInput
     likes?: UserUpdateManyWithoutLikedEventsNestedInput
+    geoLocation?: EventLocationUpdateOneWithoutEventNestedInput
   }
 
   export type EventUncheckedUpdateInput = {
@@ -3682,9 +6768,9 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     images?: EventUpdateimagesInput | string[]
-    location?: StringFieldUpdateOperationsInput | string
     textDescription?: StringFieldUpdateOperationsInput | string
     likes?: UserUncheckedUpdateManyWithoutLikedEventsNestedInput
+    geoLocation?: EventLocationUncheckedUpdateOneWithoutEventNestedInput
   }
 
   export type EventCreateManyInput = {
@@ -3692,7 +6778,6 @@ export namespace Prisma {
     userId: string
     title: string
     images?: EventCreateimagesInput | string[]
-    location: string
     textDescription: string
   }
 
@@ -3700,7 +6785,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     images?: EventUpdateimagesInput | string[]
-    location?: StringFieldUpdateOperationsInput | string
     textDescription?: StringFieldUpdateOperationsInput | string
   }
 
@@ -3709,8 +6793,42 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     images?: EventUpdateimagesInput | string[]
-    location?: StringFieldUpdateOperationsInput | string
     textDescription?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type EventLocationUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    streetAddress?: StringFieldUpdateOperationsInput | string
+    event?: EventUpdateOneRequiredWithoutGeoLocationNestedInput
+  }
+
+  export type EventLocationUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    streetAddress?: StringFieldUpdateOperationsInput | string
+    eventId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type EventLocationUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    streetAddress?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type EventLocationUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    streetAddress?: StringFieldUpdateOperationsInput | string
+    eventId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type UuidFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel>
+    in?: string[] | ListStringFieldRefInput<$PrismaModel>
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedUuidFilter<$PrismaModel> | string
   }
 
   export type StringFilter<$PrismaModel = never> = {
@@ -3755,6 +6873,17 @@ export namespace Prisma {
     none?: EventWhereInput
   }
 
+  export type UserPolyListRelationFilter = {
+    every?: UserPolyWhereInput
+    some?: UserPolyWhereInput
+    none?: UserPolyWhereInput
+  }
+
+  export type UserLocationNullableScalarRelationFilter = {
+    is?: UserLocationWhereInput | null
+    isNot?: UserLocationWhereInput | null
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -3768,13 +6897,16 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type UserPolyOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type UserCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
     email?: SortOrder
     password?: SortOrder
     avatar?: SortOrder
-    location?: SortOrder
     preferences?: SortOrder
   }
 
@@ -3784,7 +6916,6 @@ export namespace Prisma {
     email?: SortOrder
     password?: SortOrder
     avatar?: SortOrder
-    location?: SortOrder
     preferences?: SortOrder
   }
 
@@ -3794,8 +6925,22 @@ export namespace Prisma {
     email?: SortOrder
     password?: SortOrder
     avatar?: SortOrder
-    location?: SortOrder
     preferences?: SortOrder
+  }
+
+  export type UuidWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel>
+    in?: string[] | ListStringFieldRefInput<$PrismaModel>
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedUuidWithAggregatesFilter<$PrismaModel> | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedStringFilter<$PrismaModel>
+    _max?: NestedStringFilter<$PrismaModel>
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -3834,6 +6979,47 @@ export namespace Prisma {
     _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
+  export type UserScalarRelationFilter = {
+    is?: UserWhereInput
+    isNot?: UserWhereInput
+  }
+
+  export type UserLocationCountOrderByAggregateInput = {
+    id?: SortOrder
+    streetAddress?: SortOrder
+    userId?: SortOrder
+  }
+
+  export type UserLocationMaxOrderByAggregateInput = {
+    id?: SortOrder
+    streetAddress?: SortOrder
+    userId?: SortOrder
+  }
+
+  export type UserLocationMinOrderByAggregateInput = {
+    id?: SortOrder
+    streetAddress?: SortOrder
+    userId?: SortOrder
+  }
+
+  export type UserPolyCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    activeFlag?: SortOrder
+  }
+
+  export type UserPolyMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    activeFlag?: SortOrder
+  }
+
+  export type UserPolyMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    activeFlag?: SortOrder
+  }
+
   export type StringNullableListFilter<$PrismaModel = never> = {
     equals?: string[] | ListStringFieldRefInput<$PrismaModel> | null
     has?: string | StringFieldRefInput<$PrismaModel> | null
@@ -3842,9 +7028,9 @@ export namespace Prisma {
     isEmpty?: boolean
   }
 
-  export type UserScalarRelationFilter = {
-    is?: UserWhereInput
-    isNot?: UserWhereInput
+  export type EventLocationNullableScalarRelationFilter = {
+    is?: EventLocationWhereInput | null
+    isNot?: EventLocationWhereInput | null
   }
 
   export type EventCountOrderByAggregateInput = {
@@ -3852,7 +7038,6 @@ export namespace Prisma {
     userId?: SortOrder
     title?: SortOrder
     images?: SortOrder
-    location?: SortOrder
     textDescription?: SortOrder
   }
 
@@ -3860,7 +7045,6 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     title?: SortOrder
-    location?: SortOrder
     textDescription?: SortOrder
   }
 
@@ -3868,8 +7052,30 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     title?: SortOrder
-    location?: SortOrder
     textDescription?: SortOrder
+  }
+
+  export type EventScalarRelationFilter = {
+    is?: EventWhereInput
+    isNot?: EventWhereInput
+  }
+
+  export type EventLocationCountOrderByAggregateInput = {
+    id?: SortOrder
+    streetAddress?: SortOrder
+    eventId?: SortOrder
+  }
+
+  export type EventLocationMaxOrderByAggregateInput = {
+    id?: SortOrder
+    streetAddress?: SortOrder
+    eventId?: SortOrder
+  }
+
+  export type EventLocationMinOrderByAggregateInput = {
+    id?: SortOrder
+    streetAddress?: SortOrder
+    eventId?: SortOrder
   }
 
   export type UserCreateNestedManyWithoutFriendOfInput = {
@@ -3897,6 +7103,14 @@ export namespace Prisma {
     connect?: EventWhereUniqueInput | EventWhereUniqueInput[]
   }
 
+  export type UserPolyCreateNestedManyWithoutUserInput = {
+    connect?: UserPolyWhereUniqueInput | UserPolyWhereUniqueInput[]
+  }
+
+  export type UserLocationCreateNestedOneWithoutUserInput = {
+    connect?: UserLocationWhereUniqueInput
+  }
+
   export type UserUncheckedCreateNestedManyWithoutFriendOfInput = {
     create?: XOR<UserCreateWithoutFriendOfInput, UserUncheckedCreateWithoutFriendOfInput> | UserCreateWithoutFriendOfInput[] | UserUncheckedCreateWithoutFriendOfInput[]
     connectOrCreate?: UserCreateOrConnectWithoutFriendOfInput | UserCreateOrConnectWithoutFriendOfInput[]
@@ -3920,6 +7134,14 @@ export namespace Prisma {
     create?: XOR<EventCreateWithoutLikesInput, EventUncheckedCreateWithoutLikesInput> | EventCreateWithoutLikesInput[] | EventUncheckedCreateWithoutLikesInput[]
     connectOrCreate?: EventCreateOrConnectWithoutLikesInput | EventCreateOrConnectWithoutLikesInput[]
     connect?: EventWhereUniqueInput | EventWhereUniqueInput[]
+  }
+
+  export type UserPolyUncheckedCreateNestedManyWithoutUserInput = {
+    connect?: UserPolyWhereUniqueInput | UserPolyWhereUniqueInput[]
+  }
+
+  export type UserLocationUncheckedCreateNestedOneWithoutUserInput = {
+    connect?: UserLocationWhereUniqueInput
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -3983,6 +7205,23 @@ export namespace Prisma {
     deleteMany?: EventScalarWhereInput | EventScalarWhereInput[]
   }
 
+  export type UserPolyUpdateManyWithoutUserNestedInput = {
+    set?: UserPolyWhereUniqueInput | UserPolyWhereUniqueInput[]
+    disconnect?: UserPolyWhereUniqueInput | UserPolyWhereUniqueInput[]
+    delete?: UserPolyWhereUniqueInput | UserPolyWhereUniqueInput[]
+    connect?: UserPolyWhereUniqueInput | UserPolyWhereUniqueInput[]
+    update?: UserPolyUpdateWithWhereUniqueWithoutUserInput | UserPolyUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: UserPolyUpdateManyWithWhereWithoutUserInput | UserPolyUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: UserPolyScalarWhereInput | UserPolyScalarWhereInput[]
+  }
+
+  export type UserLocationUpdateOneWithoutUserNestedInput = {
+    disconnect?: UserLocationWhereInput | boolean
+    delete?: UserLocationWhereInput | boolean
+    connect?: UserLocationWhereUniqueInput
+    update?: XOR<XOR<UserLocationUpdateToOneWithWhereWithoutUserInput, UserLocationUpdateWithoutUserInput>, UserLocationUncheckedUpdateWithoutUserInput>
+  }
+
   export type UserUncheckedUpdateManyWithoutFriendOfNestedInput = {
     create?: XOR<UserCreateWithoutFriendOfInput, UserUncheckedCreateWithoutFriendOfInput> | UserCreateWithoutFriendOfInput[] | UserUncheckedCreateWithoutFriendOfInput[]
     connectOrCreate?: UserCreateOrConnectWithoutFriendOfInput | UserCreateOrConnectWithoutFriendOfInput[]
@@ -4036,6 +7275,39 @@ export namespace Prisma {
     deleteMany?: EventScalarWhereInput | EventScalarWhereInput[]
   }
 
+  export type UserPolyUncheckedUpdateManyWithoutUserNestedInput = {
+    set?: UserPolyWhereUniqueInput | UserPolyWhereUniqueInput[]
+    disconnect?: UserPolyWhereUniqueInput | UserPolyWhereUniqueInput[]
+    delete?: UserPolyWhereUniqueInput | UserPolyWhereUniqueInput[]
+    connect?: UserPolyWhereUniqueInput | UserPolyWhereUniqueInput[]
+    update?: UserPolyUpdateWithWhereUniqueWithoutUserInput | UserPolyUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: UserPolyUpdateManyWithWhereWithoutUserInput | UserPolyUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: UserPolyScalarWhereInput | UserPolyScalarWhereInput[]
+  }
+
+  export type UserLocationUncheckedUpdateOneWithoutUserNestedInput = {
+    disconnect?: UserLocationWhereInput | boolean
+    delete?: UserLocationWhereInput | boolean
+    connect?: UserLocationWhereUniqueInput
+    update?: XOR<XOR<UserLocationUpdateToOneWithWhereWithoutUserInput, UserLocationUpdateWithoutUserInput>, UserLocationUncheckedUpdateWithoutUserInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutGeoLocationNestedInput = {
+    create?: XOR<UserCreateWithoutGeoLocationInput, UserUncheckedCreateWithoutGeoLocationInput>
+    connectOrCreate?: UserCreateOrConnectWithoutGeoLocationInput
+    upsert?: UserUpsertWithoutGeoLocationInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutGeoLocationInput, UserUpdateWithoutGeoLocationInput>, UserUncheckedUpdateWithoutGeoLocationInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutPolygonsNestedInput = {
+    create?: XOR<UserCreateWithoutPolygonsInput, UserUncheckedCreateWithoutPolygonsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutPolygonsInput
+    upsert?: UserUpsertWithoutPolygonsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutPolygonsInput, UserUpdateWithoutPolygonsInput>, UserUncheckedUpdateWithoutPolygonsInput>
+  }
+
   export type EventCreateimagesInput = {
     set: string[]
   }
@@ -4052,10 +7324,18 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
   }
 
+  export type EventLocationCreateNestedOneWithoutEventInput = {
+    connect?: EventLocationWhereUniqueInput
+  }
+
   export type UserUncheckedCreateNestedManyWithoutLikedEventsInput = {
     create?: XOR<UserCreateWithoutLikedEventsInput, UserUncheckedCreateWithoutLikedEventsInput> | UserCreateWithoutLikedEventsInput[] | UserUncheckedCreateWithoutLikedEventsInput[]
     connectOrCreate?: UserCreateOrConnectWithoutLikedEventsInput | UserCreateOrConnectWithoutLikedEventsInput[]
     connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+  }
+
+  export type EventLocationUncheckedCreateNestedOneWithoutEventInput = {
+    connect?: EventLocationWhereUniqueInput
   }
 
   export type EventUpdateimagesInput = {
@@ -4084,6 +7364,13 @@ export namespace Prisma {
     deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
   }
 
+  export type EventLocationUpdateOneWithoutEventNestedInput = {
+    disconnect?: EventLocationWhereInput | boolean
+    delete?: EventLocationWhereInput | boolean
+    connect?: EventLocationWhereUniqueInput
+    update?: XOR<XOR<EventLocationUpdateToOneWithWhereWithoutEventInput, EventLocationUpdateWithoutEventInput>, EventLocationUncheckedUpdateWithoutEventInput>
+  }
+
   export type UserUncheckedUpdateManyWithoutLikedEventsNestedInput = {
     create?: XOR<UserCreateWithoutLikedEventsInput, UserUncheckedCreateWithoutLikedEventsInput> | UserCreateWithoutLikedEventsInput[] | UserUncheckedCreateWithoutLikedEventsInput[]
     connectOrCreate?: UserCreateOrConnectWithoutLikedEventsInput | UserCreateOrConnectWithoutLikedEventsInput[]
@@ -4095,6 +7382,32 @@ export namespace Prisma {
     update?: UserUpdateWithWhereUniqueWithoutLikedEventsInput | UserUpdateWithWhereUniqueWithoutLikedEventsInput[]
     updateMany?: UserUpdateManyWithWhereWithoutLikedEventsInput | UserUpdateManyWithWhereWithoutLikedEventsInput[]
     deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
+  }
+
+  export type EventLocationUncheckedUpdateOneWithoutEventNestedInput = {
+    disconnect?: EventLocationWhereInput | boolean
+    delete?: EventLocationWhereInput | boolean
+    connect?: EventLocationWhereUniqueInput
+    update?: XOR<XOR<EventLocationUpdateToOneWithWhereWithoutEventInput, EventLocationUpdateWithoutEventInput>, EventLocationUncheckedUpdateWithoutEventInput>
+  }
+
+  export type EventUpdateOneRequiredWithoutGeoLocationNestedInput = {
+    create?: XOR<EventCreateWithoutGeoLocationInput, EventUncheckedCreateWithoutGeoLocationInput>
+    connectOrCreate?: EventCreateOrConnectWithoutGeoLocationInput
+    upsert?: EventUpsertWithoutGeoLocationInput
+    connect?: EventWhereUniqueInput
+    update?: XOR<XOR<EventUpdateToOneWithWhereWithoutGeoLocationInput, EventUpdateWithoutGeoLocationInput>, EventUncheckedUpdateWithoutGeoLocationInput>
+  }
+
+  export type NestedUuidFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel>
+    in?: string[] | ListStringFieldRefInput<$PrismaModel>
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedUuidFilter<$PrismaModel> | string
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -4125,6 +7438,31 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
+  export type NestedUuidWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel>
+    in?: string[] | ListStringFieldRefInput<$PrismaModel>
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedUuidWithAggregatesFilter<$PrismaModel> | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedStringFilter<$PrismaModel>
+    _max?: NestedStringFilter<$PrismaModel>
+  }
+
+  export type NestedIntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
   export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -4140,17 +7478,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedStringFilter<$PrismaModel>
     _max?: NestedStringFilter<$PrismaModel>
-  }
-
-  export type NestedIntFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
   }
 
   export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -4187,11 +7514,12 @@ export namespace Prisma {
     email: string
     password: string
     avatar?: string | null
-    location: string
     preferences: string
     friends?: UserCreateNestedManyWithoutFriendOfInput
     events?: EventCreateNestedManyWithoutUserInput
     likedEvents?: EventCreateNestedManyWithoutLikesInput
+    polygons?: UserPolyCreateNestedManyWithoutUserInput
+    geoLocation?: UserLocationCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutFriendOfInput = {
@@ -4200,11 +7528,12 @@ export namespace Prisma {
     email: string
     password: string
     avatar?: string | null
-    location: string
     preferences: string
     friends?: UserUncheckedCreateNestedManyWithoutFriendOfInput
     events?: EventUncheckedCreateNestedManyWithoutUserInput
     likedEvents?: EventUncheckedCreateNestedManyWithoutLikesInput
+    polygons?: UserPolyUncheckedCreateNestedManyWithoutUserInput
+    geoLocation?: UserLocationUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutFriendOfInput = {
@@ -4218,11 +7547,12 @@ export namespace Prisma {
     email: string
     password: string
     avatar?: string | null
-    location: string
     preferences: string
     friendOf?: UserCreateNestedManyWithoutFriendsInput
     events?: EventCreateNestedManyWithoutUserInput
     likedEvents?: EventCreateNestedManyWithoutLikesInput
+    polygons?: UserPolyCreateNestedManyWithoutUserInput
+    geoLocation?: UserLocationCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutFriendsInput = {
@@ -4231,11 +7561,12 @@ export namespace Prisma {
     email: string
     password: string
     avatar?: string | null
-    location: string
     preferences: string
     friendOf?: UserUncheckedCreateNestedManyWithoutFriendsInput
     events?: EventUncheckedCreateNestedManyWithoutUserInput
     likedEvents?: EventUncheckedCreateNestedManyWithoutLikesInput
+    polygons?: UserPolyUncheckedCreateNestedManyWithoutUserInput
+    geoLocation?: UserLocationUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutFriendsInput = {
@@ -4247,18 +7578,18 @@ export namespace Prisma {
     id?: string
     title: string
     images?: EventCreateimagesInput | string[]
-    location: string
     textDescription: string
     likes?: UserCreateNestedManyWithoutLikedEventsInput
+    geoLocation?: EventLocationCreateNestedOneWithoutEventInput
   }
 
   export type EventUncheckedCreateWithoutUserInput = {
     id?: string
     title: string
     images?: EventCreateimagesInput | string[]
-    location: string
     textDescription: string
     likes?: UserUncheckedCreateNestedManyWithoutLikedEventsInput
+    geoLocation?: EventLocationUncheckedCreateNestedOneWithoutEventInput
   }
 
   export type EventCreateOrConnectWithoutUserInput = {
@@ -4275,9 +7606,9 @@ export namespace Prisma {
     id?: string
     title: string
     images?: EventCreateimagesInput | string[]
-    location: string
     textDescription: string
     user: UserCreateNestedOneWithoutEventsInput
+    geoLocation?: EventLocationCreateNestedOneWithoutEventInput
   }
 
   export type EventUncheckedCreateWithoutLikesInput = {
@@ -4285,8 +7616,8 @@ export namespace Prisma {
     userId: string
     title: string
     images?: EventCreateimagesInput | string[]
-    location: string
     textDescription: string
+    geoLocation?: EventLocationUncheckedCreateNestedOneWithoutEventInput
   }
 
   export type EventCreateOrConnectWithoutLikesInput = {
@@ -4314,12 +7645,11 @@ export namespace Prisma {
     AND?: UserScalarWhereInput | UserScalarWhereInput[]
     OR?: UserScalarWhereInput[]
     NOT?: UserScalarWhereInput | UserScalarWhereInput[]
-    id?: StringFilter<"User"> | string
+    id?: UuidFilter<"User"> | string
     name?: StringFilter<"User"> | string
     email?: StringFilter<"User"> | string
     password?: StringFilter<"User"> | string
     avatar?: StringNullableFilter<"User"> | string | null
-    location?: StringFilter<"User"> | string
     preferences?: StringFilter<"User"> | string
   }
 
@@ -4359,11 +7689,10 @@ export namespace Prisma {
     AND?: EventScalarWhereInput | EventScalarWhereInput[]
     OR?: EventScalarWhereInput[]
     NOT?: EventScalarWhereInput | EventScalarWhereInput[]
-    id?: StringFilter<"Event"> | string
-    userId?: StringFilter<"Event"> | string
+    id?: UuidFilter<"Event"> | string
+    userId?: UuidFilter<"Event"> | string
     title?: StringFilter<"Event"> | string
     images?: StringNullableListFilter<"Event">
-    location?: StringFilter<"Event"> | string
     textDescription?: StringFilter<"Event"> | string
   }
 
@@ -4383,17 +7712,196 @@ export namespace Prisma {
     data: XOR<EventUpdateManyMutationInput, EventUncheckedUpdateManyWithoutLikesInput>
   }
 
+  export type UserPolyUpdateWithWhereUniqueWithoutUserInput = {
+    where: UserPolyWhereUniqueInput
+    data: XOR<UserPolyUpdateWithoutUserInput, UserPolyUncheckedUpdateWithoutUserInput>
+  }
+
+  export type UserPolyUpdateManyWithWhereWithoutUserInput = {
+    where: UserPolyScalarWhereInput
+    data: XOR<UserPolyUpdateManyMutationInput, UserPolyUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type UserPolyScalarWhereInput = {
+    AND?: UserPolyScalarWhereInput | UserPolyScalarWhereInput[]
+    OR?: UserPolyScalarWhereInput[]
+    NOT?: UserPolyScalarWhereInput | UserPolyScalarWhereInput[]
+    id?: UuidFilter<"UserPoly"> | string
+    userId?: UuidFilter<"UserPoly"> | string
+    activeFlag?: StringFilter<"UserPoly"> | string
+  }
+
+  export type UserLocationUpdateToOneWithWhereWithoutUserInput = {
+    where?: UserLocationWhereInput
+    data: XOR<UserLocationUpdateWithoutUserInput, UserLocationUncheckedUpdateWithoutUserInput>
+  }
+
+  export type UserLocationUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    streetAddress?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type UserLocationUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    streetAddress?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type UserCreateWithoutGeoLocationInput = {
+    id?: string
+    name: string
+    email: string
+    password: string
+    avatar?: string | null
+    preferences: string
+    friends?: UserCreateNestedManyWithoutFriendOfInput
+    friendOf?: UserCreateNestedManyWithoutFriendsInput
+    events?: EventCreateNestedManyWithoutUserInput
+    likedEvents?: EventCreateNestedManyWithoutLikesInput
+    polygons?: UserPolyCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutGeoLocationInput = {
+    id?: string
+    name: string
+    email: string
+    password: string
+    avatar?: string | null
+    preferences: string
+    friends?: UserUncheckedCreateNestedManyWithoutFriendOfInput
+    friendOf?: UserUncheckedCreateNestedManyWithoutFriendsInput
+    events?: EventUncheckedCreateNestedManyWithoutUserInput
+    likedEvents?: EventUncheckedCreateNestedManyWithoutLikesInput
+    polygons?: UserPolyUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutGeoLocationInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutGeoLocationInput, UserUncheckedCreateWithoutGeoLocationInput>
+  }
+
+  export type UserUpsertWithoutGeoLocationInput = {
+    update: XOR<UserUpdateWithoutGeoLocationInput, UserUncheckedUpdateWithoutGeoLocationInput>
+    create: XOR<UserCreateWithoutGeoLocationInput, UserUncheckedCreateWithoutGeoLocationInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutGeoLocationInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutGeoLocationInput, UserUncheckedUpdateWithoutGeoLocationInput>
+  }
+
+  export type UserUpdateWithoutGeoLocationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    preferences?: StringFieldUpdateOperationsInput | string
+    friends?: UserUpdateManyWithoutFriendOfNestedInput
+    friendOf?: UserUpdateManyWithoutFriendsNestedInput
+    events?: EventUpdateManyWithoutUserNestedInput
+    likedEvents?: EventUpdateManyWithoutLikesNestedInput
+    polygons?: UserPolyUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutGeoLocationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    preferences?: StringFieldUpdateOperationsInput | string
+    friends?: UserUncheckedUpdateManyWithoutFriendOfNestedInput
+    friendOf?: UserUncheckedUpdateManyWithoutFriendsNestedInput
+    events?: EventUncheckedUpdateManyWithoutUserNestedInput
+    likedEvents?: EventUncheckedUpdateManyWithoutLikesNestedInput
+    polygons?: UserPolyUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserCreateWithoutPolygonsInput = {
+    id?: string
+    name: string
+    email: string
+    password: string
+    avatar?: string | null
+    preferences: string
+    friends?: UserCreateNestedManyWithoutFriendOfInput
+    friendOf?: UserCreateNestedManyWithoutFriendsInput
+    events?: EventCreateNestedManyWithoutUserInput
+    likedEvents?: EventCreateNestedManyWithoutLikesInput
+    geoLocation?: UserLocationCreateNestedOneWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutPolygonsInput = {
+    id?: string
+    name: string
+    email: string
+    password: string
+    avatar?: string | null
+    preferences: string
+    friends?: UserUncheckedCreateNestedManyWithoutFriendOfInput
+    friendOf?: UserUncheckedCreateNestedManyWithoutFriendsInput
+    events?: EventUncheckedCreateNestedManyWithoutUserInput
+    likedEvents?: EventUncheckedCreateNestedManyWithoutLikesInput
+    geoLocation?: UserLocationUncheckedCreateNestedOneWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutPolygonsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutPolygonsInput, UserUncheckedCreateWithoutPolygonsInput>
+  }
+
+  export type UserUpsertWithoutPolygonsInput = {
+    update: XOR<UserUpdateWithoutPolygonsInput, UserUncheckedUpdateWithoutPolygonsInput>
+    create: XOR<UserCreateWithoutPolygonsInput, UserUncheckedCreateWithoutPolygonsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutPolygonsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutPolygonsInput, UserUncheckedUpdateWithoutPolygonsInput>
+  }
+
+  export type UserUpdateWithoutPolygonsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    preferences?: StringFieldUpdateOperationsInput | string
+    friends?: UserUpdateManyWithoutFriendOfNestedInput
+    friendOf?: UserUpdateManyWithoutFriendsNestedInput
+    events?: EventUpdateManyWithoutUserNestedInput
+    likedEvents?: EventUpdateManyWithoutLikesNestedInput
+    geoLocation?: UserLocationUpdateOneWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutPolygonsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    preferences?: StringFieldUpdateOperationsInput | string
+    friends?: UserUncheckedUpdateManyWithoutFriendOfNestedInput
+    friendOf?: UserUncheckedUpdateManyWithoutFriendsNestedInput
+    events?: EventUncheckedUpdateManyWithoutUserNestedInput
+    likedEvents?: EventUncheckedUpdateManyWithoutLikesNestedInput
+    geoLocation?: UserLocationUncheckedUpdateOneWithoutUserNestedInput
+  }
+
   export type UserCreateWithoutEventsInput = {
     id?: string
     name: string
     email: string
     password: string
     avatar?: string | null
-    location: string
     preferences: string
     friends?: UserCreateNestedManyWithoutFriendOfInput
     friendOf?: UserCreateNestedManyWithoutFriendsInput
     likedEvents?: EventCreateNestedManyWithoutLikesInput
+    polygons?: UserPolyCreateNestedManyWithoutUserInput
+    geoLocation?: UserLocationCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutEventsInput = {
@@ -4402,11 +7910,12 @@ export namespace Prisma {
     email: string
     password: string
     avatar?: string | null
-    location: string
     preferences: string
     friends?: UserUncheckedCreateNestedManyWithoutFriendOfInput
     friendOf?: UserUncheckedCreateNestedManyWithoutFriendsInput
     likedEvents?: EventUncheckedCreateNestedManyWithoutLikesInput
+    polygons?: UserPolyUncheckedCreateNestedManyWithoutUserInput
+    geoLocation?: UserLocationUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutEventsInput = {
@@ -4420,11 +7929,12 @@ export namespace Prisma {
     email: string
     password: string
     avatar?: string | null
-    location: string
     preferences: string
     friends?: UserCreateNestedManyWithoutFriendOfInput
     friendOf?: UserCreateNestedManyWithoutFriendsInput
     events?: EventCreateNestedManyWithoutUserInput
+    polygons?: UserPolyCreateNestedManyWithoutUserInput
+    geoLocation?: UserLocationCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutLikedEventsInput = {
@@ -4433,11 +7943,12 @@ export namespace Prisma {
     email: string
     password: string
     avatar?: string | null
-    location: string
     preferences: string
     friends?: UserUncheckedCreateNestedManyWithoutFriendOfInput
     friendOf?: UserUncheckedCreateNestedManyWithoutFriendsInput
     events?: EventUncheckedCreateNestedManyWithoutUserInput
+    polygons?: UserPolyUncheckedCreateNestedManyWithoutUserInput
+    geoLocation?: UserLocationUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutLikedEventsInput = {
@@ -4462,11 +7973,12 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
-    location?: StringFieldUpdateOperationsInput | string
     preferences?: StringFieldUpdateOperationsInput | string
     friends?: UserUpdateManyWithoutFriendOfNestedInput
     friendOf?: UserUpdateManyWithoutFriendsNestedInput
     likedEvents?: EventUpdateManyWithoutLikesNestedInput
+    polygons?: UserPolyUpdateManyWithoutUserNestedInput
+    geoLocation?: UserLocationUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutEventsInput = {
@@ -4475,11 +7987,12 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
-    location?: StringFieldUpdateOperationsInput | string
     preferences?: StringFieldUpdateOperationsInput | string
     friends?: UserUncheckedUpdateManyWithoutFriendOfNestedInput
     friendOf?: UserUncheckedUpdateManyWithoutFriendsNestedInput
     likedEvents?: EventUncheckedUpdateManyWithoutLikesNestedInput
+    polygons?: UserPolyUncheckedUpdateManyWithoutUserNestedInput
+    geoLocation?: UserLocationUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type UserUpsertWithWhereUniqueWithoutLikedEventsInput = {
@@ -4498,11 +8011,77 @@ export namespace Prisma {
     data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyWithoutLikedEventsInput>
   }
 
+  export type EventLocationUpdateToOneWithWhereWithoutEventInput = {
+    where?: EventLocationWhereInput
+    data: XOR<EventLocationUpdateWithoutEventInput, EventLocationUncheckedUpdateWithoutEventInput>
+  }
+
+  export type EventLocationUpdateWithoutEventInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    streetAddress?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type EventLocationUncheckedUpdateWithoutEventInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    streetAddress?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type EventCreateWithoutGeoLocationInput = {
+    id?: string
+    title: string
+    images?: EventCreateimagesInput | string[]
+    textDescription: string
+    user: UserCreateNestedOneWithoutEventsInput
+    likes?: UserCreateNestedManyWithoutLikedEventsInput
+  }
+
+  export type EventUncheckedCreateWithoutGeoLocationInput = {
+    id?: string
+    userId: string
+    title: string
+    images?: EventCreateimagesInput | string[]
+    textDescription: string
+    likes?: UserUncheckedCreateNestedManyWithoutLikedEventsInput
+  }
+
+  export type EventCreateOrConnectWithoutGeoLocationInput = {
+    where: EventWhereUniqueInput
+    create: XOR<EventCreateWithoutGeoLocationInput, EventUncheckedCreateWithoutGeoLocationInput>
+  }
+
+  export type EventUpsertWithoutGeoLocationInput = {
+    update: XOR<EventUpdateWithoutGeoLocationInput, EventUncheckedUpdateWithoutGeoLocationInput>
+    create: XOR<EventCreateWithoutGeoLocationInput, EventUncheckedCreateWithoutGeoLocationInput>
+    where?: EventWhereInput
+  }
+
+  export type EventUpdateToOneWithWhereWithoutGeoLocationInput = {
+    where?: EventWhereInput
+    data: XOR<EventUpdateWithoutGeoLocationInput, EventUncheckedUpdateWithoutGeoLocationInput>
+  }
+
+  export type EventUpdateWithoutGeoLocationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    images?: EventUpdateimagesInput | string[]
+    textDescription?: StringFieldUpdateOperationsInput | string
+    user?: UserUpdateOneRequiredWithoutEventsNestedInput
+    likes?: UserUpdateManyWithoutLikedEventsNestedInput
+  }
+
+  export type EventUncheckedUpdateWithoutGeoLocationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    images?: EventUpdateimagesInput | string[]
+    textDescription?: StringFieldUpdateOperationsInput | string
+    likes?: UserUncheckedUpdateManyWithoutLikedEventsNestedInput
+  }
+
   export type EventCreateManyUserInput = {
     id?: string
     title: string
     images?: EventCreateimagesInput | string[]
-    location: string
     textDescription: string
   }
 
@@ -4512,11 +8091,12 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
-    location?: StringFieldUpdateOperationsInput | string
     preferences?: StringFieldUpdateOperationsInput | string
     friends?: UserUpdateManyWithoutFriendOfNestedInput
     events?: EventUpdateManyWithoutUserNestedInput
     likedEvents?: EventUpdateManyWithoutLikesNestedInput
+    polygons?: UserPolyUpdateManyWithoutUserNestedInput
+    geoLocation?: UserLocationUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutFriendOfInput = {
@@ -4525,11 +8105,12 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
-    location?: StringFieldUpdateOperationsInput | string
     preferences?: StringFieldUpdateOperationsInput | string
     friends?: UserUncheckedUpdateManyWithoutFriendOfNestedInput
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
     likedEvents?: EventUncheckedUpdateManyWithoutLikesNestedInput
+    polygons?: UserPolyUncheckedUpdateManyWithoutUserNestedInput
+    geoLocation?: UserLocationUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutFriendOfInput = {
@@ -4538,7 +8119,6 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
-    location?: StringFieldUpdateOperationsInput | string
     preferences?: StringFieldUpdateOperationsInput | string
   }
 
@@ -4548,11 +8128,12 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
-    location?: StringFieldUpdateOperationsInput | string
     preferences?: StringFieldUpdateOperationsInput | string
     friendOf?: UserUpdateManyWithoutFriendsNestedInput
     events?: EventUpdateManyWithoutUserNestedInput
     likedEvents?: EventUpdateManyWithoutLikesNestedInput
+    polygons?: UserPolyUpdateManyWithoutUserNestedInput
+    geoLocation?: UserLocationUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutFriendsInput = {
@@ -4561,11 +8142,12 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
-    location?: StringFieldUpdateOperationsInput | string
     preferences?: StringFieldUpdateOperationsInput | string
     friendOf?: UserUncheckedUpdateManyWithoutFriendsNestedInput
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
     likedEvents?: EventUncheckedUpdateManyWithoutLikesNestedInput
+    polygons?: UserPolyUncheckedUpdateManyWithoutUserNestedInput
+    geoLocation?: UserLocationUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutFriendsInput = {
@@ -4574,7 +8156,6 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
-    location?: StringFieldUpdateOperationsInput | string
     preferences?: StringFieldUpdateOperationsInput | string
   }
 
@@ -4582,25 +8163,24 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     images?: EventUpdateimagesInput | string[]
-    location?: StringFieldUpdateOperationsInput | string
     textDescription?: StringFieldUpdateOperationsInput | string
     likes?: UserUpdateManyWithoutLikedEventsNestedInput
+    geoLocation?: EventLocationUpdateOneWithoutEventNestedInput
   }
 
   export type EventUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     images?: EventUpdateimagesInput | string[]
-    location?: StringFieldUpdateOperationsInput | string
     textDescription?: StringFieldUpdateOperationsInput | string
     likes?: UserUncheckedUpdateManyWithoutLikedEventsNestedInput
+    geoLocation?: EventLocationUncheckedUpdateOneWithoutEventNestedInput
   }
 
   export type EventUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     images?: EventUpdateimagesInput | string[]
-    location?: StringFieldUpdateOperationsInput | string
     textDescription?: StringFieldUpdateOperationsInput | string
   }
 
@@ -4608,9 +8188,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     images?: EventUpdateimagesInput | string[]
-    location?: StringFieldUpdateOperationsInput | string
     textDescription?: StringFieldUpdateOperationsInput | string
     user?: UserUpdateOneRequiredWithoutEventsNestedInput
+    geoLocation?: EventLocationUpdateOneWithoutEventNestedInput
   }
 
   export type EventUncheckedUpdateWithoutLikesInput = {
@@ -4618,8 +8198,8 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     images?: EventUpdateimagesInput | string[]
-    location?: StringFieldUpdateOperationsInput | string
     textDescription?: StringFieldUpdateOperationsInput | string
+    geoLocation?: EventLocationUncheckedUpdateOneWithoutEventNestedInput
   }
 
   export type EventUncheckedUpdateManyWithoutLikesInput = {
@@ -4627,8 +8207,22 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     images?: EventUpdateimagesInput | string[]
-    location?: StringFieldUpdateOperationsInput | string
     textDescription?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type UserPolyUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    activeFlag?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type UserPolyUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    activeFlag?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type UserPolyUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    activeFlag?: StringFieldUpdateOperationsInput | string
   }
 
   export type UserUpdateWithoutLikedEventsInput = {
@@ -4637,11 +8231,12 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
-    location?: StringFieldUpdateOperationsInput | string
     preferences?: StringFieldUpdateOperationsInput | string
     friends?: UserUpdateManyWithoutFriendOfNestedInput
     friendOf?: UserUpdateManyWithoutFriendsNestedInput
     events?: EventUpdateManyWithoutUserNestedInput
+    polygons?: UserPolyUpdateManyWithoutUserNestedInput
+    geoLocation?: UserLocationUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutLikedEventsInput = {
@@ -4650,11 +8245,12 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
-    location?: StringFieldUpdateOperationsInput | string
     preferences?: StringFieldUpdateOperationsInput | string
     friends?: UserUncheckedUpdateManyWithoutFriendOfNestedInput
     friendOf?: UserUncheckedUpdateManyWithoutFriendsNestedInput
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
+    polygons?: UserPolyUncheckedUpdateManyWithoutUserNestedInput
+    geoLocation?: UserLocationUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutLikedEventsInput = {
@@ -4663,7 +8259,6 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
-    location?: StringFieldUpdateOperationsInput | string
     preferences?: StringFieldUpdateOperationsInput | string
   }
 

@@ -5,6 +5,8 @@
  * The profile information is fetched from the API, and the user can update it through a dialog.
  * The user's events are displayed in a vertical carousel format.
  *
+ * NEED TO FIX PROFILE EDITING - use autocomplete for location
+ * 
  * @component
  * @example
  * <ProfilePage />
@@ -108,7 +110,7 @@ export default function ProfilePage() {
               <div className="profile-info">
                 <h2>{userData.name}</h2>
                 <p>{userData.email}</p>
-                <p>{userData.location}</p>
+                <p>{userData.location.address}</p>
               </div>
             </div>
           ) : (

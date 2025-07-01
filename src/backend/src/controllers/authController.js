@@ -1,4 +1,5 @@
 const { PrismaClient } = require("../../generated/prisma");
+const { v4: uuidv4 } = require("uuid");
 
 const prisma = new PrismaClient();
 const bcrypt = require("bcrypt");
@@ -26,12 +27,33 @@ exports.signup = async (req, res) => {
       name,
       email,
       password: hashedPassword,
-      location,
+      avatar: "",
       preferences: "",
     },
   });
+  // Create user location
+  await createUserLocation(
+    newUser.id,
+    location.latitude,
+    location.longitude,
+    location.address
+  );
   req.session.userId = newUser.id;
   res.status(201).json({ message: "User created successfully!" });
+};
+
+// Create user location in the database using raw SQL
+const createUserLocation = async (userId, latitude, longitude, address) => {
+  const point = `POINT(${longitude} ${latitude})`;
+  const id = uuidv4();
+  await prisma.$executeRawUnsafe(
+    `INSERT INTO "user_locations" ("id", "userId", "streetAddress", "location")
+     VALUES ($1::uuid, $2::uuid, $3, ST_GeomFromText($4, 4326))`,
+    id,
+    userId,
+    address,
+    point
+  );
 };
 
 exports.login = async (req, res) => {
