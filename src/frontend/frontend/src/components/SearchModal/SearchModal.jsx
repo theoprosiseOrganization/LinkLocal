@@ -48,13 +48,6 @@ export default function SearchModal() {
   const [selectedFriend, setSelectedFriend] = React.useState(null);
   const inputRef = React.useRef(null);
 
-  //I want to focus the input everytime the query changes 
-  useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [open]);
-
   /**
    * This function handles the search input change.
    * It retrieves the search query from the input and calls the searchForUsers API function.
@@ -100,28 +93,35 @@ export default function SearchModal() {
 
   return (
     <>
-      <Command className="rounded-lg border shadow-md md:min-w-[450px]">
+      <Command>
         <CommandInput
           ref={inputRef}
           placeholder="Search for friends..."
           onValueChange={handleSearchChange}
         />
-      </Command>
-      <Command>
         <CommandList>
           {friendsResults.map((friend) => (
-            <CommandItem key={friend.id} value={friend.id}>
+            <div
+              key={friend.id}
+              className="flex items-center justify-between bg-white dark:bg-gray-800 rounded-lg shadow p-4 mb-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+            >
+              <div className="flex-1 text-center">
+                <div className="font-semibold text-gray-900 dark:text-gray-100">
+                  {friend.name}
+                </div>
+                <div className="text-gray-500 text-sm">{friend.email}</div>
+              </div>
               <Button
                 variant="outline"
-                className="ml-2"
+                className="ml-4"
                 onClick={() => {
                   setSelectedFriend(friend);
                   setOpen(true);
                 }}
               >
-                {friend.name} ({friend.email})
+                View
               </Button>
-            </CommandItem>
+            </div>
           ))}
         </CommandList>
       </Command>
@@ -145,7 +145,7 @@ export default function SearchModal() {
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
-              <Label>Name</Label>
+              <Label>Location</Label>
             </div>
           </DialogContent>
         </Dialog>
