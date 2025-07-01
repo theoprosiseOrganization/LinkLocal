@@ -146,6 +146,16 @@ export default function SearchModal() {
             </DialogHeader>
             <div className="space-y-4">
               <Label>Location</Label>
+              {selectedFriend.location ? (
+                <div className="text-gray-700 dark:text-gray-300">
+                  {selectedFriend.location.address}
+                  </div>
+                ) : (
+                <div className="text-gray-500 dark:text-gray-400">
+                  No location provided
+                  </div>
+                )}
+
             </div>
           </DialogContent>
         </Dialog>

@@ -309,6 +309,13 @@ exports.searchUsers = async (req, res) => {
         avatar: true,
       },
     });
+    // Get location for each user
+    await Promise.all(
+      users.map(async (user) => {
+        const location = await getUserLocation(user.id);
+        user.location = location; // will be null if not found
+      })
+    );
     res.json(users);
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
@@ -369,6 +376,13 @@ exports.getUserFollowers = async (req, res) => {
       where: { followingId: userId },
       include: { follower: true }, // Include follower details
     });
+    // Get location for each follower
+    await Promise.all(
+      followers.map(async (follow) => {
+        const location = await getUserLocation(follow.follower.id);
+        follow.follower.location = location; // will be null if not found
+      })
+    );
     res.json(followers.map((f) => f.follower));
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
@@ -382,6 +396,14 @@ exports.getUserFollowing = async (req, res) => {
       where: { followerId: userId },
       include: { following: true }, // Include following details
     });
+
+    // Get location for each following user
+    await Promise.all(
+      following.map(async (follow) => {
+        const location = await getUserLocation(follow.following.id);
+        follow.following.location = location; // will be null if not found
+      })
+    );
     res.json(following.map((f) => f.following));
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
