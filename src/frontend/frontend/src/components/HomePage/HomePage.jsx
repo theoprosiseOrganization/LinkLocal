@@ -38,7 +38,7 @@ export default function HomePage() {
     <Layout>
       <div className="homepage-split">
         <div className="homepage-left">
-          <MapComponent />
+          <MapComponent events={eventsToDisplay}/>
         </div>
         <div className="homepage-right">
           <VerticalEvents events={eventsToDisplay} />
