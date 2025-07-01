@@ -17,7 +17,7 @@ export default function FriendsPage() {
   return (
     <Layout>
       <div className="friendspage-header">
-        <SearchModal searchType={"friends"} />
+        <SearchModal />
         Friends Page
         <FriendsGrid />
       </div>
