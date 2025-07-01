@@ -54,7 +54,7 @@ exports.createUser = async (req, res) => {
     const user = await prisma.user.create({
       data: { name, email, password, avatar, preferences },
     });
-    //wait for the user to be created before creating the location
+    // Wait for the user to be created before creating the location
     await createUserLocation(
       user.id,
       location.latitude,

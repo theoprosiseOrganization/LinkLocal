@@ -3,8 +3,9 @@
  * This component renders a Google Map using the @vis.gl/react-google-maps library.
  * It requires a Google Maps API key to function.
  * It will display a map with event markets based on the events props passed to it.
- * I will need to implement the logic to fetch events from the backend and pass them as props.
  *
+ * Need to get user location and style the map to hide POI labels.
+ * 
  * @component
  * @example
  * <MapComponent />
@@ -17,7 +18,6 @@ import { APIProvider, Map, AdvancedMarker } from "@vis.gl/react-google-maps";
 const MAPS_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
 export default function MapComponent({ events = [], currentLocation }) {
-  console.log("MapComponent events:", events);
   return (
     <APIProvider apiKey={MAPS_KEY}>
       <div style={{ width: "100%", height: "100%" }}>
