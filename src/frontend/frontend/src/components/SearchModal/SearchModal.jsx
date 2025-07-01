@@ -14,6 +14,19 @@ import {
   CommandList,
   CommandSeparator,
 } from "../../../components/ui/command";
+import { Button } from "../../../components/ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../../../components/ui/dialog";
+import { Input } from "../../../components/ui/input";
+import { Label } from "../../../components/ui/label";
 
 import { searchForUsers } from "../../api";
 
@@ -42,25 +55,40 @@ export default function SearchModal() {
     }
   };
 
-console.log("SearchModal rendered with results:", friendsResults);
+  console.log("SearchModal rendered with results:", friendsResults);
   return (
     <>
-    <Command className="rounded-lg border shadow-md md:min-w-[450px]">
-      <CommandInput
-        placeholder="Search for friends..."
-        onValueChange={handleSearchChange}
-      />
-      
-    </Command>
-    <Command> 
-    <CommandList>
+      <Command className="rounded-lg border shadow-md md:min-w-[450px]">
+        <CommandInput
+          placeholder="Search for friends..."
+          onValueChange={handleSearchChange}
+        />
+      </Command>
+      <Command>
+        <CommandList>
           {friendsResults.map((friend) => (
             <CommandItem key={friend.id} value={friend.id}>
-             {friend.name} ({friend.email})
+              {friend.name} ({friend.email})
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline" className="ml-2">
+                    View Profile
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>{friend.name}</DialogTitle>
+                    <DialogDescription>Email: {friend.email}</DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <Label>Name</Label>
+                  </div>
+                </DialogContent>
+              </Dialog>
             </CommandItem>
           ))}
-      </CommandList>
+        </CommandList>
       </Command>
-      </>
+    </>
   );
 }
