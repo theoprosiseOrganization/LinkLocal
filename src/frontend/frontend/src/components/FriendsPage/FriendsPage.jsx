@@ -1,22 +1,24 @@
 /**
- * FriendsPage Component
- * Search bar for friends pops up modal with results
- * On click of search bar, opens modal
- * Allows user to search for friends by name or email
- * Allows user to add friends from search results
- * Allow user to look at friend profiles
- * Displays a list of friends under the search bar
- *
+ * FriendsPage.jsx
+ * This component displays the user's friends, including their followers and following lists.
+ * It uses the PeopleGrid component to show the lists side by side.
+ * It also includes a search modal for searching friends.
+ * 
+ * @component
+ * @example
+ * <FriendsPage />
+ * @returns {JSX.Element} The rendered FriendsPage component.
  */
 import Layout from "../Layout/Layout";
 import SearchModal from "../SearchModal/SearchModal";
 import PeopleGrid from "./PeopleGrid";
+import "./FriendsPage.css";
 
 export default function FriendsPage() {
   return (
     <Layout>
-        <SearchModal />
-        <div className="friendspage-split">
+      <SearchModal />
+      <div className="friendspage-split">
         <div className="friendspage-left">
           <PeopleGrid type="Followers" />
         </div>

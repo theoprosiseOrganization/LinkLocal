@@ -1,5 +1,14 @@
 /**
+ * PeopleGrid.jsx
+ * This component displays a grid of users who are either followers or following the current user.
+ * It fetches the user data and their followers or following list from the API.
+ * The type of list to display (Followers or Following) can be specified via props.
  *
+ * @component
+ * @example
+ * <PeopleGrid type="Followers" />
+ * <PeopleGrid type="Following" />
+ * @returns {JSX.Element} The rendered PeopleGrid component.
  *
  */
 
@@ -14,16 +23,13 @@ import "../ProfilePage/ProfilePage.css";
 
 export default function PeopleGrid(props) {
   const type = props.type || "Followers";
-  const [userData, setUserData] = useState(null);
   const [userPeople, setUserPeople] = useState([]);
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const userId = await getSessionUserId();
-        const user = await getUserById(userId);
         let people = [];
-        setUserData(user);
         if (type === "Followers") {
           people = await getUserFollowers(userId);
         }
@@ -32,7 +38,8 @@ export default function PeopleGrid(props) {
         }
         setUserPeople(people);
       } catch (err) {
-        setUserData(null);
+        // If there's an error fetching user data, set userPeople to an empty array
+        setUserPeople([]);
       }
     };
     fetchUserData();
@@ -49,6 +56,7 @@ export default function PeopleGrid(props) {
           justifyContent: "center",
         }}
       >
+        {/* This displays a list of people cards with their information */}
         {userPeople.length === 0 ? (
           <div>No friends found.</div>
         ) : (
