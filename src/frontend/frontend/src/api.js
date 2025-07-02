@@ -225,7 +225,6 @@ export async function getUserFollowers(userId) {
 
 // Can only be called after an event is created
 export async function uploadEventImages(eventId, files) {
-  console.log("Name of first file:", files[0]?.name);
   const formData = new FormData();
   formData.append("eventId", eventId);
   for (const file of files) {

@@ -10,7 +10,6 @@ const s3Client = new S3Client({
 });
 
 exports.uploadEventImages = async (req, res) => {
-    console.log("Received files:", req.files);
     const { eventId } = req.body;
     if (!eventId) {
         return res.status(400).json({ error: "Missing eventId" });
@@ -27,8 +26,6 @@ exports.uploadEventImages = async (req, res) => {
                 Body: file.buffer,
                 ContentType: file.mimetype
             };
-            console.log("Uploading file:", params.Key);
-            console.log("params:", params);
 
             // Use PutObjectCommand for SDK v3
             const command = new PutObjectCommand(params);

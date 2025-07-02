@@ -20,6 +20,7 @@ import {
 } from "../../../components/ui/card";
 import { Button } from "../../../components/ui/button";
 import "./EventCard.css";
+import HorizontalScroll from "../HorizontalScroll/HorizontalScroll";
 
 export default function EventCard({ event }) {
   if (!event) return null;        
@@ -38,6 +39,11 @@ export default function EventCard({ event }) {
         </CardAction>
       </CardHeader>
       <CardContent>
+        {event.images && event.images.length > 0 ? (
+        <HorizontalScroll images={event.images} />
+        ) : (
+          <p>No images available</p>
+        )}
         <p>{event.location.address || "No location"}</p>
       </CardContent>
     </Card>
