@@ -140,6 +140,14 @@ export default function ProfilePage() {
                     />
                   </div>
                   <div className="grid gap-3">
+                    <Label htmlFor="location-1">Profile Picture</Label>
+                    <Input
+                      id="avatar-1"
+                      name="avatar"
+                      onChange={(e) => setEditLocation(e.target.value)}
+                    />
+                  </div>
+                  <div className="grid gap-3">
                     <Label htmlFor="location-1">Location</Label>
                     <Input
                       id="location-1"

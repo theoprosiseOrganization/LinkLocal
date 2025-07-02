@@ -1,10 +1,11 @@
 /**
  *  CreateEventPage.jsx
- *  This component renders the Create Event page - a form for users to fill in the
- *   information about an event.
- *   In the future it will need to handle image uploads and possibly more complex event data.
- *   It will also require more styling and layout adjustments to fit the
- *   overall design of the application.
+ *
+ * This component provides a form for users to create a new event.
+ * It includes fields for the event title, description, location,
+ * and images. The component handles form submission, image uploads,
+ * and integrates with Google Maps for location selection.
+ *
  *
  *  @component CreateEventPage
  *  @example
@@ -40,9 +41,21 @@ export default function CreateEventPage() {
   };
 
   /**
-   *  Handles the form submission for creating an event.
-   *   It fetches the userId from the session, then calls the createEvent function
-   *   with the event data. If successful, it resets the form and alerts the user
+   *
+   * This function handles the form submission for creating a new event.
+   * It performs the following steps:
+   * 1. Prevents the default form submission behavior.
+   * 2. Fetches the user ID from the session using a POST request to `/
+   * auth/me`.
+   * 3. Calls the `createEvent` function with the event data, including
+   * the user ID, location, title, and description.
+   * 4. If images are provided, it uploads them using the `uploadEventImages
+   * ` function, which returns an array of image URLs.
+   * 5. Updates the event with the image URLs if any images were uploaded.
+   * 6. Resets the form state and file input after successful event creation.
+   *
+   * It must upload images separately, as image upload requires an event ID
+   * to be created.
    *
    *  @param {Event} e - The event object triggered by the form submission.
    *  @returns {Promise<void>} A promise that resolves when the event is created.

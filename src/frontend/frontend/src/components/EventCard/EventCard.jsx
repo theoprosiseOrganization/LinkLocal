@@ -1,7 +1,7 @@
 /**
  * EventCard Component
  *
- * This component displays a card for an event with its title, description, and location.
+ * This component displays a card for an event with its title, description, images, and location.
  *
  * @component
  * @param {Object} props - The properties passed to the component.

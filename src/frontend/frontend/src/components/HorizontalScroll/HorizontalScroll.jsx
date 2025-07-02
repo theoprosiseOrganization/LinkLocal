@@ -1,3 +1,16 @@
+/**
+ * HorizontalScroll Component
+ *
+ * This component displays a horizontal scrollable area for images.
+ * It takes an array of images and renders them in a flex container.
+ * Each image is displayed in a figure element with an optional caption.
+ * It uses the ScrollArea and ScrollBar components for horizontal scrolling.
+ *
+ *  @component
+ * @param {Object} props - The properties passed to the component.
+ * @param {Array} props.images - An array of image objects or URLs to be displayed
+ * @returns {JSX.Element|null} The rendered HorizontalScroll component or null if no images are provided.
+ */
 import React from "react";
 import { ScrollArea, ScrollBar } from "../../../components/ui/scroll-area";
 
