@@ -222,3 +222,20 @@ export async function getUserFollowers(userId) {
   }
   return response;
 }
+
+// Can only be called after an event is created
+export async function uploadEventImages(eventId, files) {
+  console.log("Name of first file:", files[0]?.name);
+  const formData = new FormData();
+  formData.append("eventId", eventId);
+  for (const file of files) {
+    formData.append("images", file);
+  }
+  const res = await fetch(`${URL}/upload/event-images`, {
+    method: "POST",
+    body: formData,
+    credentials: "include",
+  });
+  if (!res.ok) throw new Error("Image upload failed");
+  return (await res.json()).urls;
+}
