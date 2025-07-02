@@ -15,6 +15,11 @@ const {
   likeEvent,
   getUserLikedEvents,
   unlikeEvent,
+  searchUsers,
+  followUser,
+  unfollowUser,
+  getUserFollowers,
+  getUserFollowing,
 } = require("../controllers/userController");
 
 const router = express.Router();
@@ -25,6 +30,8 @@ router.get("/:id", getUserById);
 router.post("/", createUser);
 router.put("/:id", updateUser);
 router.delete("/:id", deleteUser);
+
+router.post("/search", searchUsers);
 
 // Friends
 router.get("/:id/friends", getUserFriends);
@@ -43,5 +50,11 @@ router.post("/:id/events", createUserEvent);
 router.get("/:id/liked_events", getUserLikedEvents);
 router.post("/:id/liked_events", likeEvent);
 router.delete("/:id/liked_events/:event_id", unlikeEvent);
+
+// Follow endpoints
+router.post("/:id/following", followUser); // follow user
+router.delete("/:id/following/:following_id", unfollowUser); // unfollow user
+router.get("/:id/followers", getUserFollowers); // get followers
+router.get("/:id/following", getUserFollowing); // get following users
 
 module.exports = router;

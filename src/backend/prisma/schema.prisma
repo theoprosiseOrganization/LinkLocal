@@ -21,12 +21,21 @@ model User {
   password    String
   avatar      String?
   preferences String
-  friends     User[]        @relation("friends")
-  friendOf    User[]        @relation("friends")
+  followers   Follows[]     @relation("following")
+  following   Follows[]     @relation("follower")
   events      Event[]       @relation("UserEvents")
   likedEvents Event[]       @relation("LikedEvents")
   polygons    UserPoly[]    @relation("UserPoly")
   geoLocation UserLocation? // Link to spatial location
+}
+
+model Follows {
+  follower    User   @relation("follower", fields: [followerId], references: [id])
+  followerId  String @db.Uuid
+  following   User   @relation("following", fields: [followingId], references: [id])
+  followingId String @db.Uuid
+
+  @@id([followerId, followingId])
 }
 
 model UserLocation {
@@ -49,7 +58,7 @@ model UserPoly {
 
 model Event {
   id              String         @id @default(uuid()) @db.Uuid
-  userId          String         @unique @db.Uuid
+  userId          String         @db.Uuid
   user            User           @relation("UserEvents", fields: [userId], references: [id])
   title           String
   images          String[]

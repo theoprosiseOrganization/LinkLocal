@@ -135,3 +135,90 @@ export async function updateUserProfile(userId, data) {
   }
   return response;
 }
+
+export async function searchForUsers(query) {
+  const res = await fetch(`${URL}/users/search`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ query }),
+  });
+  const response = await res.json();
+  if (!res.ok) {
+    throw new Error(response.error || "Failed to search for users");
+  }
+  return response;
+}
+
+export async function getUserFriends(userId) {
+  const res = await fetch(`${URL}/users/${userId}/friends`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  const response = await res.json();
+  if (!res.ok) {
+    throw new Error(response.error || "Failed to fetch user friends");
+  }
+  return response;
+}
+
+export async function addUserFriend(userId, friendId) {
+  const res = await fetch(`${URL}/users/${userId}/friends`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ friendId }),
+  });
+  const response = await res.json();
+  if (!res.ok) {
+    throw new Error(response.error || "Failed to add user friend");
+  }
+  return response;
+}
+
+export async function followUser(followerId, followingId) {
+  const res = await fetch(`${URL}/users/${followerId}/following`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ followingId }),
+  });
+  const response = await res.json();
+  if (!res.ok) {
+    throw new Error(response.error || "Failed to follow user");
+  }
+  return response;
+}
+
+export async function getUserFollowing(userId) {
+  const res = await fetch(`${URL}/users/${userId}/following`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  const response = await res.json();
+  if (!res.ok) {
+    throw new Error(response.error || "Failed to fetch user following");
+  }
+  return response;
+}
+
+export async function getUserFollowers(userId) {
+  const res = await fetch(`${URL}/users/${userId}/followers`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  const response = await res.json();
+  if (!res.ok) {
+    throw new Error(response.error || "Failed to fetch user followers");
+  }
+  return response;
+}

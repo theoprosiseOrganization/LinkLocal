@@ -1,3 +1,12 @@
+/**
+ * User Controller
+ * Handles CRUD operations for users, including friends, events, and preferences.
+ * Uses Prisma ORM for database interactions.
+ * 
+ * Need to remove unused functions and clean up the code.
+ * 
+ * @module userController
+ */
 const { PrismaClient } = require("../../generated/prisma");
 const prisma = new PrismaClient();
 
@@ -132,6 +141,13 @@ exports.getUserFriends = async (req, res) => {
       where: { id: req.params.id },
       include: { friends: true },
     });
+    // add user location to each friend
+    await Promise.all(
+      user.friends.map(async (friend) => {
+        const location = await getUserLocation(friend.id);
+        friend.location = location; // will be null if not found
+      })
+    );
     res.json(user?.friends || []);
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
@@ -277,6 +293,127 @@ exports.unlikeEvent = async (req, res) => {
       data: { likedEvents: { disconnect: { id: req.params.event_id } } },
     });
     res.json(user);
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+exports.searchUsers = async (req, res) => {
+  const { query } = req.body;
+  if (!query) {
+    return res.status(400).json({ error: "Query is required." });
+  }
+  try {
+    const users = await prisma.user.findMany({
+      where: {
+        OR: [
+          { name: { contains: query, mode: "insensitive" } },
+          { email: { contains: query, mode: "insensitive" } },
+        ],
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        avatar: true,
+      },
+    });
+    // Get location for each user
+    await Promise.all(
+      users.map(async (user) => {
+        const location = await getUserLocation(user.id);
+        user.location = location; // will be null if not found
+      })
+    );
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+// Follow another user
+exports.followUser = async (req, res) => {
+  const followerId = req.params.id; // current user
+  const { followingId } = req.body; // user to follow
+  if (!followingId) {
+    return res.status(400).json({ error: "followingId is required" });
+  }
+  if (followerId === followingId) {
+    return res.status(400).json({ error: "You cannot follow yourself" });
+  }
+  try {
+    // Create a Follows record
+    await prisma.follows.create({
+      data: {
+        followerId,
+        followingId,
+      },
+    });
+    res.json({ message: "User followed" });
+  } catch (error) {
+    if (error.code === "P2002") {
+      // Unique constraint failed (already following)
+      return res.status(409).json({ error: "Already following this user" });
+    }
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+// Unfollow a user
+exports.unfollowUser = async (req, res) => {
+  const followerId = req.params.id;
+  const followingId = req.params.following_id;
+  try {
+    await prisma.follows.delete({
+      where: {
+        followerId_followingId: {
+          followerId,
+          followingId,
+        },
+      },
+    });
+    res.json({ message: "User unfollowed" });
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+exports.getUserFollowers = async (req, res) => {
+  const userId = req.params.id;
+  try {
+    const followers = await prisma.follows.findMany({
+      where: { followingId: userId },
+      include: { follower: true }, // Include follower details
+    });
+    // Get location for each follower
+    await Promise.all(
+      followers.map(async (follow) => {
+        const location = await getUserLocation(follow.follower.id);
+        follow.follower.location = location; // will be null if not found
+      })
+    );
+    res.json(followers.map((f) => f.follower));
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+exports.getUserFollowing = async (req, res) => {
+  const userId = req.params.id;
+  try {
+    const following = await prisma.follows.findMany({
+      where: { followerId: userId },
+      include: { following: true }, // Include following details
+    });
+
+    // Get location for each following user
+    await Promise.all(
+      following.map(async (follow) => {
+        const location = await getUserLocation(follow.following.id);
+        follow.following.location = location; // will be null if not found
+      })
+    );
+    res.json(following.map((f) => f.following));
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }
