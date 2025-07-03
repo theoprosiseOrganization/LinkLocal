@@ -14,6 +14,7 @@
  * <ViewEventPage />
  * @returns {JSX.Element} The rendered ViewEventPage component.
  */
+
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import Layout from "../Layout/Layout";
@@ -25,6 +26,13 @@ export default function ViewEventPage() {
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  /**
+   * This effect fetches the event data by its ID when the component mounts.
+   * It retrieves the event details and the user who created the event.
+   * If the event is found, it sets the event state with the fetched data.
+   * If the event is not found or an error occurs, it sets the event state to null.
+   * The loading state is used to show a loading message while the data is being fetched
+   */
   useEffect(() => {
     async function fetchEvent() {
       try {
@@ -127,7 +135,6 @@ export default function ViewEventPage() {
             {event.location?.address || "No location specified"}
           </div>
         </div>
-        {/* Add more event details as needed */}
       </div>
     </Layout>
   );

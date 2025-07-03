@@ -27,9 +27,9 @@ export default function VerticalEvents({ events = [] }) {
     <Carousel
       opts={{ align: "start", loop: "true" }}
       orientation="vertical"
-      className="w-full max-w-xs"
+      className="w-full max-w-xs h-full"
     >
-      <CarouselContent className={`-mt-1 h-[600px}`}>
+      <CarouselContent className={`-mt-1 h-80%`}>
         {events.length === 0 ? (
           <div className="p-4 text-center text-gray-400">
             No events to display

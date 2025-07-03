@@ -7,6 +7,7 @@
  * Need to get user location and style the map to hide POI labels.
  *
  * Event icon based on event type - for later.
+ * Issue with opening info window and then opening another info window.
  *
  *
  * @component
@@ -27,6 +28,19 @@ import ViewEventButton from "../ViewEventPage/ViewEventButton";
 
 const MAPS_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
+
+/**
+ * 
+ * AdvancedMarkerWithRef component
+ * This component wraps the AdvancedMarker component and provides a ref to the marker.
+ * It allows for handling marker click events and passing the marker reference to the parent component.
+ * 
+ * @component
+ * @param {Object} props - The properties passed to the component.
+ * @param {React.ReactNode} props.children - The children to render inside the marker.
+ * @param {Function} props.onMarkerClick - Callback function to handle marker click events.
+ * @param {Object} props.advancedMarkerProps - Additional properties for the AdvancedMarker component.
+ */
 export function AdvancedMarkerWithRef(props) {
   const { children, onMarkerClick, ...advancedMarkerProps } = props;
   const [markerRef, marker] = useAdvancedMarkerRef();
@@ -45,7 +59,7 @@ export function AdvancedMarkerWithRef(props) {
     </AdvancedMarker>
   );
 }
-
+// Provides framework for adding user locations - not implemented yet
 export default function MapComponent({
   events = [],
   users = [],
