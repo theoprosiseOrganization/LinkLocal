@@ -10,6 +10,7 @@ import SingUpPage from "./components/SignUpPage/SignUpPage";
 import WithAuth from "./components/WithAuth/WithAuth";
 import CreateEventPage from "./components/CreateEventPage/CreateEventPage";
 import ViewEventPage from "./components/ViewEventPage/ViewEventPage";
+import ViewUserPage from "./components/ViewUserPage/ViewUserPage";
 
 function App() {
   return (
@@ -55,6 +56,14 @@ function App() {
           element={
             <WithAuth>
               <ViewEventPage />
+            </WithAuth>
+          }
+        />
+        <Route
+          path="/view-user/:userId"
+          element={
+            <WithAuth>
+              <ViewUserPage />
             </WithAuth>
           }
         />

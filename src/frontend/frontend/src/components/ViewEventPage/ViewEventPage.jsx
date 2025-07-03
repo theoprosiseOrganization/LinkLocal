@@ -1,3 +1,19 @@
+/**
+ * ViewEventPage.jsx
+ *
+ * This component displays the details of a specific event, including the title, description,
+ * location, and images. It fetches the event data from an API using the event ID
+ * from the URL parameters. If the event is found, it displays the event details along with
+ * the user's profile information who created the event. If the event is not found or still loading
+ * , it shows appropriate messages.
+ *
+ * @component
+ * @param {Object} props - The properties passed to the component.
+ * @param {string} props.eventId - The ID of the event to view.
+ * @example
+ * <ViewEventPage />
+ * @returns {JSX.Element} The rendered ViewEventPage component.
+ */
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Layout from "../Layout/Layout";

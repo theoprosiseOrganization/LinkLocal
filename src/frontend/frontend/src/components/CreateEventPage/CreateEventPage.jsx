@@ -6,10 +6,10 @@
  * and images. The component handles form submission, image uploads,
  * and integrates with Google Maps for location selection.
  *
- *  @component CreateEventPage
- *  @example
- *  <CreateEventPage />
- *  @returns {JSX.Element} A component containing the Create Event page content.
+ * @component CreateEventPage
+ * @example
+ * <CreateEventPage />
+ * @returns {JSX.Element} A component containing the Create Event page content.
  */
 
 import Layout from "../Layout/Layout";
@@ -48,8 +48,8 @@ export default function CreateEventPage() {
    * auth/me`.
    * 3. Calls the `createEvent` function with the event data, including
    * the user ID, location, title, and description.
-   * 4. If images are provided, it uploads them using the `uploadEventImages
-   * ` function, which returns an array of image URLs.
+   * 4. If images are provided, it uploads them using the `uploadEventImages`
+   * function, which returns an array of image URLs.
    * 5. Updates the event with the image URLs if any images were uploaded.
    * 6. Resets the form state and file input after successful event creation.
    *
