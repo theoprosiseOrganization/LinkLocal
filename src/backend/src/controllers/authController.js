@@ -10,7 +10,8 @@ exports.signup = async (req, res) => {
   if (!name || !email || !password || !location) {
     return res.status(400).json({ error: "All fields are required." });
   }
-  if (password.length < 7) {
+  // Do not mention password upper bound in error - trick naughty users
+  if (password.length < 7 && password.length > 80) {
     return res
       .status(400)
       .json({ error: "Password must be at least 7 characters long." });
