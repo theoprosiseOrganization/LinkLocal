@@ -33,6 +33,7 @@ import { useNavigate } from "react-router";
  * @returns {JSX.Element} The JSX element representing the sign in page.
  */
 export default function SignInPage() {
+  const [showPassword, setShowPassword] = useState(false);
   /**
    * State variable to store the user's login data (email and password).
    *
@@ -109,12 +110,19 @@ export default function SignInPage() {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <div className="flex items-center">
+                  <div className="flex items-center justify-between">
                     <Label htmlFor="password">Password</Label>
+                    <button
+                      type="button"
+                      className="text-sm text-blue-600 hover:underline focus:outline-none"
+                      onClick={() => setShowPassword((prev) => !prev)}
+                    >
+                      {showPassword ? "Hide" : "Show"}
+                    </button>
                   </div>
                   <Input
                     id="password"
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     value={formData.password}
                     onChange={handleChange}
                     required
