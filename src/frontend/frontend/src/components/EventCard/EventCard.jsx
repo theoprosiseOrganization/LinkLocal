@@ -1,7 +1,7 @@
 /**
  * EventCard Component
  *
- * This component displays a card for an event with its title, description, and location.
+ * This component displays a card for an event with its title, description, images, and location.
  *
  * @component
  * @param {Object} props - The properties passed to the component.
@@ -20,12 +20,13 @@ import {
 } from "../../../components/ui/card";
 import { Button } from "../../../components/ui/button";
 import "./EventCard.css";
+import HorizontalScroll from "../HorizontalScroll/HorizontalScroll";
 
 export default function EventCard({ event }) {
-  if (!event) return null;        
+  if (!event) return null;
 
   return (
-    <Card className="event-card">
+    <Card className="event-card w-full max-w-xl min-w-[250px] mx-auto">
       <CardHeader>
         <CardTitle>{event.title || "Untitled Event"}</CardTitle>
         <CardDescription>
@@ -38,6 +39,11 @@ export default function EventCard({ event }) {
         </CardAction>
       </CardHeader>
       <CardContent>
+        {event.images && event.images.length > 0 ? (
+          <HorizontalScroll images={event.images} />
+        ) : (
+          <p>No images available</p>
+        )}
         <p>{event.location.address || "No location"}</p>
       </CardContent>
     </Card>

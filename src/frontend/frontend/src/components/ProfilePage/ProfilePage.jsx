@@ -1,12 +1,13 @@
 /**
  * ProfilePage.jsx
+ * 
  * This component displays the user's profile information and their events.
  * It allows the user to edit their profile details such as name and location.
  * The profile information is fetched from the API, and the user can update it through a dialog.
  * The user's events are displayed in a vertical carousel format.
  *
  * NEED TO FIX PROFILE EDITING - use autocomplete for location
- * 
+ *
  * @component
  * @example
  * <ProfilePage />
@@ -22,8 +23,9 @@ import {
   getUserEvents,
   getSessionUserId,
   updateUserProfile,
+  uploadProfileImage,
 } from "../../api";
-import React, { use, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { Button } from "../../../components/ui/button";
 import {
   Dialog,
@@ -43,6 +45,7 @@ export default function ProfilePage() {
   const [userEvents, setUserEvents] = useState([]);
   const [editName, setEditName] = useState("");
   const [editLocation, setEditLocation] = useState("");
+  const fileInputRef = useRef();
 
   /**
    * useEffect hook to fetch user data and events when the component mounts.
@@ -72,22 +75,44 @@ export default function ProfilePage() {
     }
   }, [userData]);
 
-  /**
-   * This function handles the profile update when the user submits the edit form.
-   * It prevents the default form submission behavior, calls the API to update the user profile,
-   * and updates the local state with the new profile information.
-   * If the update fails, it alerts the user with an error message.
-   *
-   * @param {Event} e - The event object triggered by the form submission.
+
+  /**   
+   * Handles the profile update form submission.
+   * It uploads a new profile image if one is selected,
+   * and updates the user's profile with the new name, location, and avatar URL.
+   * 
+   * @param {Event} e - The form submission event.
+   * @returns {Promise<void>} A promise that resolves when the profile is updated.
+   * @throws {Error} If the profile update fails or if the image upload fails.
    */
   const handleProfileUpdate = async (e) => {
     e.preventDefault();
+    let avatarUrl = userData.avatar;
+    const file = fileInputRef.current?.files?.[0];
+
+    // Upload new profile image if selected
+    if (file) {
+      try {
+        avatarUrl = await uploadProfileImage(userData.id, file);
+      } catch (err) {
+        alert("Failed to upload profile image");
+        return;
+      }
+    }
+
+    // Update profile with new name, location, and avatar
     try {
       await updateUserProfile(userData.id, {
         name: editName,
         location: editLocation,
+        avatar: avatarUrl,
       });
-      setUserData({ ...userData, name: editName, location: editLocation });
+      setUserData({
+        ...userData,
+        name: editName,
+        location: editLocation,
+        avatar: avatarUrl,
+      });
     } catch (err) {
       alert("Failed to update profile");
     }
@@ -105,7 +130,22 @@ export default function ProfilePage() {
           {userData ? (
             <div className="profile-card">
               <div className="profile-avatar">
-                {userData.name ? userData.name[0].toUpperCase() : "?"}
+                {userData.avatar ? (
+                  <img
+                    src={userData.avatar}
+                    alt="Profile"
+                    style={{
+                      width: 80,
+                      height: 80,
+                      borderRadius: "50%",
+                      objectFit: "cover",
+                    }}
+                  />
+                ) : userData.name ? (
+                  userData.name[0].toUpperCase()
+                ) : (
+                  "?"
+                )}
               </div>
               <div className="profile-info">
                 <h2>{userData.name}</h2>
@@ -140,6 +180,15 @@ export default function ProfilePage() {
                     />
                   </div>
                   <div className="grid gap-3">
+                    <Label htmlFor="location-1">Profile Picture</Label>
+                    <Input
+                      id="picture"
+                      type="file"
+                      accept="image/*"
+                      ref={fileInputRef}
+                    />
+                  </div>
+                  <div className="grid gap-3">
                     <Label htmlFor="location-1">Location</Label>
                     <Input
                       id="location-1"
@@ -154,7 +203,7 @@ export default function ProfilePage() {
                     <Button variant="outline">Cancel</Button>
                   </DialogClose>
                   <DialogClose asChild>
-                  <Button type="submit">Save changes</Button>
+                    <Button type="submit">Save changes</Button>
                   </DialogClose>
                 </div>
               </form>

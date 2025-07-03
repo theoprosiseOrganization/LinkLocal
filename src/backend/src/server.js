@@ -5,6 +5,7 @@ const session = require("express-session");
 const userRoutes = require("./routes/userRoutes");
 const eventRoutes = require("./routes/eventRoutes");
 const authRoutes = require("./routes/authRoutes");
+const uploadRoutes = require("./routes/uploadRoutes");
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use(cors({ credentials: true, origin: "http://localhost:5173" }));
 app.use("/users", userRoutes);
 app.use("/events", eventRoutes);
 app.use("/auth", authRoutes);
+app.use("/upload", uploadRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {});

@@ -1,10 +1,10 @@
 /**
  *  CreateEventPage.jsx
- *  This component renders the Create Event page - a form for users to fill in the
- *   information about an event.
- *   In the future it will need to handle image uploads and possibly more complex event data.
- *   It will also require more styling and layout adjustments to fit the
- *   overall design of the application.
+ *
+ * This component provides a form for users to create a new event.
+ * It includes fields for the event title, description, location,
+ * and images. The component handles form submission, image uploads,
+ * and integrates with Google Maps for location selection.
  *
  *  @component CreateEventPage
  *  @example
@@ -16,8 +16,8 @@ import Layout from "../Layout/Layout";
 import { Input } from "../../../components/ui/input";
 import { Label } from "../../../components/ui/label";
 import { Button } from "../../../components/ui/button";
-import React, { useState } from "react";
-import { createEvent } from "../../api";
+import React, { useState, useRef } from "react";
+import { createEvent, uploadEventImages } from "../../api";
 import LocationAutocomplete from "../LocationAutocomplete/LocationAutocomplete";
 import { APIProvider } from "@vis.gl/react-google-maps";
 
@@ -30,6 +30,8 @@ export default function CreateEventPage() {
     images: [],
   });
 
+  const fileInputRef = useRef();
+
   const handleChange = (e) => {
     setEventData({
       ...eventData,
@@ -38,9 +40,21 @@ export default function CreateEventPage() {
   };
 
   /**
-   *  Handles the form submission for creating an event.
-   *   It fetches the userId from the session, then calls the createEvent function
-   *   with the event data. If successful, it resets the form and alerts the user
+   *
+   * This function handles the form submission for creating a new event.
+   * It performs the following steps:
+   * 1. Prevents the default form submission behavior.
+   * 2. Fetches the user ID from the session using a POST request to `/
+   * auth/me`.
+   * 3. Calls the `createEvent` function with the event data, including
+   * the user ID, location, title, and description.
+   * 4. If images are provided, it uploads them using the `uploadEventImages
+   * ` function, which returns an array of image URLs.
+   * 5. Updates the event with the image URLs if any images were uploaded.
+   * 6. Resets the form state and file input after successful event creation.
+   *
+   * It must upload images separately, as image upload requires an event ID
+   * to be created.
    *
    *  @param {Event} e - The event object triggered by the form submission.
    *  @returns {Promise<void>} A promise that resolves when the event is created.
@@ -52,7 +66,6 @@ export default function CreateEventPage() {
    */
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     // Fetch userId from session
     let userId = null;
     try {
@@ -69,24 +82,53 @@ export default function CreateEventPage() {
       return;
     }
 
+    let event;
     try {
-      await createEvent({
+      event = await createEvent({
         userId,
-        images: [""],
+        images: [],
         location: eventData.location,
         textDescription: eventData.textDescription,
         title: eventData.title,
       });
-      alert("Event created!");
-      setEventData({
-        title: "",
-        textDescription: "",
-        location: "",
-        images: [],
-      });
     } catch (err) {
       alert(err.message);
+      return;
     }
+
+    let imageUrls = [];
+    const files = fileInputRef.current?.files;
+    if (files && files.length > 0 && files.length <= 5) {
+      try {
+        imageUrls = await uploadEventImages(event.id, files);
+      } catch (err) {
+        alert("Image upload failed");
+      }
+    }
+
+    // 4. Update event with image URLs, if any
+    if (imageUrls.length > 0) {
+      await fetch(
+        `${import.meta.env.VITE_API_DB_URL || "http://localhost:3000"}/events/${
+          event.id
+        }`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ images: imageUrls }),
+        }
+      );
+    }
+
+    alert("Event created!");
+    setEventData({
+      title: "",
+      textDescription: "",
+      location: { address: "", latitude: 0, longitude: 0 },
+      images: [],
+    });
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   return (
@@ -135,8 +177,14 @@ export default function CreateEventPage() {
               />
             </div>
             <div className="grid w-full max-w-sm items-center gap-3">
-              <Label htmlFor="picture">Picture</Label>
-              <Input id="picture" type="file" />
+              <Label htmlFor="picture">Pictures (up to 5)</Label>
+              <Input
+                id="picture"
+                type="file"
+                multiple
+                accept="image/*"
+                ref={fileInputRef}
+              />
             </div>
             <div className="grid gap-2">
               <Button type="submit" className="w-full">
