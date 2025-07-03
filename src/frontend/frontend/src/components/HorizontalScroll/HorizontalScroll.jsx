@@ -11,6 +11,7 @@
  * @param {Array} props.images - An array of image objects or URLs to be displayed
  * @returns {JSX.Element|null} The rendered HorizontalScroll component or null if no images are provided.
  */
+
 import React from "react";
 import { ScrollArea, ScrollBar } from "../../../components/ui/scroll-area";
 

@@ -1,5 +1,6 @@
 /**
  * ProfilePage.jsx
+ * 
  * This component displays the user's profile information and their events.
  * It allows the user to edit their profile details such as name and location.
  * The profile information is fetched from the API, and the user can update it through a dialog.

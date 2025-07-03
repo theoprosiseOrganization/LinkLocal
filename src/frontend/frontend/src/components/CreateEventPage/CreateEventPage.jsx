@@ -6,7 +6,6 @@
  * and images. The component handles form submission, image uploads,
  * and integrates with Google Maps for location selection.
  *
- *
  *  @component CreateEventPage
  *  @example
  *  <CreateEventPage />

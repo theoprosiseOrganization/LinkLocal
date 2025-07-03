@@ -7,7 +7,6 @@ const {
   PutObjectCommand,
   DeleteObjectCommand,
 } = require("@aws-sdk/client-s3");
-const fs = require("fs");
 
 const s3Client = new S3Client({
   region: process.env.AWS_REGION, // Specify the AWS region from environment variables
@@ -31,7 +30,6 @@ const s3Client = new S3Client({
  * @throws {Error} If the eventId is missing, no files are uploaded, or
  * if the upload fails.
  */
-
 exports.uploadEventImages = async (req, res) => {
   const { eventId } = req.body;
   if (!eventId) {
@@ -62,7 +60,6 @@ exports.uploadEventImages = async (req, res) => {
     const urls = await Promise.all(uploadPromises);
     res.json({ urls });
   } catch (err) {
-    console.error("Error uploading images:", err);
     res.status(500).json({ error: "Upload failed" });
   }
 };
@@ -128,7 +125,6 @@ exports.uploadProfileImage = async (req, res) => {
     const url = `https://${bucket}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
     res.json({ url });
   } catch (err) {
-    console.error("Error uploading profile image:", err);
     res.status(500).json({ error: "Upload failed" });
   }
 };
