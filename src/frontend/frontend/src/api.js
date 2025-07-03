@@ -238,3 +238,17 @@ export async function uploadEventImages(eventId, files) {
   if (!res.ok) throw new Error("Image upload failed");
   return (await res.json()).urls;
 }
+
+export async function uploadProfileImage(userId, file) {
+  const formData = new FormData();
+  formData.append("userId", userId);
+  formData.append("profileImage", file);
+
+  const res = await fetch(`${URL}/upload/user-profile`, {
+    method: "POST",
+    body: formData,
+    credentials: "include",
+  });
+  if (!res.ok) throw new Error("Profile image upload failed");
+  return (await res.json()).url;
+}
