@@ -20,8 +20,7 @@ function App() {
           path="/suggested"
           element={
             <WithAuth>
-              {" "}
-              <SuggestedPage />{" "}
+              <SuggestedPage />
             </WithAuth>
           }
         />
@@ -29,8 +28,7 @@ function App() {
           path="/profile"
           element={
             <WithAuth>
-              {" "}
-              <ProfilePage />{" "}
+              <ProfilePage />
             </WithAuth>
           }
         />
@@ -38,8 +36,7 @@ function App() {
           path="/friends"
           element={
             <WithAuth>
-              {" "}
-              <FriendsPage />{" "}
+              <FriendsPage />
             </WithAuth>
           }
         />
@@ -47,8 +44,7 @@ function App() {
           path="/create-event"
           element={
             <WithAuth>
-              {" "}
-              <CreateEventPage />{" "}
+              <CreateEventPage />]
             </WithAuth>
           }
         />
