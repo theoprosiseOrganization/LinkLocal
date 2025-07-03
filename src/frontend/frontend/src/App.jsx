@@ -45,7 +45,7 @@ function App() {
           path="/create-event"
           element={
             <WithAuth>
-              <CreateEventPage />]
+              <CreateEventPage />
             </WithAuth>
           }
         />

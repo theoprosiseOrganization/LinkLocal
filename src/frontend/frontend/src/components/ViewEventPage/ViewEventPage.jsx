@@ -15,7 +15,7 @@
  * @returns {JSX.Element} The rendered ViewEventPage component.
  */
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import Layout from "../Layout/Layout";
 import HorizontalScroll from "../HorizontalScroll/HorizontalScroll";
 import { getUserById, getEventById } from "../../api";
@@ -68,25 +68,52 @@ export default function ViewEventPage() {
     <Layout>
       <div className="view-event-page max-w-2xl mx-auto p-4">
         <h1 className="text-2xl font-bold mb-2">{event.title}</h1>
-        <div className="profile-avatar">
-          {event.user.avatar ? (
-            <img
-              src={event.user.avatar}
-              alt="Profile"
-              style={{
-                width: 80,
-                height: 80,
-                borderRadius: "80%",
-                objectFit: "cover",
-              }}
-            />
-          ) : event.user.name ? (
-            event.user.name[0].toUpperCase()
-          ) : (
-            "?"
-          )}
+        <div className="flex items-center gap-2 mb-4">
+          <Link
+            to={`/view-user/${event.user.id}`}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              textDecoration: "none",
+              color: "inherit",
+              gap: "0.5rem",
+              cursor: "pointer",
+            }}
+            className="hover:underline focus:outline-none"
+          >
+            {event.user.avatar ? (
+              <img
+                src={event.user.avatar}
+                alt="Profile"
+                style={{
+                  width: 32,
+                  height: 32,
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                }}
+              />
+            ) : event.user.name ? (
+              <span
+                style={{
+                  display: "inline-flex",
+                  width: 32,
+                  height: 32,
+                  borderRadius: "50%",
+                  background: "#ccc",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontWeight: "bold",
+                  fontSize: 16,
+                }}
+              >
+                {event.user.name[0].toUpperCase()}
+              </span>
+            ) : (
+              "?"
+            )}
+            <span className="text-gray-400">{event.user.name}</span>
+          </Link>
         </div>
-        <p className="mb-4 text-gray-400">{event.user.name}</p>
         {event.images && event.images.length > 0 && (
           <HorizontalScroll images={event.images} />
         )}

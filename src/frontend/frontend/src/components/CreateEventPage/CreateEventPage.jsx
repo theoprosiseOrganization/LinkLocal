@@ -17,7 +17,7 @@ import { Input } from "../../../components/ui/input";
 import { Label } from "../../../components/ui/label";
 import { Button } from "../../../components/ui/button";
 import React, { useState, useRef } from "react";
-import { createEvent, uploadEventImages } from "../../api";
+import { createEvent, uploadEventImages, getSessionUserId } from "../../api";
 import LocationAutocomplete from "../LocationAutocomplete/LocationAutocomplete";
 import { APIProvider } from "@vis.gl/react-google-maps";
 
@@ -69,18 +69,16 @@ export default function CreateEventPage() {
     // Fetch userId from session
     let userId = null;
     try {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_DB_URL || "http://localhost:3000"}/auth/me`,
-        { method: "POST", credentials: "include" }
-      );
-      if (res.ok) {
-        const data = await res.json();
-        userId = data.userId;
+      userId = await getSessionUserId();
+      if (!userId) {
+      alert("Could not get user session.");
+      return;
       }
     } catch (err) {
       alert("Could not get user session.");
       return;
     }
+
 
     let event;
     try {
