@@ -18,7 +18,6 @@ import {
   CardHeader,
   CardTitle,
 } from "../../../components/ui/card";
-import { Button } from "../../../components/ui/button";
 import "./EventCard.css";
 import HorizontalScroll from "../HorizontalScroll/HorizontalScroll";
 import ViewEventButton from "../ViewEventPage/ViewEventButton";

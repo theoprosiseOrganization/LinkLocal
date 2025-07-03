@@ -41,7 +41,9 @@ export default function HomePage() {
           <MapComponent events={eventsToDisplay}/>
         </div>
         <div className="homepage-right">
+          <div className="vertical-events-container">
           <VerticalEvents events={eventsToDisplay} />
+          </div>
         </div>
       </div>
     </Layout>

@@ -21,9 +21,9 @@ import {
   Map,
   AdvancedMarker,
   useAdvancedMarkerRef,
-  CollisionBehavior,
   InfoWindow,
 } from "@vis.gl/react-google-maps";
+import ViewEventButton from "../ViewEventPage/ViewEventButton";
 
 const MAPS_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
@@ -51,20 +51,16 @@ export default function MapComponent({
   users = [],
   currentLocation,
 }) {
-  const [markerRef, marker] = useAdvancedMarkerRef();
-  const [hoverId, setHoverId] = useState(null);
   const [selectedId, setSelectedId] = useState(null);
   const [selectedMarker, setSelectedMarker] = useState(null);
-  const [infoWindow, setInfoWindow] = useState(false);
   const [infoWindowShown, setInfoWindowShown] = useState(false);
+  const [closeInfoWindow, setCloseInfoWindow] = useState(false);
 
-  const onMouseEnter = useCallback((id) => setHoverId(id), []);
-  const onMouseLeave = useCallback(() => setHoverId(null), []);
   const onMarkerClick = useCallback(
     (id, marker) => {
-      setSelectedId(id);
-      if (marker) setSelectedMarker(marker);
       if (id !== selectedId) {
+        setSelectedId(id);
+        setSelectedMarker(marker);
         setInfoWindowShown(true);
       } else {
         setInfoWindowShown((shown) => !shown);
@@ -132,8 +128,6 @@ export default function MapComponent({
                   lng: event.location.longitude,
                 }}
                 onMarkerClick={(marker) => onMarkerClick(event.id, marker)}
-                onMouseEnter={() => onMouseEnter(event.id)}
-                onMouseLeave={onMouseLeave}
                 title={event.title}
               />
             ) : null
@@ -144,13 +138,25 @@ export default function MapComponent({
               anchor={selectedMarker}
               onCloseClick={handleInfoWindowCloseClick}
             >
-              <div>
-                <h2>
+              <div
+                style={{
+                  background: "#1a202c",
+                  color: "#fff",
+                  padding: "16px",
+                  borderRadius: "8px",
+                  minWidth: "180px",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+                }}
+              >
+                <h2 style={{ color: "#fff", margin: "0 0 8px 0" }}>
                   {events.find((ev) => ev.id === selectedId)?.title || "Event"}
                 </h2>
-                <p>
-                  {events.find((ev) => ev.id === selectedId)?.textDescription ||
-                    "No description"}
+                <p style={{ color: "#fff", margin: 0 }}>
+                  {events.find((ev) => ev.id === selectedId) ? (
+                    <ViewEventButton eventId={selectedId} />
+                  ) : (
+                    " No event found"
+                  )}
                 </p>
               </div>
             </InfoWindow>
