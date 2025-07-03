@@ -18,9 +18,9 @@ import {
   CardHeader,
   CardTitle,
 } from "../../../components/ui/card";
-import { Button } from "../../../components/ui/button";
 import "./EventCard.css";
 import HorizontalScroll from "../HorizontalScroll/HorizontalScroll";
+import ViewEventButton from "../ViewEventPage/ViewEventButton";
 
 export default function EventCard({ event }) {
   if (!event) return null;
@@ -33,9 +33,7 @@ export default function EventCard({ event }) {
           {event.textDescription || "No description"}
         </CardDescription>
         <CardAction>
-          <Button variant="link" className="event-card-button">
-            View Event
-          </Button>
+          <ViewEventButton eventId={event.id} />
         </CardAction>
       </CardHeader>
       <CardContent>

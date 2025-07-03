@@ -73,6 +73,21 @@ export async function getAllEvents() {
   return response;
 }
 
+export async function getEventById(eventId) {
+  const res = await fetch(`${URL}/events/${eventId}`, {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  const response = await res.json();
+  if (!res.ok) {
+    throw new Error(response.error || "Failed to fetch event");
+  }
+  return response;
+}
+
 export async function getUserEvents(userId) {
   const res = await fetch(`${URL}/users/${userId}/events`, {
     method: "GET",

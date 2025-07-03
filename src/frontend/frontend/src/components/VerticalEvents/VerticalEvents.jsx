@@ -1,11 +1,11 @@
 /**
  * VerticalEvents Component
- * 
+ *
  * This component displays a vertical carousel of events.
  * Each event is represented by an EventCard component.
  * The carousel allows users to scroll through events vertically.
  * If there are no events, a message is displayed indicating that there are no events to show
- * 
+ *
  * @component
  * @example
  * <VerticalEvents events={eventsArray} />
@@ -25,18 +25,21 @@ import EventCard from "../EventCard/EventCard";
 export default function VerticalEvents({ events = [] }) {
   return (
     <Carousel
-      opts={{ align: "start" }}
+      opts={{ align: "start", loop: "true" }}
       orientation="vertical"
-      className="w-full max-w-xs"
+      className="w-full max-w-xs h-full"
     >
-      <CarouselContent className={`-mt-1 h-[600px}`}>
+      <CarouselContent className={`-mt-1 h-80%`}>
         {events.length === 0 ? (
           <div className="p-4 text-center text-gray-400">
             No events to display
           </div>
         ) : (
           events.map((event, index) => (
-            <CarouselItem key={event.id || index} className="pt-1 md:basis-1/3">
+            <CarouselItem
+              key={event.id || index}
+              className="md:basis-1/2 lg:basis-1/3"
+            >
               <div className="p-1">
                 <EventCard event={event} />
               </div>

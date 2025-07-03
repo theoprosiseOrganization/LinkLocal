@@ -1,6 +1,6 @@
 /**
  * ProfilePage.jsx
- * 
+ *
  * This component displays the user's profile information and their events.
  * It allows the user to edit their profile details such as name and location.
  * The profile information is fetched from the API, and the user can update it through a dialog.
@@ -75,12 +75,11 @@ export default function ProfilePage() {
     }
   }, [userData]);
 
-
-  /**   
+  /**
    * Handles the profile update form submission.
    * It uploads a new profile image if one is selected,
    * and updates the user's profile with the new name, location, and avatar URL.
-   * 
+   *
    * @param {Event} e - The form submission event.
    * @returns {Promise<void>} A promise that resolves when the profile is updated.
    * @throws {Error} If the profile update fails or if the image upload fails.

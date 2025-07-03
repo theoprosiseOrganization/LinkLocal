@@ -6,10 +6,10 @@
  * and images. The component handles form submission, image uploads,
  * and integrates with Google Maps for location selection.
  *
- *  @component CreateEventPage
- *  @example
- *  <CreateEventPage />
- *  @returns {JSX.Element} A component containing the Create Event page content.
+ * @component CreateEventPage
+ * @example
+ * <CreateEventPage />
+ * @returns {JSX.Element} A component containing the Create Event page content.
  */
 
 import Layout from "../Layout/Layout";
@@ -17,7 +17,7 @@ import { Input } from "../../../components/ui/input";
 import { Label } from "../../../components/ui/label";
 import { Button } from "../../../components/ui/button";
 import React, { useState, useRef } from "react";
-import { createEvent, uploadEventImages } from "../../api";
+import { createEvent, uploadEventImages, getSessionUserId } from "../../api";
 import LocationAutocomplete from "../LocationAutocomplete/LocationAutocomplete";
 import { APIProvider } from "@vis.gl/react-google-maps";
 
@@ -48,8 +48,8 @@ export default function CreateEventPage() {
    * auth/me`.
    * 3. Calls the `createEvent` function with the event data, including
    * the user ID, location, title, and description.
-   * 4. If images are provided, it uploads them using the `uploadEventImages
-   * ` function, which returns an array of image URLs.
+   * 4. If images are provided, it uploads them using the `uploadEventImages`
+   * function, which returns an array of image URLs.
    * 5. Updates the event with the image URLs if any images were uploaded.
    * 6. Resets the form state and file input after successful event creation.
    *
@@ -69,18 +69,16 @@ export default function CreateEventPage() {
     // Fetch userId from session
     let userId = null;
     try {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_DB_URL || "http://localhost:3000"}/auth/me`,
-        { method: "POST", credentials: "include" }
-      );
-      if (res.ok) {
-        const data = await res.json();
-        userId = data.userId;
+      userId = await getSessionUserId();
+      if (!userId) {
+      alert("Could not get user session.");
+      return;
       }
     } catch (err) {
       alert("Could not get user session.");
       return;
     }
+
 
     let event;
     try {
