@@ -1,19 +1,34 @@
 const { PrismaClient } = require("../../generated/prisma");
 const { v4: uuidv4 } = require("uuid");
-
 const prisma = new PrismaClient();
 const bcrypt = require("bcrypt");
 const express = require("express");
+const joi = require("joi");
+
+const userSchema = joi.object({
+  name: joi.string().required(),
+  email: joi.string().email().required(),
+  password: joi.string().min(7).max(80).required(),
+  location: joi
+    .object({
+      latitude: joi.number().required(),
+      longitude: joi.number().required(),
+      address: joi.string().required(),
+    })
+    .required(),
+});
 
 exports.signup = async (req, res) => {
   const { name, email, password, location } = req.body;
-  if (!name || !email || !password || !location) {
-    return res.status(400).json({ error: "All fields are required." });
-  }
-  if (password.length < 7) {
-    return res
-      .status(400)
-      .json({ error: "Password must be at least 7 characters long." });
+  // Validate input using Joi schema
+  const { error } = userSchema.validate({
+    name,
+    email,
+    password,
+    location,
+  });
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
   }
   const existingUser = await prisma.user.findUnique({
     where: { email },

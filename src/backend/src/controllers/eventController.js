@@ -1,6 +1,21 @@
 const { PrismaClient } = require("../../generated/prisma");
 const prisma = new PrismaClient();
 const { v4: uuidv4 } = require("uuid");
+const joi = require("joi");
+
+const eventSchema = joi.object({
+  userId: joi.string().uuid().required(),
+  images: joi.array().items(joi.string().uri()).required(),
+  location: joi
+    .object({
+      latitude: joi.number().required(),
+      longitude: joi.number().required(),
+      address: joi.string().required(),
+    })
+    .required(),
+  textDescription: joi.string().required(),
+  title: joi.string().required(),
+});
 
 exports.getEvents = async (req, res) => {
   try {
@@ -51,8 +66,16 @@ const getEventLocation = async (eventId) => {
 
 exports.createEvent = async (req, res) => {
   const { userId, images, location, textDescription, title } = req.body;
-  if (!userId || !images || !location || !textDescription || !title) {
-    return res.status(400).json({ error: "All fields are required." });
+  // Validate input using Joi schema
+  const { error } = eventSchema.validate({
+    userId,
+    images,
+    location,
+    textDescription,
+    title,
+  });
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
   }
   try {
     const event = await prisma.event.create({

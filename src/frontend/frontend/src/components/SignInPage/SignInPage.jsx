@@ -26,30 +26,14 @@ import React, { useState } from "react";
 import { loginUser } from "../../api";
 import { useNavigate } from "react-router";
 
-/**
- * SignInPage component function.
- *
- * @function SignInPage
- * @returns {JSX.Element} The JSX element representing the sign in page.
- */
 export default function SignInPage() {
-  /**
-   * State variable to store the user's login data (email and password).
-   *
-   * @type {Object}
-   * @property {string} email - The user's email address.
-   * @property {string} password - The user's password.
-   */
+  const [showPassword, setShowPassword] = useState(false);
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
 
-  /**
-   * Updates user data on changes to the form input fields.
-   *
-   * @param {Event} e - The event object triggered by the input field change.
-   */
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -57,11 +41,6 @@ export default function SignInPage() {
     });
   };
 
-  /**
-   * Checks the form submission and redirects to profile if successful.
-   *
-   * @param {Event} e - The event object triggered by the form submission.
-   */
   const handleSubmit = (e) => {
     e.preventDefault();
     const { email, password } = formData;
@@ -109,12 +88,19 @@ export default function SignInPage() {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <div className="flex items-center">
+                  <div className="flex items-center justify-between">
                     <Label htmlFor="password">Password</Label>
+                    <button
+                      type="button"
+                      className="text-sm text-blue-600 hover:underline focus:outline-none"
+                      onClick={() => setShowPassword((prev) => !prev)}
+                    >
+                      {showPassword ? "Hide" : "Show"}
+                    </button>
                   </div>
                   <Input
                     id="password"
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     value={formData.password}
                     onChange={handleChange}
                     required
