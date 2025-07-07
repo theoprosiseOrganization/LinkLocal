@@ -17,6 +17,7 @@
 import Layout from "../Layout/Layout";
 import CreateEventButton from "../CreateEventPage/CreateEventButton";
 import VerticalEvents from "../VerticalEvents/VerticalEvents";
+import LocationAutocomplete from "../LocationAutocomplete/LocationAutocomplete";
 import "./ProfilePage.css";
 import {
   getUserById,
@@ -39,6 +40,7 @@ import {
 } from "../../../components/ui/dialog";
 import { Input } from "../../../components/ui/input";
 import { Label } from "../../../components/ui/label";
+import { APIProvider } from "@vis.gl/react-google-maps";
 
 export default function ProfilePage() {
   const [userData, setUserData] = useState(null);
@@ -71,7 +73,9 @@ export default function ProfilePage() {
   useEffect(() => {
     if (userData) {
       setEditName(userData.name || "");
-      setEditLocation(userData.location || "");
+      setEditLocation(
+        userData.location || { address: "", latitude: 0, longitude: 0 }
+      );
     }
   }, [userData]);
 
@@ -118,98 +122,103 @@ export default function ProfilePage() {
   };
 
   return (
-    <Layout>
-      <div className="profilepage-split">
-        <div className="profilepage-left">
-          <h2 className="events-title">Your Events</h2>
-          <VerticalEvents events={userEvents} />
-          <CreateEventButton />
-        </div>
-        <div className="profilepage-right">
-          {userData ? (
-            <div className="profile-card">
-              <div className="profile-avatar">
-                {userData.avatar ? (
-                  <img
-                    src={userData.avatar}
-                    alt="Profile"
-                    style={{
-                      width: 80,
-                      height: 80,
-                      borderRadius: "50%",
-                      objectFit: "cover",
-                    }}
-                  />
-                ) : userData.name ? (
-                  userData.name[0].toUpperCase()
-                ) : (
-                  "?"
-                )}
-              </div>
-              <div className="profile-info">
-                <h2>{userData.name}</h2>
-                <p>{userData.email}</p>
-                <p>{userData.location.address}</p>
-              </div>
-            </div>
-          ) : (
-            <div>No User Data Found...</div>
-          )}
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="outline">Edit Profile</Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Edit Profile</DialogTitle>
-                <DialogDescription>
-                  Make changes to your profile here. Click save when you&apos;re
-                  done.
-                </DialogDescription>
-              </DialogHeader>
-              <form onSubmit={handleProfileUpdate}>
-                <div className="grid gap-4">
-                  <div className="grid gap-3">
-                    <Label htmlFor="username-1">Username</Label>
-                    <Input
-                      id="username-1"
-                      name="username"
-                      value={editName}
-                      onChange={(e) => setEditName(e.target.value)}
+    <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
+      <Layout>
+        <div className="profilepage-split">
+          <div className="profilepage-left">
+            <h2 className="events-title">Your Events</h2>
+            <VerticalEvents events={userEvents} />
+            <CreateEventButton />
+          </div>
+          <div className="profilepage-right">
+            {userData ? (
+              <div className="profile-card">
+                <div className="profile-avatar">
+                  {userData.avatar ? (
+                    <img
+                      src={userData.avatar}
+                      alt="Profile"
+                      style={{
+                        width: 80,
+                        height: 80,
+                        borderRadius: "50%",
+                        objectFit: "cover",
+                      }}
                     />
-                  </div>
-                  <div className="grid gap-3">
-                    <Label htmlFor="location-1">Profile Picture</Label>
-                    <Input
-                      id="picture"
-                      type="file"
-                      accept="image/*"
-                      ref={fileInputRef}
-                    />
-                  </div>
-                  <div className="grid gap-3">
-                    <Label htmlFor="location-1">Location</Label>
-                    <Input
-                      id="location-1"
-                      name="location"
-                      value={editLocation}
-                      onChange={(e) => setEditLocation(e.target.value)}
-                    />
-                  </div>
+                  ) : userData.name ? (
+                    userData.name[0].toUpperCase()
+                  ) : (
+                    "?"
+                  )}
                 </div>
-                <div className="mt-6 flex justify-end gap-2">
-                  <DialogClose asChild>
-                    <Button variant="outline">Cancel</Button>
-                  </DialogClose>
-                  <DialogClose asChild>
-                    <Button type="submit">Save changes</Button>
-                  </DialogClose>
+                <div className="profile-info">
+                  <h2>{userData.name}</h2>
+                  <p>{userData.email}</p>
+                  <p>{userData.location.address}</p>
                 </div>
-              </form>
-            </DialogContent>
-          </Dialog>
+              </div>
+            ) : (
+              <div>No User Data Found...</div>
+            )}
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="outline">Edit Profile</Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle>Edit Profile</DialogTitle>
+                  <DialogDescription>
+                    Make changes to your profile here. Click save when
+                    you&apos;re done.
+                  </DialogDescription>
+                </DialogHeader>
+                <form onSubmit={handleProfileUpdate}>
+                  <div className="grid gap-4">
+                    <div className="grid gap-3">
+                      <Label htmlFor="username-1">Username</Label>
+                      <Input
+                        id="username-1"
+                        name="username"
+                        value={editName}
+                        onChange={(e) => setEditName(e.target.value)}
+                      />
+                    </div>
+                    <div className="grid gap-3">
+                      <Label htmlFor="location-1">Profile Picture</Label>
+                      <Input
+                        id="picture"
+                        type="file"
+                        accept="image/*"
+                        ref={fileInputRef}
+                      />
+                    </div>
+                    <div className="grid gap-2">
+                      <Label htmlFor="location-1">Location</Label>
+                      <LocationAutocomplete
+                        onPlaceSelect={(place) => {
+                          setEditLocation({
+                            address: place.Dg.formattedAddress,
+                            latitude: place.Dg.location.lat,
+                            longitude: place.Dg.location.lng,
+                          });
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div className="mt-6 flex justify-end gap-2">
+                    <DialogClose asChild>
+                      <Button variant="outline">Cancel</Button>
+                    </DialogClose>
+                    <DialogClose asChild>
+                      <Button type="submit">Save changes</Button>
+                    </DialogClose>
+                  </div>
+                </form>
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
-      </div>
-    </Layout>
+      </Layout>
+    </APIProvider>
   );
 }

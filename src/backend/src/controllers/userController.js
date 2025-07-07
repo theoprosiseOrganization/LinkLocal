@@ -73,11 +73,10 @@ const updateUserLocation = async (userId, latitude, longitude, address) => {
 
 exports.updateUser = async (req, res) => {
   const updateData = {};
-  if (req.body.name !== undefined) updateData.name = req.body.name;
-  if (req.body.email !== undefined) updateData.email = req.body.email;
-  if (req.body.avatar !== undefined) updateData.avatar = req.body.avatar;
-  if (req.body.preferences !== undefined)
-    updateData.preferences = req.body.preferences;
+  for (const key of Object.keys(req.body)) {
+    if (key === "location") continue; // handle location separately
+    if (req.body[key] !== undefined) updateData[key] = req.body[key];
+  }
 
   try {
     const user = await prisma.user.update({
