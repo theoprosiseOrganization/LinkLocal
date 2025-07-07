@@ -6,7 +6,6 @@
  * The profile information is fetched from the API, and the user can update it through a dialog.
  * The user's events are displayed in a vertical carousel format.
  *
- * NEED TO FIX PROFILE EDITING - use autocomplete for location
  *
  * @component
  * @example
@@ -19,6 +18,7 @@ import CreateEventButton from "../CreateEventPage/CreateEventButton";
 import VerticalEvents from "../VerticalEvents/VerticalEvents";
 import LocationAutocomplete from "../LocationAutocomplete/LocationAutocomplete";
 import "./ProfilePage.css";
+import TagsSearch from "../Tags/TagsSearch";
 import {
   getUserById,
   getUserEvents,
@@ -41,12 +41,14 @@ import {
 import { Input } from "../../../components/ui/input";
 import { Label } from "../../../components/ui/label";
 import { APIProvider } from "@vis.gl/react-google-maps";
+import { Tag } from "lucide-react";
 
 export default function ProfilePage() {
   const [userData, setUserData] = useState(null);
   const [userEvents, setUserEvents] = useState([]);
   const [editName, setEditName] = useState("");
   const [editLocation, setEditLocation] = useState("");
+  const [editTags, setEditTags] = useState([]);
   const fileInputRef = useRef();
 
   /**
@@ -115,6 +117,7 @@ export default function ProfilePage() {
         name: editName,
         location: editLocation,
         avatar: avatarUrl,
+        tags: editTags,
       });
     } catch (err) {
       alert("Failed to update profile");
@@ -122,103 +125,121 @@ export default function ProfilePage() {
   };
 
   return (
-    <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
-      <Layout>
-        <div className="profilepage-split">
-          <div className="profilepage-left">
-            <h2 className="events-title">Your Events</h2>
-            <VerticalEvents events={userEvents} />
-            <CreateEventButton />
-          </div>
-          <div className="profilepage-right">
-            {userData ? (
-              <div className="profile-card">
-                <div className="profile-avatar">
-                  {userData.avatar ? (
-                    <img
-                      src={userData.avatar}
-                      alt="Profile"
-                      style={{
-                        width: 80,
-                        height: 80,
-                        borderRadius: "50%",
-                        objectFit: "cover",
-                      }}
-                    />
-                  ) : userData.name ? (
-                    userData.name[0].toUpperCase()
-                  ) : (
-                    "?"
-                  )}
-                </div>
-                <div className="profile-info">
-                  <h2>{userData.name}</h2>
-                  <p>{userData.email}</p>
-                  <p>{userData.location.address}</p>
-                </div>
-              </div>
-            ) : (
-              <div>No User Data Found...</div>
-            )}
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button variant="outline">Edit Profile</Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-[425px]">
-                <DialogHeader>
-                  <DialogTitle>Edit Profile</DialogTitle>
-                  <DialogDescription>
-                    Make changes to your profile here. Click save when
-                    you&apos;re done.
-                  </DialogDescription>
-                </DialogHeader>
-                <form onSubmit={handleProfileUpdate}>
-                  <div className="grid gap-4">
-                    <div className="grid gap-3">
-                      <Label htmlFor="username-1">Username</Label>
-                      <Input
-                        id="username-1"
-                        name="username"
-                        value={editName}
-                        onChange={(e) => setEditName(e.target.value)}
-                      />
-                    </div>
-                    <div className="grid gap-3">
-                      <Label htmlFor="location-1">Profile Picture</Label>
-                      <Input
-                        id="picture"
-                        type="file"
-                        accept="image/*"
-                        ref={fileInputRef}
-                      />
-                    </div>
-                    <div className="grid gap-2">
-                      <Label htmlFor="location-1">Location</Label>
-                      <LocationAutocomplete
-                        onPlaceSelect={(place) => {
-                          setEditLocation({
-                            address: place.Dg.formattedAddress,
-                            latitude: place.Dg.location.lat,
-                            longitude: place.Dg.location.lng,
-                          });
+    console.log("profile data", userData),
+    (
+      <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
+        <Layout>
+          <div className="profilepage-split">
+            <div className="profilepage-left">
+              <h2 className="events-title">Your Events</h2>
+              <VerticalEvents events={userEvents} />
+              <CreateEventButton />
+            </div>
+            <div className="profilepage-right">
+              {userData ? (
+                <div className="profile-card">
+                  <div className="profile-avatar">
+                    {userData.avatar ? (
+                      <img
+                        src={userData.avatar}
+                        alt="Profile"
+                        style={{
+                          width: 80,
+                          height: 80,
+                          borderRadius: "50%",
+                          objectFit: "cover",
                         }}
                       />
+                    ) : userData.name ? (
+                      userData.name[0].toUpperCase()
+                    ) : (
+                      "?"
+                    )}
+                  </div>
+                  <div className="profile-info">
+                    <h2>{userData.name}</h2>
+                    <p>{userData.email}</p>
+                    <p>{userData.location.address}</p>
+                  </div>
+                </div>
+              ) : (
+                <div>No User Data Found...</div>
+              )}
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline">Edit Profile</Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">
+                  <DialogHeader>
+                    <DialogTitle>Edit Profile</DialogTitle>
+                    <DialogDescription>
+                      Make changes to your profile here. Click save when
+                      you&apos;re done.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <form onSubmit={handleProfileUpdate}>
+                    <div className="grid gap-4">
+                      <div className="grid gap-3">
+                        <Label htmlFor="username-1">Username</Label>
+                        <Input
+                          id="username-1"
+                          name="username"
+                          value={editName}
+                          onChange={(e) => setEditName(e.target.value)}
+                        />
+                      </div>
+                      <div className="grid gap-3">
+                        <Label htmlFor="location-1">Profile Picture</Label>
+                        <Input
+                          id="picture"
+                          type="file"
+                          accept="image/*"
+                          ref={fileInputRef}
+                        />
+                      </div>
+                      <div className="grid gap-2">
+                        <Label htmlFor="location-1">Location</Label>
+                        <LocationAutocomplete
+                          onPlaceSelect={(place) => {
+                            setEditLocation({
+                              address: place.Dg.formattedAddress,
+                              latitude: place.Dg.location.lat,
+                              longitude: place.Dg.location.lng,
+                            });
+                          }}
+                        />
+                      </div>
+                      <div className="grid gap-3">
+                        <Label>Tags</Label>
+                        {Array.isArray(userData?.tags) ? (
+                          <TagsSearch
+                            tags={userData.tags}
+                            onTagSelect={(selectedTags) => {
+                              setEditTags(selectedTags);
+                            }}
+                          />
+                        ) : (
+                          <div style={{ color: "gray", fontSize: "0.9em" }}>
+                            No tags found.
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                  <div className="mt-6 flex justify-end gap-2">
-                    <DialogClose asChild>
-                      <Button variant="outline">Cancel</Button>
-                    </DialogClose>
-                    <DialogClose asChild>
-                      <Button type="submit">Save changes</Button>
-                    </DialogClose>
-                  </div>
-                </form>
-              </DialogContent>
-            </Dialog>
+                    <div className="mt-6 flex justify-end gap-2">
+                      <DialogClose asChild>
+                        <Button variant="outline">Cancel</Button>
+                      </DialogClose>
+                      <DialogClose asChild>
+                        <Button type="submit">Save changes</Button>
+                      </DialogClose>
+                    </div>
+                  </form>
+                </DialogContent>
+              </Dialog>
+            </div>
           </div>
-        </div>
-      </Layout>
-    </APIProvider>
+        </Layout>
+      </APIProvider>
+    )
   );
 }

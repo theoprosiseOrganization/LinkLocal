@@ -22,7 +22,7 @@ exports.getUsers = async (req, res) => {
 
 exports.getUserById = async (req, res) => {
   try {
-    const user = await prisma.user.findUnique({ where: { id: req.params.id } });
+    const user = await prisma.user.findUnique({ where: { id: req.params.id }, include: { tags: true } });
     if (!user) return res.status(404).json({ error: "User not found" });
     // Fetch user location
     const location = await getUserLocation(user.id);
