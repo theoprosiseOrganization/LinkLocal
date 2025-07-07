@@ -16,9 +16,13 @@ import {
   PopoverTrigger,
 } from "../../../components/ui/popover";
 
-export default function TagsSearch({ tags = [], onTagSelect, onAddTag }) {
+export default function TagsSearch({
+  tags = [],
+  value = [],
+  onTagSelect,
+  onAddTag,
+}) {
   const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState([]);
   const [search, setSearch] = React.useState("");
 
   const handleSetValue = (val) => {
@@ -28,9 +32,9 @@ export default function TagsSearch({ tags = [], onTagSelect, onAddTag }) {
     } else {
       newValue = [...value, val];
     }
-    setValue(newValue);
     if (onTagSelect) {
-      onTagSelect(tags.filter((tag) => newValue.includes(tag.id)));
+        console.log("Selected tags:", newValue);
+      onTagSelect(newValue);
     }
   };
 
@@ -87,7 +91,7 @@ export default function TagsSearch({ tags = [], onTagSelect, onAddTag }) {
                 <CommandItem
                   key={tag.id}
                   value={tag.id}
-                  onSelect={() => handleSetValue(tag.id)}
+                  onSelect={() => handleSetValue(tag)}
                 >
                   <Check
                     className={cn(

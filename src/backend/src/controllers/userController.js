@@ -22,7 +22,10 @@ exports.getUsers = async (req, res) => {
 
 exports.getUserById = async (req, res) => {
   try {
-    const user = await prisma.user.findUnique({ where: { id: req.params.id }, include: { tags: true } });
+    const user = await prisma.user.findUnique({
+      where: { id: req.params.id },
+      include: { tags: true },
+    });
     if (!user) return res.status(404).json({ error: "User not found" });
     // Fetch user location
     const location = await getUserLocation(user.id);
@@ -74,7 +77,7 @@ const updateUserLocation = async (userId, latitude, longitude, address) => {
 exports.updateUser = async (req, res) => {
   const updateData = {};
   for (const key of Object.keys(req.body)) {
-    if (key === "location") continue; // handle location separately
+    if ((key === "location", key === "tags")) continue; // handle location and tags separately
     if (req.body[key] !== undefined) updateData[key] = req.body[key];
   }
 
@@ -91,6 +94,27 @@ exports.updateUser = async (req, res) => {
         req.body.location.longitude,
         req.body.location.address
       );
+    }
+
+    if (req.body.tags) {
+      // Disconnect all current tags
+      console.log("Disconnecting all current tags");
+      await prisma.user.update({
+        where: { id: req.params.id },
+        data: { tags: { set: [] } },
+      });
+      console.log("Disconnected all current tags");
+      // Connect new tags (array of tag IDs)
+      if (req.body.tags.length > 0) {
+        await prisma.user.update({
+          where: { id: req.params.id },
+          data: {
+            tags: {
+              connect: req.body.tags.map((tagId) => ({ id: tagId })),
+            },
+          },
+        });
+      }
     }
 
     res.json(user);
@@ -400,7 +424,7 @@ exports.getAllTags = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }
-}
+};
 
 exports.addUserTag = async (req, res) => {
   const { tag } = req.body; // tag is a string (name)
