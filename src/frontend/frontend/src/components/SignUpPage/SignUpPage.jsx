@@ -145,6 +145,9 @@ export default function SignUpPage() {
                       required
                     />
                   </div>
+                  <div className="text-sm text-gray-500">
+                    Password must be at least 8 characters long.
+                  </div>
                   <div className="grid gap-2">
                     <Button type="submit" className="w-full">
                       Sign Up
