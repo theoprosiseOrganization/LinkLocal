@@ -69,6 +69,8 @@ export default function ProfilePage() {
         setEditTags(user.tags || []);
         const events = await getUserEvents(userId);
         setUserEvents(events);
+        const allTags = await getAllTags();
+        setAllTags(allTags);
       } catch (err) {
         setUserData(null);
       }
@@ -129,7 +131,6 @@ export default function ProfilePage() {
   };
 
   return (
-    console.log("profile data", userData),
     (
       <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
         <Layout>

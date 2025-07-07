@@ -1,7 +1,7 @@
-import React from "react"
-import { Check, ChevronsUpDown, Plus } from "lucide-react"
-import { cn } from "../../../lib/utils"
-import { Button } from "../../../components/ui/button"
+import React from "react";
+import { Check, ChevronsUpDown, Plus } from "lucide-react";
+import { cn } from "../../../lib/utils";
+import { Button } from "../../../components/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -9,43 +9,45 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "../../../components/ui/command"
+} from "../../../components/ui/command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "../../../components/ui/popover"
+} from "../../../components/ui/popover";
 
 export default function TagsSearch({ tags = [], onTagSelect, onAddTag }) {
-  const [open, setOpen] = React.useState(false)
-  const [value, setValue] = React.useState([])
-  const [search, setSearch] = React.useState("")
+  const [open, setOpen] = React.useState(false);
+  const [value, setValue] = React.useState([]);
+  const [search, setSearch] = React.useState("");
 
   const handleSetValue = (val) => {
-    let newValue
+    let newValue;
     if (value.includes(val)) {
-      newValue = value.filter((item) => item !== val)
+      newValue = value.filter((item) => item !== val);
     } else {
-      newValue = [...value, val]
+      newValue = [...value, val];
     }
-    setValue(newValue)
+    setValue(newValue);
     if (onTagSelect) {
-      onTagSelect(tags.filter(tag => newValue.includes(tag.id)))
+      onTagSelect(tags.filter((tag) => newValue.includes(tag.id)));
     }
-  }
+  };
 
   const handleAddTag = () => {
     if (onAddTag && search.trim()) {
-      onAddTag(search.trim())
-      setSearch("")
+      onAddTag(search.trim());
+      setSearch("");
     }
-  }
+  };
 
   // Filter tags based on search input
-  const filteredTags = tags.filter(tag =>
+  const filteredTags = tags.filter((tag) =>
     tag.name.toLowerCase().includes(search.toLowerCase())
-  )
-  const tagExists = filteredTags.some(tag => tag.name.toLowerCase() === search.toLowerCase())
+  );
+  const tagExists = filteredTags.some(
+    (tag) => tag.name.toLowerCase() === search.toLowerCase()
+  );
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -111,5 +113,5 @@ export default function TagsSearch({ tags = [], onTagSelect, onAddTag }) {
         </Command>
       </PopoverContent>
     </Popover>
-  )
+  );
 }

@@ -269,7 +269,7 @@ export async function uploadProfileImage(userId, file) {
 }
 
 export async function getAllTags() {
-  const res = await fetch(`${URL}/users/tags`, {
+  const res = await fetch(`${URL}/users/preferences/tags`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

@@ -396,11 +396,9 @@ exports.getUserFollowing = async (req, res) => {
 exports.getAllTags = async (req, res) => {
   try {
     const tags = await prisma.tag.findMany();
-    console.log("HERE");
-    console.log("Tags fetched:", tags);
     res.json(tags);
   } catch (error) {
-    res.status(500).json({ error: "CANNOT TAGS" });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 }
 
