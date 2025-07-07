@@ -26,31 +26,14 @@ import React, { useState } from "react";
 import { loginUser } from "../../api";
 import { useNavigate } from "react-router";
 
-/**
- * SignInPage component function.
- *
- * @function SignInPage
- * @returns {JSX.Element} The JSX element representing the sign in page.
- */
 export default function SignInPage() {
   const [showPassword, setShowPassword] = useState(false);
-  /**
-   * State variable to store the user's login data (email and password).
-   *
-   * @type {Object}
-   * @property {string} email - The user's email address.
-   * @property {string} password - The user's password.
-   */
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
 
-  /**
-   * Updates user data on changes to the form input fields.
-   *
-   * @param {Event} e - The event object triggered by the input field change.
-   */
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -58,11 +41,6 @@ export default function SignInPage() {
     });
   };
 
-  /**
-   * Checks the form submission and redirects to profile if successful.
-   *
-   * @param {Event} e - The event object triggered by the form submission.
-   */
   const handleSubmit = (e) => {
     e.preventDefault();
     const { email, password } = formData;
