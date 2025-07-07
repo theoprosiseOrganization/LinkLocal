@@ -25,6 +25,8 @@ import {
   getSessionUserId,
   updateUserProfile,
   uploadProfileImage,
+  addUserTag,
+  getAllTags,
 } from "../../api";
 import React, { useRef, useEffect, useState } from "react";
 import { Button } from "../../../components/ui/button";
@@ -49,6 +51,7 @@ export default function ProfilePage() {
   const [editName, setEditName] = useState("");
   const [editLocation, setEditLocation] = useState("");
   const [editTags, setEditTags] = useState([]);
+  const [allTags, setAllTags] = useState([]);
   const fileInputRef = useRef();
 
   /**
@@ -63,6 +66,7 @@ export default function ProfilePage() {
         const userId = await getSessionUserId();
         const user = await getUserById(userId);
         setUserData(user);
+        setEditTags(user.tags || []);
         const events = await getUserEvents(userId);
         setUserEvents(events);
       } catch (err) {

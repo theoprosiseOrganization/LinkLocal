@@ -1,5 +1,5 @@
 import React from "react"
-import { Check, ChevronsUpDown } from "lucide-react"
+import { Check, ChevronsUpDown, Plus } from "lucide-react"
 import { cn } from "../../../lib/utils"
 import { Button } from "../../../components/ui/button"
 import {
@@ -16,9 +16,10 @@ import {
   PopoverTrigger,
 } from "../../../components/ui/popover"
 
-export default function TagsSearch({ tags = [], onTagSelect }) {
+export default function TagsSearch({ tags = [], onTagSelect, onAddTag }) {
   const [open, setOpen] = React.useState(false)
   const [value, setValue] = React.useState([])
+  const [search, setSearch] = React.useState("")
 
   const handleSetValue = (val) => {
     let newValue
@@ -29,10 +30,22 @@ export default function TagsSearch({ tags = [], onTagSelect }) {
     }
     setValue(newValue)
     if (onTagSelect) {
-      // Pass the selected tag objects, not just ids
       onTagSelect(tags.filter(tag => newValue.includes(tag.id)))
     }
   }
+
+  const handleAddTag = () => {
+    if (onAddTag && search.trim()) {
+      onAddTag(search.trim())
+      setSearch("")
+    }
+  }
+
+  // Filter tags based on search input
+  const filteredTags = tags.filter(tag =>
+    tag.name.toLowerCase().includes(search.toLowerCase())
+  )
+  const tagExists = filteredTags.some(tag => tag.name.toLowerCase() === search.toLowerCase())
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -60,11 +73,15 @@ export default function TagsSearch({ tags = [], onTagSelect }) {
       </PopoverTrigger>
       <PopoverContent className="w-[480px] p-0">
         <Command>
-          <CommandInput placeholder="Search tags..." />
+          <CommandInput
+            placeholder="Search tags..."
+            value={search}
+            onValueChange={setSearch}
+          />
           <CommandEmpty>No tags found.</CommandEmpty>
           <CommandGroup>
             <CommandList>
-              {tags.map((tag) => (
+              {filteredTags.map((tag) => (
                 <CommandItem
                   key={tag.id}
                   value={tag.id}
@@ -79,6 +96,16 @@ export default function TagsSearch({ tags = [], onTagSelect }) {
                   {tag.name}
                 </CommandItem>
               ))}
+              {!tagExists && search.trim() && (
+                <CommandItem
+                  value={search}
+                  onSelect={handleAddTag}
+                  className="text-green-600"
+                >
+                  <Plus className="mr-2 h-4 w-4" />
+                  Add "{search}"
+                </CommandItem>
+              )}
             </CommandList>
           </CommandGroup>
         </Command>
