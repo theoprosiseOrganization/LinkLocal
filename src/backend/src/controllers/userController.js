@@ -2,9 +2,9 @@
  * User Controller
  * Handles CRUD operations for users, including friends, events, and preferences.
  * Uses Prisma ORM for database interactions.
- * 
+ *
  * Need to remove unused functions and clean up the code.
- * 
+ *
  * @module userController
  */
 const { PrismaClient } = require("../../generated/prisma");
@@ -49,31 +49,6 @@ const getUserLocation = async (userId) => {
     latitude: parseFloat(latitude),
     longitude: parseFloat(longitude),
   };
-};
-
-exports.createUser = async (req, res) => {
-  // location stores { address, latitude, longitude }
-  const { name, email, password, avatar, location, preferences } = req.body;
-  if (!name || !email || !password || !location || !preferences) {
-    return res
-      .status(400)
-      .json({ error: "All required fields must be provided." });
-  }
-  try {
-    const user = await prisma.user.create({
-      data: { name, email, password, avatar, preferences },
-    });
-    // Wait for the user to be created before creating the location
-    await createUserLocation(
-      user.id,
-      location.latitude,
-      location.longitude,
-      location.address
-    );
-    res.status(201).json(user);
-  } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
-  }
 };
 
 const createUserLocation = async (userId, latitude, longitude, address) => {
