@@ -1,3 +1,5 @@
+CREATE EXTENSION IF NOT EXISTS postgis;
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" UUID NOT NULL,
@@ -45,6 +47,10 @@ CREATE TABLE "Event" (
     "title" TEXT NOT NULL,
     "images" TEXT[],
     "textDescription" TEXT NOT NULL,
+    "startTime" TIMESTAMP(3),
+    "endTime" TIMESTAMP(3),
+    "recurrenceRule" TEXT,
+    "recurrenceEnd" TIMESTAMP(3),
 
     CONSTRAINT "Event_pkey" PRIMARY KEY ("id")
 );
@@ -60,11 +66,35 @@ CREATE TABLE "event_locations" (
 );
 
 -- CreateTable
+CREATE TABLE "Tag" (
+    "id" UUID NOT NULL,
+    "name" TEXT NOT NULL,
+
+    CONSTRAINT "Tag_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "_LikedEvents" (
     "A" UUID NOT NULL,
     "B" UUID NOT NULL,
 
     CONSTRAINT "_LikedEvents_AB_pkey" PRIMARY KEY ("A","B")
+);
+
+-- CreateTable
+CREATE TABLE "_EventTags" (
+    "A" UUID NOT NULL,
+    "B" UUID NOT NULL,
+
+    CONSTRAINT "_EventTags_AB_pkey" PRIMARY KEY ("A","B")
+);
+
+-- CreateTable
+CREATE TABLE "_UserTags" (
+    "A" UUID NOT NULL,
+    "B" UUID NOT NULL,
+
+    CONSTRAINT "_UserTags_AB_pkey" PRIMARY KEY ("A","B")
 );
 
 -- CreateIndex
@@ -80,7 +110,16 @@ CREATE UNIQUE INDEX "UserPoly_userId_key" ON "UserPoly"("userId");
 CREATE UNIQUE INDEX "event_locations_eventId_key" ON "event_locations"("eventId");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Tag_name_key" ON "Tag"("name");
+
+-- CreateIndex
 CREATE INDEX "_LikedEvents_B_index" ON "_LikedEvents"("B");
+
+-- CreateIndex
+CREATE INDEX "_EventTags_B_index" ON "_EventTags"("B");
+
+-- CreateIndex
+CREATE INDEX "_UserTags_B_index" ON "_UserTags"("B");
 
 -- AddForeignKey
 ALTER TABLE "Follows" ADD CONSTRAINT "Follows_followerId_fkey" FOREIGN KEY ("followerId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -105,3 +144,15 @@ ALTER TABLE "_LikedEvents" ADD CONSTRAINT "_LikedEvents_A_fkey" FOREIGN KEY ("A"
 
 -- AddForeignKey
 ALTER TABLE "_LikedEvents" ADD CONSTRAINT "_LikedEvents_B_fkey" FOREIGN KEY ("B") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_EventTags" ADD CONSTRAINT "_EventTags_A_fkey" FOREIGN KEY ("A") REFERENCES "Event"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_EventTags" ADD CONSTRAINT "_EventTags_B_fkey" FOREIGN KEY ("B") REFERENCES "Tag"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_UserTags" ADD CONSTRAINT "_UserTags_A_fkey" FOREIGN KEY ("A") REFERENCES "Tag"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_UserTags" ADD CONSTRAINT "_UserTags_B_fkey" FOREIGN KEY ("B") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

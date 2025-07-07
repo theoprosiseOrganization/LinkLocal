@@ -151,13 +151,22 @@ exports.Prisma.EventScalarFieldEnum = {
   userId: 'userId',
   title: 'title',
   images: 'images',
-  textDescription: 'textDescription'
+  textDescription: 'textDescription',
+  startTime: 'startTime',
+  endTime: 'endTime',
+  recurrenceRule: 'recurrenceRule',
+  recurrenceEnd: 'recurrenceEnd'
 };
 
 exports.Prisma.EventLocationScalarFieldEnum = {
   id: 'id',
   streetAddress: 'streetAddress',
   eventId: 'eventId'
+};
+
+exports.Prisma.TagScalarFieldEnum = {
+  id: 'id',
+  name: 'name'
 };
 
 exports.Prisma.SortOrder = {
@@ -182,7 +191,8 @@ exports.Prisma.ModelName = {
   UserLocation: 'UserLocation',
   UserPoly: 'UserPoly',
   Event: 'Event',
-  EventLocation: 'EventLocation'
+  EventLocation: 'EventLocation',
+  Tag: 'Tag'
 };
 
 /**
