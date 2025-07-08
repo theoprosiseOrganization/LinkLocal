@@ -35,7 +35,8 @@ import { APIProvider } from "@vis.gl/react-google-maps";
 import TagsSearch from "../Tags/TagsSearch";
 
 export default function CreateEventPage() {
-  const [open, setOpen] = useState(false);
+  const [startPopoverOpen, setStartPopoverOpen] = useState(false);
+  const [endPopoverOpen, setEndPopoverOpen] = useState(false);
   const [startDate, setStartDate] = useState(new Date());
   const [startTime, setStartTime] = useState("10:30");
   const [endDate, setEndDate] = useState(new Date());
@@ -225,14 +226,21 @@ export default function CreateEventPage() {
                 required
               />
             </div>
+
             <div className="flex gap-4">
               {/* Start Date/Time */}
               <div className="flex flex-col gap-3">
-                <Label className="px-1">Start Date</Label>
-                <Popover open={open} onOpenChange={setOpen}>
+                <Label htmlFor="start-date-picker" className="px-1">
+                  Start Date
+                </Label>
+                <Popover
+                  open={startPopoverOpen}
+                  onOpenChange={setStartPopoverOpen}
+                >
                   <PopoverTrigger asChild>
                     <Button
                       variant="outline"
+                      id="start-date-picker"
                       className="w-32 justify-between font-normal"
                     >
                       {startDate
@@ -251,14 +259,19 @@ export default function CreateEventPage() {
                       captionLayout="dropdown"
                       onSelect={(date) => {
                         setStartDate(date);
-                        setOpen(false);
+                        setStartPopoverOpen(false);
                       }}
                     />
                   </PopoverContent>
                 </Popover>
-                <Label className="px-1">Start Time</Label>
+              </div>
+              <div className="flex flex-col gap-3">
+                <Label htmlFor="start-time-picker" className="px-1">
+                  Start Time
+                </Label>
                 <Input
                   type="time"
+                  id="start-time-picker"
                   value={startTime}
                   onChange={(e) => setStartTime(e.target.value)}
                   step="1"
@@ -268,7 +281,7 @@ export default function CreateEventPage() {
               {/* End Date/Time */}
               <div className="flex flex-col gap-3">
                 <Label className="px-1">End Date</Label>
-                <Popover open={open} onOpenChange={setOpen}>
+                <Popover open={endPopoverOpen} onOpenChange={setEndPopoverOpen}>
                   <PopoverTrigger asChild>
                     <Button
                       variant="outline"
@@ -288,11 +301,13 @@ export default function CreateEventPage() {
                       captionLayout="dropdown"
                       onSelect={(date) => {
                         setEndDate(date);
-                        setOpen(false);
+                        setEndPopoverOpen(false);
                       }}
                     />
                   </PopoverContent>
                 </Popover>
+              </div>
+              <div className="flex flex-col gap-3">
                 <Label className="px-1">End Time</Label>
                 <Input
                   type="time"
@@ -303,6 +318,7 @@ export default function CreateEventPage() {
                 />
               </div>
             </div>
+
             <div className="grid w-full max-w-sm items-center gap-3">
               <Label htmlFor="picture">Pictures (up to 5)</Label>
               <Input
