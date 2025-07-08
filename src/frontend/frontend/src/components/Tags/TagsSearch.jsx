@@ -54,9 +54,7 @@ export default function TagsSearch({
 
   const handleAddTag = () => {
     if (onAddTag && search.trim()) {
-      const normalized =
-        search.trim().charAt(0).toUpperCase() +
-        search.trim().slice(1).toLowerCase();
+      const normalized = search.trim();
       onAddTag(normalized);
       setSearch("");
     }
@@ -105,15 +103,21 @@ export default function TagsSearch({
           <CommandInput
             placeholder="Search tags..."
             value={search}
-            onValueChange={setSearch}
+            onValueChange={(val) => {
+              console.log("Search value changed:", val);
+              console.log("Filtered tags:", filteredTags);
+              setSearch(val);
+            }}
           />
-          <CommandEmpty>No tags found.</CommandEmpty>
           <CommandGroup>
             <CommandList>
+              {filteredTags.length === 0 && !(!tagExists && search.trim()) && (
+                <div className="px-4 py-2 text-gray-500">No tags found.</div>
+              )}
               {filteredTags.map((tag) => (
                 <CommandItem
                   key={tag.id}
-                  value={tag.id}
+                  value={tag.name}
                   onSelect={() => handleSetValue(tag.id)}
                 >
                   <Check
