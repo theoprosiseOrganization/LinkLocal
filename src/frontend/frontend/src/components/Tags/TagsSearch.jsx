@@ -3,7 +3,7 @@
  * A searchable and selectable tags input component with the ability to add new tags.
  * It uses a popover for the dropdown and allows users to select existing tags or add new ones.
  * Users can search through available tags, select them, and add new tags if they don't already exist.
- * 
+ *
  * @component
  * @param {Object} props - The component props.
  * @param {Array} props.tags - List of available tags.
@@ -54,7 +54,10 @@ export default function TagsSearch({
 
   const handleAddTag = () => {
     if (onAddTag && search.trim()) {
-      onAddTag(search.trim());
+      const normalized =
+        search.trim().charAt(0).toUpperCase() +
+        search.trim().slice(1).toLowerCase();
+      onAddTag(normalized);
       setSearch("");
     }
   };

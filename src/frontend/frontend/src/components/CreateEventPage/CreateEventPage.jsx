@@ -67,12 +67,16 @@ export default function CreateEventPage() {
    * 1. Prevents the default form submission behavior.
    * 2. Fetches the user ID from the session using a POST request to `/
    * auth/me`.
-   * 3. Calls the `createEvent` function with the event data, including
-   * the user ID, location, title, and description.
-   * 4. If images are provided, it uploads them using the `uploadEventImages`
+   * 3. Converts the selected tags into their names by mapping over
+   * the `selectedTags` array and finding the corresponding tag object in
+   * the `allTags` array.
+   *    If a tag is not found, it uses the tag ID as the name.
+   * 4. Calls the `createEvent` function with the event data, including
+   * the user ID, location, title, description, and tags.
+   * 5. If images are provided, it uploads them using the `uploadEventImages`
    * function, which returns an array of image URLs.
-   * 5. Updates the event with the image URLs if any images were uploaded.
-   * 6. Resets the form state and file input after successful event creation.
+   * 6. Updates the event with the image URLs if any images were uploaded.
+   * 7. Resets the form state and file input after successful event creation.  
    *
    * It must upload images separately, as image upload requires an event ID
    * to be created.
@@ -113,7 +117,7 @@ export default function CreateEventPage() {
         location: eventData.location,
         textDescription: eventData.textDescription,
         title: eventData.title,
-        tags: tagNames, // <-- Pass tags here
+        tags: tagNames,
       });
     } catch (err) {
       alert(err.message);
@@ -211,7 +215,7 @@ export default function CreateEventPage() {
               />
             </div>
             <div className="grid gap-3">
-              <Label>Preferences</Label>
+              <Label>Tags</Label>
               <TagsSearch
                 tags={allTags}
                 value={selectedTags}

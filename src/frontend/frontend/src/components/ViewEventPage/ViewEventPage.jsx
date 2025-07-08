@@ -134,6 +134,19 @@ export default function ViewEventPage() {
             <strong>Location:</strong>{" "}
             {event.location?.address || "No location specified"}
           </div>
+          <div>
+            <strong>Tags:</strong>{" "}
+            {event.tags && event.tags.length > 0
+              ? event.tags.map((tag) => (
+                  <span
+                    key={tag.id}
+                    className="inline-block bg-blue-100 text-blue-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded"
+                  >
+                    {tag.name}
+                  </span>
+                ))
+              : "No tags"}
+            </div>
         </div>
       </div>
     </Layout>

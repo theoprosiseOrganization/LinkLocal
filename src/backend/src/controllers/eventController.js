@@ -19,7 +19,7 @@ const eventSchema = joi.object({
 
 exports.getEvents = async (req, res) => {
   try {
-    const events = await prisma.event.findMany();
+    const events = await prisma.event.findMany({include: { tags: true },});
     await Promise.all(
       events.map(async (event) => {
         const location = await getEventLocation(event.id);
@@ -36,6 +36,7 @@ exports.getEventById = async (req, res) => {
   try {
     const event = await prisma.event.findUnique({
       where: { id: req.params.id },
+      include: { tags: true },
     });
     if (!event) return res.status(404).json({ error: "Not Found" });
     const location = await getEventLocation(event.id);
