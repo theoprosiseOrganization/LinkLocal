@@ -111,10 +111,11 @@ export default function ProfilePage() {
       }
     }
     // Convert tag IDs to tag names
-    const tagNames = allTags
-      .filter((tag) => editTags.includes(tag.id))
-      .map((tag) => tag.name);
-
+    const tagNames = editTags.map((tag) => {
+      // If it's an ID, find the tag name
+      const tagObj = allTags.find((t) => t.id === tag);
+      return tagObj ? tagObj.name : tag; // If not found, it's a new tag (string)
+    });
     if (tagsToAdd.length > 0) {
       tagNames.push(...tagsToAdd);
     }
@@ -230,8 +231,21 @@ export default function ProfilePage() {
                           setEditTags(selectedTagIds)
                         }
                         onAddTag={(newTag) => {
-                          if (newTag && !tagsToAdd.includes(newTag)) {
-                            setTagsToAdd([...tagsToAdd, newTag]);
+                          if (newTag && !editTags.includes(newTag)) {
+                            setEditTags([...editTags, newTag]);
+                          }
+                          // Add the new tag to allTags if not already present
+                          if (
+                            newTag &&
+                            !allTags.some(
+                              (tag) =>
+                                tag.name.toLowerCase() === newTag.toLowerCase()
+                            )
+                          ) {
+                            setAllTags([
+                              ...allTags,
+                              { id: newTag, name: newTag }, // Use name as id for new tags (until backend assigns real id)
+                            ]);
                           }
                         }}
                       />

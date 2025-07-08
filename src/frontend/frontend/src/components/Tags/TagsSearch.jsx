@@ -63,14 +63,20 @@ export default function TagsSearch({
         >
           <div className="flex gap-2 justify-start">
             {value.length
-              ? value.map((val, i) => (
-                  <div
-                    key={i}
-                    className="px-2 py-1 rounded-xl border bg-slate-200 text-xs font-medium"
-                  >
-                    {tags.find((tag) => tag.id === val)?.name}
-                  </div>
-                ))
+              ? value.map((val, i) => {
+                  // Try to find the tag by id
+                  const tagObj = tags.find((tag) => tag.id === val);
+                  // If not found, treat as a new tag (string)
+                  const tagName = tagObj ? tagObj.name : val;
+                  return (
+                    <div
+                      key={i}
+                      className="px-2 py-1 rounded-xl border bg-slate-200 text-xs font-medium"
+                    >
+                      {tagName}
+                    </div>
+                  );
+                })
               : "Select tags..."}
           </div>
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
