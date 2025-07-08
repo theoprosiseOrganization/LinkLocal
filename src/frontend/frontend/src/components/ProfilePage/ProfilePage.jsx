@@ -25,7 +25,6 @@ import {
   getSessionUserId,
   updateUserProfile,
   uploadProfileImage,
-  addUserTag,
   getAllTags,
 } from "../../api";
 import React, { useRef, useEffect, useState } from "react";
@@ -66,7 +65,7 @@ export default function ProfilePage() {
         const userId = await getSessionUserId();
         const user = await getUserById(userId);
         setUserData(user);
-        setEditTags(user.tags ? user.tags.map((tag) => tag.id) : []);
+        setEditTags(user.tags);
         const events = await getUserEvents(userId);
         setUserEvents(events);
         const allTags = await getAllTags();
@@ -84,7 +83,7 @@ export default function ProfilePage() {
       setEditLocation(
         userData.location || { address: "", latitude: 0, longitude: 0 }
       );
-      setEditTags(userData.tags ? userData.tags.map((tag) => tag.id) : []);
+      setEditTags(userData.tags ? userData.tag : []);
     }
   }, [userData]);
 
@@ -111,12 +110,10 @@ export default function ProfilePage() {
         return;
       }
     }
-
-    // Convert tag IDs to tag names
-    const tagNames = editTags
-      .map((tagId) => allTags.find((tag) => tag.id === tagId)?.name)
-      .filter(Boolean); // Remove any undefined
-
+    let tagNames = editTags.map((tag) => tag.name).filter(Boolean); // Filter out any null values
+    if (tagNames.length === 0) {
+      tagNames = []; // Ensure it's an empty array if no tags are selected
+    }
     // Update profile with new name, location, avatar, and tag names
     try {
       await updateUserProfile(userData.id, {

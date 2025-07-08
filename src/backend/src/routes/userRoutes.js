@@ -20,7 +20,6 @@ const {
   getUserFollowers,
   getUserFollowing,
   getAllTags,
-  addUserTag,
 } = require("../controllers/userController");
 
 const router = express.Router();
@@ -42,7 +41,6 @@ router.delete("/:id/friends/:friend_id", removeUserFriend);
 router.get("/:id/preferences", getUserPreferences);
 router.put("/:id/preferences", updateUserPreferences);
 router.get("/preferences/tags", getAllTags); 
-router.post("/:id/tags", addUserTag); // Add a tag to the user
 
 // Events
 router.get("/:id/events", getUserCreatedEvents);

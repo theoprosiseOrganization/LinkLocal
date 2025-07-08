@@ -33,7 +33,6 @@ export default function TagsSearch({
       newValue = [...value, val];
     }
     if (onTagSelect) {
-        console.log("Selected tags:", newValue);
       onTagSelect(newValue);
     }
   };

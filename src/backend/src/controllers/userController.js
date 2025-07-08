@@ -77,7 +77,7 @@ const updateUserLocation = async (userId, latitude, longitude, address) => {
 exports.updateUser = async (req, res) => {
   const updateData = {};
   for (const key of Object.keys(req.body)) {
-    if ((key === "location", key === "tags")) continue; // handle location and tags separately
+    if (key === "location" || key === "tags") continue; // handle location and tags separately
     if (req.body[key] !== undefined) updateData[key] = req.body[key];
   }
 
@@ -106,14 +106,9 @@ exports.updateUser = async (req, res) => {
       console.log("Disconnected all current tags");
       // Connect new tags (array of tag IDs)
       if (req.body.tags.length > 0) {
-        await prisma.user.update({
-          where: { id: req.params.id },
-          data: {
-            tags: {
-              connect: req.body.tags.map((tagId) => ({ id: tagId })),
-            },
-          },
-        });
+        for (const tagName of req.body.tags) {
+          await addUserTag(req.params.id, tagName);
+        }
       }
     }
 
@@ -121,6 +116,21 @@ exports.updateUser = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }
+};
+
+const addUserTag = async (userId, tagName) => {
+  // Try to find the tag by name
+  let tagRecord = await prisma.tag.findUnique({ where: { name: tagName } });
+  // If not found, create it
+  if (!tagRecord) {
+    tagRecord = await prisma.tag.create({ data: { name: tagName } });
+  }
+  // Connect tag to user
+  const user = await prisma.user.update({
+    where: { id: userId },
+    data: { tags: { connect: { id: tagRecord.id } } },
+    include: { tags: true },
+  });
 };
 
 exports.deleteUser = async (req, res) => {
@@ -421,30 +431,6 @@ exports.getAllTags = async (req, res) => {
   try {
     const tags = await prisma.tag.findMany();
     res.json(tags);
-  } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-};
-
-exports.addUserTag = async (req, res) => {
-  const { tag } = req.body; // tag is a string (name)
-  if (!tag || typeof tag !== "string") {
-    return res.status(400).json({ error: "Tag name is required" });
-  }
-  try {
-    // Try to find the tag by name
-    let tagRecord = await prisma.tag.findUnique({ where: { name: tag } });
-    // If not found, create it
-    if (!tagRecord) {
-      tagRecord = await prisma.tag.create({ data: { name: tag } });
-    }
-    // Connect tag to user
-    const user = await prisma.user.update({
-      where: { id: req.params.id },
-      data: { tags: { connect: { id: tagRecord.id } } },
-      include: { tags: true },
-    });
-    res.json(user);
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }
