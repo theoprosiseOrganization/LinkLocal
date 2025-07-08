@@ -19,6 +19,7 @@ const {
   unfollowUser,
   getUserFollowers,
   getUserFollowing,
+  getAllTags,
 } = require("../controllers/userController");
 
 const router = express.Router();
@@ -39,6 +40,7 @@ router.delete("/:id/friends/:friend_id", removeUserFriend);
 // Preferences
 router.get("/:id/preferences", getUserPreferences);
 router.put("/:id/preferences", updateUserPreferences);
+router.get("/preferences/tags", getAllTags); 
 
 // Events
 router.get("/:id/events", getUserCreatedEvents);

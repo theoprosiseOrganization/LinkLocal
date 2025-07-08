@@ -15,11 +15,13 @@ const eventSchema = joi.object({
     .required(),
   textDescription: joi.string().required(),
   title: joi.string().required(),
+  startTime: joi.date().iso().required(),
+  endTime: joi.date().iso().required(),
 });
 
 exports.getEvents = async (req, res) => {
   try {
-    const events = await prisma.event.findMany();
+    const events = await prisma.event.findMany({ include: { tags: true } });
     await Promise.all(
       events.map(async (event) => {
         const location = await getEventLocation(event.id);
@@ -36,6 +38,7 @@ exports.getEventById = async (req, res) => {
   try {
     const event = await prisma.event.findUnique({
       where: { id: req.params.id },
+      include: { tags: true },
     });
     if (!event) return res.status(404).json({ error: "Not Found" });
     const location = await getEventLocation(event.id);
@@ -65,7 +68,15 @@ const getEventLocation = async (eventId) => {
 };
 
 exports.createEvent = async (req, res) => {
-  const { userId, images, location, textDescription, title } = req.body;
+  const {
+    userId,
+    images,
+    location,
+    textDescription,
+    title,
+    startTime,
+    endTime,
+  } = req.body;
   // Validate input using Joi schema
   const { error } = eventSchema.validate({
     userId,
@@ -73,13 +84,22 @@ exports.createEvent = async (req, res) => {
     location,
     textDescription,
     title,
+    startTime,
+    endTime,
   });
   if (error) {
     return res.status(400).json({ error: error.details[0].message });
   }
   try {
     const event = await prisma.event.create({
-      data: { userId, images, textDescription, title },
+      data: {
+        userId,
+        images,
+        textDescription,
+        title,
+        startTime: new Date(startTime),
+        endTime: new Date(endTime),
+      },
     });
     await createEventLocation(
       event.id,
@@ -87,10 +107,38 @@ exports.createEvent = async (req, res) => {
       location.longitude,
       location.address
     );
+    await addEventTags(event.id, req.body.tags);
     res.status(201).json(event);
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }
+};
+
+const addEventTags = async (eventId, tags) => {
+  if (!tags || tags.length === 0) return;
+  const existingTags = await prisma.tag.findMany({
+    where: { name: { in: tags } },
+    select: { id: true, name: true },
+  });
+  const existingTagNames = existingTags.map((tag) => tag.name);
+  const newTagNames = tags.filter((name) => !existingTagNames.includes(name));
+  const createdTags = await Promise.all(
+    newTagNames.map((name) => prisma.tag.create({ data: { name } }))
+  );
+  // Combine all tag IDs
+  const allTagIds = [
+    ...existingTags.map((tag) => tag.id),
+    ...createdTags.map((tag) => tag.id),
+  ];
+  if (allTagIds.length === 0) return;
+  await prisma.event.update({
+    where: { id: eventId },
+    data: {
+      tags: {
+        connect: allTagIds.map((id) => ({ id })),
+      },
+    },
+  });
 };
 
 const createEventLocation = async (eventId, latitude, longitude, address) => {

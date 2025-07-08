@@ -22,7 +22,10 @@ exports.getUsers = async (req, res) => {
 
 exports.getUserById = async (req, res) => {
   try {
-    const user = await prisma.user.findUnique({ where: { id: req.params.id } });
+    const user = await prisma.user.findUnique({
+      where: { id: req.params.id },
+      include: { tags: true },
+    });
     if (!user) return res.status(404).json({ error: "User not found" });
     // Fetch user location
     const location = await getUserLocation(user.id);
@@ -74,7 +77,7 @@ const updateUserLocation = async (userId, latitude, longitude, address) => {
 exports.updateUser = async (req, res) => {
   const updateData = {};
   for (const key of Object.keys(req.body)) {
-    if (key === "location") continue; // handle location separately
+    if (key === "location" || key === "tags") continue; // handle location and tags separately
     if (req.body[key] !== undefined) updateData[key] = req.body[key];
   }
 
@@ -93,10 +96,41 @@ exports.updateUser = async (req, res) => {
       );
     }
 
+    if (req.body.tags) {
+      // Disconnect all current tags
+      console.log("Disconnecting all current tags");
+      await prisma.user.update({
+        where: { id: req.params.id },
+        data: { tags: { set: [] } },
+      });
+      console.log("Disconnected all current tags");
+      // Connect new tags (array of tag IDs)
+      if (req.body.tags.length > 0) {
+        for (const tagName of req.body.tags) {
+          await addUserTag(req.params.id, tagName);
+        }
+      }
+    }
+
     res.json(user);
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }
+};
+
+const addUserTag = async (userId, tagName) => {
+  // Try to find the tag by name
+  let tagRecord = await prisma.tag.findUnique({ where: { name: tagName } });
+  // If not found, create it
+  if (!tagRecord) {
+    tagRecord = await prisma.tag.create({ data: { name: tagName } });
+  }
+  // Connect tag to user
+  const user = await prisma.user.update({
+    where: { id: userId },
+    data: { tags: { connect: { id: tagRecord.id } } },
+    include: { tags: true },
+  });
 };
 
 exports.deleteUser = async (req, res) => {
@@ -388,6 +422,15 @@ exports.getUserFollowing = async (req, res) => {
       })
     );
     res.json(following.map((f) => f.following));
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+exports.getAllTags = async (req, res) => {
+  try {
+    const tags = await prisma.tag.findMany();
+    res.json(tags);
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }

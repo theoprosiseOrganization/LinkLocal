@@ -267,3 +267,32 @@ export async function uploadProfileImage(userId, file) {
   if (!res.ok) throw new Error("Profile image upload failed");
   return (await res.json()).url;
 }
+
+export async function getAllTags() {
+  const res = await fetch(`${URL}/users/preferences/tags`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  const response = await res.json();
+  if (!res.ok) {
+    throw new Error(response.error || "Failed to fetch tags");
+  }
+  return response;
+}
+
+export async function addUserTag(userId, tag) {
+  const res = await fetch(`${URL}/users/${userId}/tags`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ tag }),
+  });
+  const response = await res.json();
+  if (!res.ok) {
+    throw new Error(response.error || "Failed to add user tag");
+  }
+  return response;
+}

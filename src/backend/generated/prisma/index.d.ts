@@ -43,6 +43,11 @@ export type Event = $Result.DefaultSelection<Prisma.$EventPayload>
  * 
  */
 export type EventLocation = $Result.DefaultSelection<Prisma.$EventLocationPayload>
+/**
+ * Model Tag
+ * 
+ */
+export type Tag = $Result.DefaultSelection<Prisma.$TagPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -228,6 +233,16 @@ export class PrismaClient<
     * ```
     */
   get eventLocation(): Prisma.EventLocationDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.tag`: Exposes CRUD operations for the **Tag** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Tags
+    * const tags = await prisma.tag.findMany()
+    * ```
+    */
+  get tag(): Prisma.TagDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -673,7 +688,8 @@ export namespace Prisma {
     UserLocation: 'UserLocation',
     UserPoly: 'UserPoly',
     Event: 'Event',
-    EventLocation: 'EventLocation'
+    EventLocation: 'EventLocation',
+    Tag: 'Tag'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -692,7 +708,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "follows" | "userLocation" | "userPoly" | "event" | "eventLocation"
+      modelProps: "user" | "follows" | "userLocation" | "userPoly" | "event" | "eventLocation" | "tag"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1092,6 +1108,80 @@ export namespace Prisma {
           }
         }
       }
+      Tag: {
+        payload: Prisma.$TagPayload<ExtArgs>
+        fields: Prisma.TagFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.TagFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TagPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.TagFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TagPayload>
+          }
+          findFirst: {
+            args: Prisma.TagFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TagPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.TagFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TagPayload>
+          }
+          findMany: {
+            args: Prisma.TagFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TagPayload>[]
+          }
+          create: {
+            args: Prisma.TagCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TagPayload>
+          }
+          createMany: {
+            args: Prisma.TagCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.TagCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TagPayload>[]
+          }
+          delete: {
+            args: Prisma.TagDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TagPayload>
+          }
+          update: {
+            args: Prisma.TagUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TagPayload>
+          }
+          deleteMany: {
+            args: Prisma.TagDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.TagUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.TagUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TagPayload>[]
+          }
+          upsert: {
+            args: Prisma.TagUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TagPayload>
+          }
+          aggregate: {
+            args: Prisma.TagAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTag>
+          }
+          groupBy: {
+            args: Prisma.TagGroupByArgs<ExtArgs>
+            result: $Utils.Optional<TagGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.TagCountArgs<ExtArgs>
+            result: $Utils.Optional<TagCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1182,6 +1272,7 @@ export namespace Prisma {
     userPoly?: UserPolyOmit
     event?: EventOmit
     eventLocation?: EventLocationOmit
+    tag?: TagOmit
   }
 
   /* Types for Logging */
@@ -1281,6 +1372,7 @@ export namespace Prisma {
     events: number
     likedEvents: number
     polygons: number
+    tags: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1289,6 +1381,7 @@ export namespace Prisma {
     events?: boolean | UserCountOutputTypeCountEventsArgs
     likedEvents?: boolean | UserCountOutputTypeCountLikedEventsArgs
     polygons?: boolean | UserCountOutputTypeCountPolygonsArgs
+    tags?: boolean | UserCountOutputTypeCountTagsArgs
   }
 
   // Custom InputTypes
@@ -1337,6 +1430,13 @@ export namespace Prisma {
     where?: UserPolyWhereInput
   }
 
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountTagsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TagWhereInput
+  }
+
 
   /**
    * Count Type EventCountOutputType
@@ -1344,10 +1444,12 @@ export namespace Prisma {
 
   export type EventCountOutputType = {
     likes: number
+    tags: number
   }
 
   export type EventCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     likes?: boolean | EventCountOutputTypeCountLikesArgs
+    tags?: boolean | EventCountOutputTypeCountTagsArgs
   }
 
   // Custom InputTypes
@@ -1366,6 +1468,53 @@ export namespace Prisma {
    */
   export type EventCountOutputTypeCountLikesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: UserWhereInput
+  }
+
+  /**
+   * EventCountOutputType without action
+   */
+  export type EventCountOutputTypeCountTagsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TagWhereInput
+  }
+
+
+  /**
+   * Count Type TagCountOutputType
+   */
+
+  export type TagCountOutputType = {
+    users: number
+    events: number
+  }
+
+  export type TagCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    users?: boolean | TagCountOutputTypeCountUsersArgs
+    events?: boolean | TagCountOutputTypeCountEventsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * TagCountOutputType without action
+   */
+  export type TagCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TagCountOutputType
+     */
+    select?: TagCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * TagCountOutputType without action
+   */
+  export type TagCountOutputTypeCountUsersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserWhereInput
+  }
+
+  /**
+   * TagCountOutputType without action
+   */
+  export type TagCountOutputTypeCountEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EventWhereInput
   }
 
 
@@ -1551,6 +1700,7 @@ export namespace Prisma {
     likedEvents?: boolean | User$likedEventsArgs<ExtArgs>
     polygons?: boolean | User$polygonsArgs<ExtArgs>
     geoLocation?: boolean | User$geoLocationArgs<ExtArgs>
+    tags?: boolean | User$tagsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -1589,6 +1739,7 @@ export namespace Prisma {
     likedEvents?: boolean | User$likedEventsArgs<ExtArgs>
     polygons?: boolean | User$polygonsArgs<ExtArgs>
     geoLocation?: boolean | User$geoLocationArgs<ExtArgs>
+    tags?: boolean | User$tagsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -1603,6 +1754,7 @@ export namespace Prisma {
       likedEvents: Prisma.$EventPayload<ExtArgs>[]
       polygons: Prisma.$UserPolyPayload<ExtArgs>[]
       geoLocation: Prisma.$UserLocationPayload<ExtArgs> | null
+      tags: Prisma.$TagPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -2011,6 +2163,7 @@ export namespace Prisma {
     likedEvents<T extends User$likedEventsArgs<ExtArgs> = {}>(args?: Subset<T, User$likedEventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     polygons<T extends User$polygonsArgs<ExtArgs> = {}>(args?: Subset<T, User$polygonsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPolyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     geoLocation<T extends User$geoLocationArgs<ExtArgs> = {}>(args?: Subset<T, User$geoLocationArgs<ExtArgs>>): Prisma__UserLocationClient<$Result.GetResult<Prisma.$UserLocationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    tags<T extends User$tagsArgs<ExtArgs> = {}>(args?: Subset<T, User$tagsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2570,6 +2723,30 @@ export namespace Prisma {
      */
     include?: UserLocationInclude<ExtArgs> | null
     where?: UserLocationWhereInput
+  }
+
+  /**
+   * User.tags
+   */
+  export type User$tagsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Tag
+     */
+    select?: TagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Tag
+     */
+    omit?: TagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TagInclude<ExtArgs> | null
+    where?: TagWhereInput
+    orderBy?: TagOrderByWithRelationInput | TagOrderByWithRelationInput[]
+    cursor?: TagWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TagScalarFieldEnum | TagScalarFieldEnum[]
   }
 
   /**
@@ -5365,6 +5542,10 @@ export namespace Prisma {
     userId: string | null
     title: string | null
     textDescription: string | null
+    startTime: Date | null
+    endTime: Date | null
+    recurrenceRule: string | null
+    recurrenceEnd: Date | null
   }
 
   export type EventMaxAggregateOutputType = {
@@ -5372,6 +5553,10 @@ export namespace Prisma {
     userId: string | null
     title: string | null
     textDescription: string | null
+    startTime: Date | null
+    endTime: Date | null
+    recurrenceRule: string | null
+    recurrenceEnd: Date | null
   }
 
   export type EventCountAggregateOutputType = {
@@ -5380,6 +5565,10 @@ export namespace Prisma {
     title: number
     images: number
     textDescription: number
+    startTime: number
+    endTime: number
+    recurrenceRule: number
+    recurrenceEnd: number
     _all: number
   }
 
@@ -5389,6 +5578,10 @@ export namespace Prisma {
     userId?: true
     title?: true
     textDescription?: true
+    startTime?: true
+    endTime?: true
+    recurrenceRule?: true
+    recurrenceEnd?: true
   }
 
   export type EventMaxAggregateInputType = {
@@ -5396,6 +5589,10 @@ export namespace Prisma {
     userId?: true
     title?: true
     textDescription?: true
+    startTime?: true
+    endTime?: true
+    recurrenceRule?: true
+    recurrenceEnd?: true
   }
 
   export type EventCountAggregateInputType = {
@@ -5404,6 +5601,10 @@ export namespace Prisma {
     title?: true
     images?: true
     textDescription?: true
+    startTime?: true
+    endTime?: true
+    recurrenceRule?: true
+    recurrenceEnd?: true
     _all?: true
   }
 
@@ -5485,6 +5686,10 @@ export namespace Prisma {
     title: string
     images: string[]
     textDescription: string
+    startTime: Date | null
+    endTime: Date | null
+    recurrenceRule: string | null
+    recurrenceEnd: Date | null
     _count: EventCountAggregateOutputType | null
     _min: EventMinAggregateOutputType | null
     _max: EventMaxAggregateOutputType | null
@@ -5510,9 +5715,14 @@ export namespace Prisma {
     title?: boolean
     images?: boolean
     textDescription?: boolean
+    startTime?: boolean
+    endTime?: boolean
+    recurrenceRule?: boolean
+    recurrenceEnd?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     likes?: boolean | Event$likesArgs<ExtArgs>
     geoLocation?: boolean | Event$geoLocationArgs<ExtArgs>
+    tags?: boolean | Event$tagsArgs<ExtArgs>
     _count?: boolean | EventCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["event"]>
 
@@ -5522,6 +5732,10 @@ export namespace Prisma {
     title?: boolean
     images?: boolean
     textDescription?: boolean
+    startTime?: boolean
+    endTime?: boolean
+    recurrenceRule?: boolean
+    recurrenceEnd?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["event"]>
 
@@ -5531,6 +5745,10 @@ export namespace Prisma {
     title?: boolean
     images?: boolean
     textDescription?: boolean
+    startTime?: boolean
+    endTime?: boolean
+    recurrenceRule?: boolean
+    recurrenceEnd?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["event"]>
 
@@ -5540,13 +5758,18 @@ export namespace Prisma {
     title?: boolean
     images?: boolean
     textDescription?: boolean
+    startTime?: boolean
+    endTime?: boolean
+    recurrenceRule?: boolean
+    recurrenceEnd?: boolean
   }
 
-  export type EventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "title" | "images" | "textDescription", ExtArgs["result"]["event"]>
+  export type EventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "title" | "images" | "textDescription" | "startTime" | "endTime" | "recurrenceRule" | "recurrenceEnd", ExtArgs["result"]["event"]>
   export type EventInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     likes?: boolean | Event$likesArgs<ExtArgs>
     geoLocation?: boolean | Event$geoLocationArgs<ExtArgs>
+    tags?: boolean | Event$tagsArgs<ExtArgs>
     _count?: boolean | EventCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type EventIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5562,6 +5785,7 @@ export namespace Prisma {
       user: Prisma.$UserPayload<ExtArgs>
       likes: Prisma.$UserPayload<ExtArgs>[]
       geoLocation: Prisma.$EventLocationPayload<ExtArgs> | null
+      tags: Prisma.$TagPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -5569,6 +5793,10 @@ export namespace Prisma {
       title: string
       images: string[]
       textDescription: string
+      startTime: Date | null
+      endTime: Date | null
+      recurrenceRule: string | null
+      recurrenceEnd: Date | null
     }, ExtArgs["result"]["event"]>
     composites: {}
   }
@@ -5966,6 +6194,7 @@ export namespace Prisma {
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     likes<T extends Event$likesArgs<ExtArgs> = {}>(args?: Subset<T, Event$likesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     geoLocation<T extends Event$geoLocationArgs<ExtArgs> = {}>(args?: Subset<T, Event$geoLocationArgs<ExtArgs>>): Prisma__EventLocationClient<$Result.GetResult<Prisma.$EventLocationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    tags<T extends Event$tagsArgs<ExtArgs> = {}>(args?: Subset<T, Event$tagsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6000,6 +6229,10 @@ export namespace Prisma {
     readonly title: FieldRef<"Event", 'String'>
     readonly images: FieldRef<"Event", 'String[]'>
     readonly textDescription: FieldRef<"Event", 'String'>
+    readonly startTime: FieldRef<"Event", 'DateTime'>
+    readonly endTime: FieldRef<"Event", 'DateTime'>
+    readonly recurrenceRule: FieldRef<"Event", 'String'>
+    readonly recurrenceEnd: FieldRef<"Event", 'DateTime'>
   }
     
 
@@ -6436,6 +6669,30 @@ export namespace Prisma {
      */
     include?: EventLocationInclude<ExtArgs> | null
     where?: EventLocationWhereInput
+  }
+
+  /**
+   * Event.tags
+   */
+  export type Event$tagsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Tag
+     */
+    select?: TagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Tag
+     */
+    omit?: TagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TagInclude<ExtArgs> | null
+    where?: TagWhereInput
+    orderBy?: TagOrderByWithRelationInput | TagOrderByWithRelationInput[]
+    cursor?: TagWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TagScalarFieldEnum | TagScalarFieldEnum[]
   }
 
   /**
@@ -7324,6 +7581,1065 @@ export namespace Prisma {
 
 
   /**
+   * Model Tag
+   */
+
+  export type AggregateTag = {
+    _count: TagCountAggregateOutputType | null
+    _min: TagMinAggregateOutputType | null
+    _max: TagMaxAggregateOutputType | null
+  }
+
+  export type TagMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+  }
+
+  export type TagMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+  }
+
+  export type TagCountAggregateOutputType = {
+    id: number
+    name: number
+    _all: number
+  }
+
+
+  export type TagMinAggregateInputType = {
+    id?: true
+    name?: true
+  }
+
+  export type TagMaxAggregateInputType = {
+    id?: true
+    name?: true
+  }
+
+  export type TagCountAggregateInputType = {
+    id?: true
+    name?: true
+    _all?: true
+  }
+
+  export type TagAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Tag to aggregate.
+     */
+    where?: TagWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Tags to fetch.
+     */
+    orderBy?: TagOrderByWithRelationInput | TagOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: TagWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Tags from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Tags.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Tags
+    **/
+    _count?: true | TagCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: TagMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: TagMaxAggregateInputType
+  }
+
+  export type GetTagAggregateType<T extends TagAggregateArgs> = {
+        [P in keyof T & keyof AggregateTag]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTag[P]>
+      : GetScalarType<T[P], AggregateTag[P]>
+  }
+
+
+
+
+  export type TagGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TagWhereInput
+    orderBy?: TagOrderByWithAggregationInput | TagOrderByWithAggregationInput[]
+    by: TagScalarFieldEnum[] | TagScalarFieldEnum
+    having?: TagScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: TagCountAggregateInputType | true
+    _min?: TagMinAggregateInputType
+    _max?: TagMaxAggregateInputType
+  }
+
+  export type TagGroupByOutputType = {
+    id: string
+    name: string
+    _count: TagCountAggregateOutputType | null
+    _min: TagMinAggregateOutputType | null
+    _max: TagMaxAggregateOutputType | null
+  }
+
+  type GetTagGroupByPayload<T extends TagGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<TagGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof TagGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], TagGroupByOutputType[P]>
+            : GetScalarType<T[P], TagGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type TagSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    users?: boolean | Tag$usersArgs<ExtArgs>
+    events?: boolean | Tag$eventsArgs<ExtArgs>
+    _count?: boolean | TagCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["tag"]>
+
+  export type TagSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+  }, ExtArgs["result"]["tag"]>
+
+  export type TagSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+  }, ExtArgs["result"]["tag"]>
+
+  export type TagSelectScalar = {
+    id?: boolean
+    name?: boolean
+  }
+
+  export type TagOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name", ExtArgs["result"]["tag"]>
+  export type TagInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    users?: boolean | Tag$usersArgs<ExtArgs>
+    events?: boolean | Tag$eventsArgs<ExtArgs>
+    _count?: boolean | TagCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type TagIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type TagIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $TagPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Tag"
+    objects: {
+      users: Prisma.$UserPayload<ExtArgs>[]
+      events: Prisma.$EventPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+    }, ExtArgs["result"]["tag"]>
+    composites: {}
+  }
+
+  type TagGetPayload<S extends boolean | null | undefined | TagDefaultArgs> = $Result.GetResult<Prisma.$TagPayload, S>
+
+  type TagCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<TagFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: TagCountAggregateInputType | true
+    }
+
+  export interface TagDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Tag'], meta: { name: 'Tag' } }
+    /**
+     * Find zero or one Tag that matches the filter.
+     * @param {TagFindUniqueArgs} args - Arguments to find a Tag
+     * @example
+     * // Get one Tag
+     * const tag = await prisma.tag.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends TagFindUniqueArgs>(args: SelectSubset<T, TagFindUniqueArgs<ExtArgs>>): Prisma__TagClient<$Result.GetResult<Prisma.$TagPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Tag that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {TagFindUniqueOrThrowArgs} args - Arguments to find a Tag
+     * @example
+     * // Get one Tag
+     * const tag = await prisma.tag.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends TagFindUniqueOrThrowArgs>(args: SelectSubset<T, TagFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TagClient<$Result.GetResult<Prisma.$TagPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Tag that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TagFindFirstArgs} args - Arguments to find a Tag
+     * @example
+     * // Get one Tag
+     * const tag = await prisma.tag.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends TagFindFirstArgs>(args?: SelectSubset<T, TagFindFirstArgs<ExtArgs>>): Prisma__TagClient<$Result.GetResult<Prisma.$TagPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Tag that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TagFindFirstOrThrowArgs} args - Arguments to find a Tag
+     * @example
+     * // Get one Tag
+     * const tag = await prisma.tag.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends TagFindFirstOrThrowArgs>(args?: SelectSubset<T, TagFindFirstOrThrowArgs<ExtArgs>>): Prisma__TagClient<$Result.GetResult<Prisma.$TagPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Tags that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TagFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Tags
+     * const tags = await prisma.tag.findMany()
+     * 
+     * // Get first 10 Tags
+     * const tags = await prisma.tag.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const tagWithIdOnly = await prisma.tag.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends TagFindManyArgs>(args?: SelectSubset<T, TagFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Tag.
+     * @param {TagCreateArgs} args - Arguments to create a Tag.
+     * @example
+     * // Create one Tag
+     * const Tag = await prisma.tag.create({
+     *   data: {
+     *     // ... data to create a Tag
+     *   }
+     * })
+     * 
+     */
+    create<T extends TagCreateArgs>(args: SelectSubset<T, TagCreateArgs<ExtArgs>>): Prisma__TagClient<$Result.GetResult<Prisma.$TagPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Tags.
+     * @param {TagCreateManyArgs} args - Arguments to create many Tags.
+     * @example
+     * // Create many Tags
+     * const tag = await prisma.tag.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends TagCreateManyArgs>(args?: SelectSubset<T, TagCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Tags and returns the data saved in the database.
+     * @param {TagCreateManyAndReturnArgs} args - Arguments to create many Tags.
+     * @example
+     * // Create many Tags
+     * const tag = await prisma.tag.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Tags and only return the `id`
+     * const tagWithIdOnly = await prisma.tag.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends TagCreateManyAndReturnArgs>(args?: SelectSubset<T, TagCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TagPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Tag.
+     * @param {TagDeleteArgs} args - Arguments to delete one Tag.
+     * @example
+     * // Delete one Tag
+     * const Tag = await prisma.tag.delete({
+     *   where: {
+     *     // ... filter to delete one Tag
+     *   }
+     * })
+     * 
+     */
+    delete<T extends TagDeleteArgs>(args: SelectSubset<T, TagDeleteArgs<ExtArgs>>): Prisma__TagClient<$Result.GetResult<Prisma.$TagPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Tag.
+     * @param {TagUpdateArgs} args - Arguments to update one Tag.
+     * @example
+     * // Update one Tag
+     * const tag = await prisma.tag.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends TagUpdateArgs>(args: SelectSubset<T, TagUpdateArgs<ExtArgs>>): Prisma__TagClient<$Result.GetResult<Prisma.$TagPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Tags.
+     * @param {TagDeleteManyArgs} args - Arguments to filter Tags to delete.
+     * @example
+     * // Delete a few Tags
+     * const { count } = await prisma.tag.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends TagDeleteManyArgs>(args?: SelectSubset<T, TagDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Tags.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TagUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Tags
+     * const tag = await prisma.tag.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends TagUpdateManyArgs>(args: SelectSubset<T, TagUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Tags and returns the data updated in the database.
+     * @param {TagUpdateManyAndReturnArgs} args - Arguments to update many Tags.
+     * @example
+     * // Update many Tags
+     * const tag = await prisma.tag.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Tags and only return the `id`
+     * const tagWithIdOnly = await prisma.tag.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends TagUpdateManyAndReturnArgs>(args: SelectSubset<T, TagUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TagPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Tag.
+     * @param {TagUpsertArgs} args - Arguments to update or create a Tag.
+     * @example
+     * // Update or create a Tag
+     * const tag = await prisma.tag.upsert({
+     *   create: {
+     *     // ... data to create a Tag
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Tag we want to update
+     *   }
+     * })
+     */
+    upsert<T extends TagUpsertArgs>(args: SelectSubset<T, TagUpsertArgs<ExtArgs>>): Prisma__TagClient<$Result.GetResult<Prisma.$TagPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Tags.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TagCountArgs} args - Arguments to filter Tags to count.
+     * @example
+     * // Count the number of Tags
+     * const count = await prisma.tag.count({
+     *   where: {
+     *     // ... the filter for the Tags we want to count
+     *   }
+     * })
+    **/
+    count<T extends TagCountArgs>(
+      args?: Subset<T, TagCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], TagCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Tag.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TagAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TagAggregateArgs>(args: Subset<T, TagAggregateArgs>): Prisma.PrismaPromise<GetTagAggregateType<T>>
+
+    /**
+     * Group by Tag.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TagGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends TagGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: TagGroupByArgs['orderBy'] }
+        : { orderBy?: TagGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, TagGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTagGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Tag model
+   */
+  readonly fields: TagFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Tag.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__TagClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    users<T extends Tag$usersArgs<ExtArgs> = {}>(args?: Subset<T, Tag$usersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    events<T extends Tag$eventsArgs<ExtArgs> = {}>(args?: Subset<T, Tag$eventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Tag model
+   */
+  interface TagFieldRefs {
+    readonly id: FieldRef<"Tag", 'String'>
+    readonly name: FieldRef<"Tag", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Tag findUnique
+   */
+  export type TagFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Tag
+     */
+    select?: TagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Tag
+     */
+    omit?: TagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TagInclude<ExtArgs> | null
+    /**
+     * Filter, which Tag to fetch.
+     */
+    where: TagWhereUniqueInput
+  }
+
+  /**
+   * Tag findUniqueOrThrow
+   */
+  export type TagFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Tag
+     */
+    select?: TagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Tag
+     */
+    omit?: TagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TagInclude<ExtArgs> | null
+    /**
+     * Filter, which Tag to fetch.
+     */
+    where: TagWhereUniqueInput
+  }
+
+  /**
+   * Tag findFirst
+   */
+  export type TagFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Tag
+     */
+    select?: TagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Tag
+     */
+    omit?: TagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TagInclude<ExtArgs> | null
+    /**
+     * Filter, which Tag to fetch.
+     */
+    where?: TagWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Tags to fetch.
+     */
+    orderBy?: TagOrderByWithRelationInput | TagOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Tags.
+     */
+    cursor?: TagWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Tags from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Tags.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Tags.
+     */
+    distinct?: TagScalarFieldEnum | TagScalarFieldEnum[]
+  }
+
+  /**
+   * Tag findFirstOrThrow
+   */
+  export type TagFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Tag
+     */
+    select?: TagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Tag
+     */
+    omit?: TagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TagInclude<ExtArgs> | null
+    /**
+     * Filter, which Tag to fetch.
+     */
+    where?: TagWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Tags to fetch.
+     */
+    orderBy?: TagOrderByWithRelationInput | TagOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Tags.
+     */
+    cursor?: TagWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Tags from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Tags.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Tags.
+     */
+    distinct?: TagScalarFieldEnum | TagScalarFieldEnum[]
+  }
+
+  /**
+   * Tag findMany
+   */
+  export type TagFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Tag
+     */
+    select?: TagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Tag
+     */
+    omit?: TagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TagInclude<ExtArgs> | null
+    /**
+     * Filter, which Tags to fetch.
+     */
+    where?: TagWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Tags to fetch.
+     */
+    orderBy?: TagOrderByWithRelationInput | TagOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Tags.
+     */
+    cursor?: TagWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Tags from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Tags.
+     */
+    skip?: number
+    distinct?: TagScalarFieldEnum | TagScalarFieldEnum[]
+  }
+
+  /**
+   * Tag create
+   */
+  export type TagCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Tag
+     */
+    select?: TagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Tag
+     */
+    omit?: TagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TagInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Tag.
+     */
+    data: XOR<TagCreateInput, TagUncheckedCreateInput>
+  }
+
+  /**
+   * Tag createMany
+   */
+  export type TagCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Tags.
+     */
+    data: TagCreateManyInput | TagCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Tag createManyAndReturn
+   */
+  export type TagCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Tag
+     */
+    select?: TagSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Tag
+     */
+    omit?: TagOmit<ExtArgs> | null
+    /**
+     * The data used to create many Tags.
+     */
+    data: TagCreateManyInput | TagCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Tag update
+   */
+  export type TagUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Tag
+     */
+    select?: TagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Tag
+     */
+    omit?: TagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TagInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Tag.
+     */
+    data: XOR<TagUpdateInput, TagUncheckedUpdateInput>
+    /**
+     * Choose, which Tag to update.
+     */
+    where: TagWhereUniqueInput
+  }
+
+  /**
+   * Tag updateMany
+   */
+  export type TagUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Tags.
+     */
+    data: XOR<TagUpdateManyMutationInput, TagUncheckedUpdateManyInput>
+    /**
+     * Filter which Tags to update
+     */
+    where?: TagWhereInput
+    /**
+     * Limit how many Tags to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Tag updateManyAndReturn
+   */
+  export type TagUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Tag
+     */
+    select?: TagSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Tag
+     */
+    omit?: TagOmit<ExtArgs> | null
+    /**
+     * The data used to update Tags.
+     */
+    data: XOR<TagUpdateManyMutationInput, TagUncheckedUpdateManyInput>
+    /**
+     * Filter which Tags to update
+     */
+    where?: TagWhereInput
+    /**
+     * Limit how many Tags to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Tag upsert
+   */
+  export type TagUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Tag
+     */
+    select?: TagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Tag
+     */
+    omit?: TagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TagInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Tag to update in case it exists.
+     */
+    where: TagWhereUniqueInput
+    /**
+     * In case the Tag found by the `where` argument doesn't exist, create a new Tag with this data.
+     */
+    create: XOR<TagCreateInput, TagUncheckedCreateInput>
+    /**
+     * In case the Tag was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<TagUpdateInput, TagUncheckedUpdateInput>
+  }
+
+  /**
+   * Tag delete
+   */
+  export type TagDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Tag
+     */
+    select?: TagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Tag
+     */
+    omit?: TagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TagInclude<ExtArgs> | null
+    /**
+     * Filter which Tag to delete.
+     */
+    where: TagWhereUniqueInput
+  }
+
+  /**
+   * Tag deleteMany
+   */
+  export type TagDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Tags to delete
+     */
+    where?: TagWhereInput
+    /**
+     * Limit how many Tags to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Tag.users
+   */
+  export type Tag$usersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
+    cursor?: UserWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
+  }
+
+  /**
+   * Tag.events
+   */
+  export type Tag$eventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Event
+     */
+    select?: EventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Event
+     */
+    omit?: EventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EventInclude<ExtArgs> | null
+    where?: EventWhereInput
+    orderBy?: EventOrderByWithRelationInput | EventOrderByWithRelationInput[]
+    cursor?: EventWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: EventScalarFieldEnum | EventScalarFieldEnum[]
+  }
+
+  /**
+   * Tag without action
+   */
+  export type TagDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Tag
+     */
+    select?: TagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Tag
+     */
+    omit?: TagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TagInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -7380,7 +8696,11 @@ export namespace Prisma {
     userId: 'userId',
     title: 'title',
     images: 'images',
-    textDescription: 'textDescription'
+    textDescription: 'textDescription',
+    startTime: 'startTime',
+    endTime: 'endTime',
+    recurrenceRule: 'recurrenceRule',
+    recurrenceEnd: 'recurrenceEnd'
   };
 
   export type EventScalarFieldEnum = (typeof EventScalarFieldEnum)[keyof typeof EventScalarFieldEnum]
@@ -7393,6 +8713,14 @@ export namespace Prisma {
   };
 
   export type EventLocationScalarFieldEnum = (typeof EventLocationScalarFieldEnum)[keyof typeof EventLocationScalarFieldEnum]
+
+
+  export const TagScalarFieldEnum: {
+    id: 'id',
+    name: 'name'
+  };
+
+  export type TagScalarFieldEnum = (typeof TagScalarFieldEnum)[keyof typeof TagScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -7439,6 +8767,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'DateTime'
+   */
+  export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
+    
+
+
+  /**
+   * Reference to a field of type 'DateTime[]'
+   */
+  export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Int'
    */
   export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
@@ -7471,6 +8813,7 @@ export namespace Prisma {
     likedEvents?: EventListRelationFilter
     polygons?: UserPolyListRelationFilter
     geoLocation?: XOR<UserLocationNullableScalarRelationFilter, UserLocationWhereInput> | null
+    tags?: TagListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -7486,6 +8829,7 @@ export namespace Prisma {
     likedEvents?: EventOrderByRelationAggregateInput
     polygons?: UserPolyOrderByRelationAggregateInput
     geoLocation?: UserLocationOrderByWithRelationInput
+    tags?: TagOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -7504,6 +8848,7 @@ export namespace Prisma {
     likedEvents?: EventListRelationFilter
     polygons?: UserPolyListRelationFilter
     geoLocation?: XOR<UserLocationNullableScalarRelationFilter, UserLocationWhereInput> | null
+    tags?: TagListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -7673,9 +9018,14 @@ export namespace Prisma {
     title?: StringFilter<"Event"> | string
     images?: StringNullableListFilter<"Event">
     textDescription?: StringFilter<"Event"> | string
+    startTime?: DateTimeNullableFilter<"Event"> | Date | string | null
+    endTime?: DateTimeNullableFilter<"Event"> | Date | string | null
+    recurrenceRule?: StringNullableFilter<"Event"> | string | null
+    recurrenceEnd?: DateTimeNullableFilter<"Event"> | Date | string | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     likes?: UserListRelationFilter
     geoLocation?: XOR<EventLocationNullableScalarRelationFilter, EventLocationWhereInput> | null
+    tags?: TagListRelationFilter
   }
 
   export type EventOrderByWithRelationInput = {
@@ -7684,9 +9034,14 @@ export namespace Prisma {
     title?: SortOrder
     images?: SortOrder
     textDescription?: SortOrder
+    startTime?: SortOrderInput | SortOrder
+    endTime?: SortOrderInput | SortOrder
+    recurrenceRule?: SortOrderInput | SortOrder
+    recurrenceEnd?: SortOrderInput | SortOrder
     user?: UserOrderByWithRelationInput
     likes?: UserOrderByRelationAggregateInput
     geoLocation?: EventLocationOrderByWithRelationInput
+    tags?: TagOrderByRelationAggregateInput
   }
 
   export type EventWhereUniqueInput = Prisma.AtLeast<{
@@ -7698,9 +9053,14 @@ export namespace Prisma {
     title?: StringFilter<"Event"> | string
     images?: StringNullableListFilter<"Event">
     textDescription?: StringFilter<"Event"> | string
+    startTime?: DateTimeNullableFilter<"Event"> | Date | string | null
+    endTime?: DateTimeNullableFilter<"Event"> | Date | string | null
+    recurrenceRule?: StringNullableFilter<"Event"> | string | null
+    recurrenceEnd?: DateTimeNullableFilter<"Event"> | Date | string | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     likes?: UserListRelationFilter
     geoLocation?: XOR<EventLocationNullableScalarRelationFilter, EventLocationWhereInput> | null
+    tags?: TagListRelationFilter
   }, "id">
 
   export type EventOrderByWithAggregationInput = {
@@ -7709,6 +9069,10 @@ export namespace Prisma {
     title?: SortOrder
     images?: SortOrder
     textDescription?: SortOrder
+    startTime?: SortOrderInput | SortOrder
+    endTime?: SortOrderInput | SortOrder
+    recurrenceRule?: SortOrderInput | SortOrder
+    recurrenceEnd?: SortOrderInput | SortOrder
     _count?: EventCountOrderByAggregateInput
     _max?: EventMaxOrderByAggregateInput
     _min?: EventMinOrderByAggregateInput
@@ -7723,6 +9087,10 @@ export namespace Prisma {
     title?: StringWithAggregatesFilter<"Event"> | string
     images?: StringNullableListFilter<"Event">
     textDescription?: StringWithAggregatesFilter<"Event"> | string
+    startTime?: DateTimeNullableWithAggregatesFilter<"Event"> | Date | string | null
+    endTime?: DateTimeNullableWithAggregatesFilter<"Event"> | Date | string | null
+    recurrenceRule?: StringNullableWithAggregatesFilter<"Event"> | string | null
+    recurrenceEnd?: DateTimeNullableWithAggregatesFilter<"Event"> | Date | string | null
   }
 
   export type EventLocationWhereInput = {
@@ -7770,6 +9138,49 @@ export namespace Prisma {
     eventId?: UuidWithAggregatesFilter<"EventLocation"> | string
   }
 
+  export type TagWhereInput = {
+    AND?: TagWhereInput | TagWhereInput[]
+    OR?: TagWhereInput[]
+    NOT?: TagWhereInput | TagWhereInput[]
+    id?: UuidFilter<"Tag"> | string
+    name?: StringFilter<"Tag"> | string
+    users?: UserListRelationFilter
+    events?: EventListRelationFilter
+  }
+
+  export type TagOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    users?: UserOrderByRelationAggregateInput
+    events?: EventOrderByRelationAggregateInput
+  }
+
+  export type TagWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    name?: string
+    AND?: TagWhereInput | TagWhereInput[]
+    OR?: TagWhereInput[]
+    NOT?: TagWhereInput | TagWhereInput[]
+    users?: UserListRelationFilter
+    events?: EventListRelationFilter
+  }, "id" | "name">
+
+  export type TagOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    _count?: TagCountOrderByAggregateInput
+    _max?: TagMaxOrderByAggregateInput
+    _min?: TagMinOrderByAggregateInput
+  }
+
+  export type TagScalarWhereWithAggregatesInput = {
+    AND?: TagScalarWhereWithAggregatesInput | TagScalarWhereWithAggregatesInput[]
+    OR?: TagScalarWhereWithAggregatesInput[]
+    NOT?: TagScalarWhereWithAggregatesInput | TagScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"Tag"> | string
+    name?: StringWithAggregatesFilter<"Tag"> | string
+  }
+
   export type UserCreateInput = {
     id?: string
     name: string
@@ -7783,6 +9194,7 @@ export namespace Prisma {
     likedEvents?: EventCreateNestedManyWithoutLikesInput
     polygons?: UserPolyCreateNestedManyWithoutUserInput
     geoLocation?: UserLocationCreateNestedOneWithoutUserInput
+    tags?: TagCreateNestedManyWithoutUsersInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -7798,6 +9210,7 @@ export namespace Prisma {
     likedEvents?: EventUncheckedCreateNestedManyWithoutLikesInput
     polygons?: UserPolyUncheckedCreateNestedManyWithoutUserInput
     geoLocation?: UserLocationUncheckedCreateNestedOneWithoutUserInput
+    tags?: TagUncheckedCreateNestedManyWithoutUsersInput
   }
 
   export type UserUpdateInput = {
@@ -7813,6 +9226,7 @@ export namespace Prisma {
     likedEvents?: EventUpdateManyWithoutLikesNestedInput
     polygons?: UserPolyUpdateManyWithoutUserNestedInput
     geoLocation?: UserLocationUpdateOneWithoutUserNestedInput
+    tags?: TagUpdateManyWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -7828,6 +9242,7 @@ export namespace Prisma {
     likedEvents?: EventUncheckedUpdateManyWithoutLikesNestedInput
     polygons?: UserPolyUncheckedUpdateManyWithoutUserNestedInput
     geoLocation?: UserLocationUncheckedUpdateOneWithoutUserNestedInput
+    tags?: TagUncheckedUpdateManyWithoutUsersNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -7942,9 +9357,14 @@ export namespace Prisma {
     title: string
     images?: EventCreateimagesInput | string[]
     textDescription: string
+    startTime?: Date | string | null
+    endTime?: Date | string | null
+    recurrenceRule?: string | null
+    recurrenceEnd?: Date | string | null
     user: UserCreateNestedOneWithoutEventsInput
     likes?: UserCreateNestedManyWithoutLikedEventsInput
     geoLocation?: EventLocationCreateNestedOneWithoutEventInput
+    tags?: TagCreateNestedManyWithoutEventsInput
   }
 
   export type EventUncheckedCreateInput = {
@@ -7953,8 +9373,13 @@ export namespace Prisma {
     title: string
     images?: EventCreateimagesInput | string[]
     textDescription: string
+    startTime?: Date | string | null
+    endTime?: Date | string | null
+    recurrenceRule?: string | null
+    recurrenceEnd?: Date | string | null
     likes?: UserUncheckedCreateNestedManyWithoutLikedEventsInput
     geoLocation?: EventLocationUncheckedCreateNestedOneWithoutEventInput
+    tags?: TagUncheckedCreateNestedManyWithoutEventsInput
   }
 
   export type EventUpdateInput = {
@@ -7962,9 +9387,14 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     images?: EventUpdateimagesInput | string[]
     textDescription?: StringFieldUpdateOperationsInput | string
+    startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    recurrenceRule?: NullableStringFieldUpdateOperationsInput | string | null
+    recurrenceEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UserUpdateOneRequiredWithoutEventsNestedInput
     likes?: UserUpdateManyWithoutLikedEventsNestedInput
     geoLocation?: EventLocationUpdateOneWithoutEventNestedInput
+    tags?: TagUpdateManyWithoutEventsNestedInput
   }
 
   export type EventUncheckedUpdateInput = {
@@ -7973,8 +9403,13 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     images?: EventUpdateimagesInput | string[]
     textDescription?: StringFieldUpdateOperationsInput | string
+    startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    recurrenceRule?: NullableStringFieldUpdateOperationsInput | string | null
+    recurrenceEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     likes?: UserUncheckedUpdateManyWithoutLikedEventsNestedInput
     geoLocation?: EventLocationUncheckedUpdateOneWithoutEventNestedInput
+    tags?: TagUncheckedUpdateManyWithoutEventsNestedInput
   }
 
   export type EventCreateManyInput = {
@@ -7983,6 +9418,10 @@ export namespace Prisma {
     title: string
     images?: EventCreateimagesInput | string[]
     textDescription: string
+    startTime?: Date | string | null
+    endTime?: Date | string | null
+    recurrenceRule?: string | null
+    recurrenceEnd?: Date | string | null
   }
 
   export type EventUpdateManyMutationInput = {
@@ -7990,6 +9429,10 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     images?: EventUpdateimagesInput | string[]
     textDescription?: StringFieldUpdateOperationsInput | string
+    startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    recurrenceRule?: NullableStringFieldUpdateOperationsInput | string | null
+    recurrenceEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type EventUncheckedUpdateManyInput = {
@@ -7998,6 +9441,10 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     images?: EventUpdateimagesInput | string[]
     textDescription?: StringFieldUpdateOperationsInput | string
+    startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    recurrenceRule?: NullableStringFieldUpdateOperationsInput | string | null
+    recurrenceEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type EventLocationUpdateInput = {
@@ -8021,6 +9468,49 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     streetAddress?: StringFieldUpdateOperationsInput | string
     eventId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type TagCreateInput = {
+    id?: string
+    name: string
+    users?: UserCreateNestedManyWithoutTagsInput
+    events?: EventCreateNestedManyWithoutTagsInput
+  }
+
+  export type TagUncheckedCreateInput = {
+    id?: string
+    name: string
+    users?: UserUncheckedCreateNestedManyWithoutTagsInput
+    events?: EventUncheckedCreateNestedManyWithoutTagsInput
+  }
+
+  export type TagUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    users?: UserUpdateManyWithoutTagsNestedInput
+    events?: EventUpdateManyWithoutTagsNestedInput
+  }
+
+  export type TagUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    users?: UserUncheckedUpdateManyWithoutTagsNestedInput
+    events?: EventUncheckedUpdateManyWithoutTagsNestedInput
+  }
+
+  export type TagCreateManyInput = {
+    id?: string
+    name: string
+  }
+
+  export type TagUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type TagUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
   }
 
   export type UuidFilter<$PrismaModel = never> = {
@@ -8088,6 +9578,12 @@ export namespace Prisma {
     isNot?: UserLocationWhereInput | null
   }
 
+  export type TagListRelationFilter = {
+    every?: TagWhereInput
+    some?: TagWhereInput
+    none?: TagWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -8102,6 +9598,10 @@ export namespace Prisma {
   }
 
   export type UserPolyOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type TagOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -8252,6 +9752,17 @@ export namespace Prisma {
     isEmpty?: boolean
   }
 
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
   export type UserListRelationFilter = {
     every?: UserWhereInput
     some?: UserWhereInput
@@ -8273,6 +9784,10 @@ export namespace Prisma {
     title?: SortOrder
     images?: SortOrder
     textDescription?: SortOrder
+    startTime?: SortOrder
+    endTime?: SortOrder
+    recurrenceRule?: SortOrder
+    recurrenceEnd?: SortOrder
   }
 
   export type EventMaxOrderByAggregateInput = {
@@ -8280,6 +9795,10 @@ export namespace Prisma {
     userId?: SortOrder
     title?: SortOrder
     textDescription?: SortOrder
+    startTime?: SortOrder
+    endTime?: SortOrder
+    recurrenceRule?: SortOrder
+    recurrenceEnd?: SortOrder
   }
 
   export type EventMinOrderByAggregateInput = {
@@ -8287,6 +9806,24 @@ export namespace Prisma {
     userId?: SortOrder
     title?: SortOrder
     textDescription?: SortOrder
+    startTime?: SortOrder
+    endTime?: SortOrder
+    recurrenceRule?: SortOrder
+    recurrenceEnd?: SortOrder
+  }
+
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type EventScalarRelationFilter = {
@@ -8310,6 +9847,21 @@ export namespace Prisma {
     id?: SortOrder
     streetAddress?: SortOrder
     eventId?: SortOrder
+  }
+
+  export type TagCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+  }
+
+  export type TagMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+  }
+
+  export type TagMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
   }
 
   export type FollowsCreateNestedManyWithoutFollowingInput = {
@@ -8347,6 +9899,12 @@ export namespace Prisma {
     connect?: UserLocationWhereUniqueInput
   }
 
+  export type TagCreateNestedManyWithoutUsersInput = {
+    create?: XOR<TagCreateWithoutUsersInput, TagUncheckedCreateWithoutUsersInput> | TagCreateWithoutUsersInput[] | TagUncheckedCreateWithoutUsersInput[]
+    connectOrCreate?: TagCreateOrConnectWithoutUsersInput | TagCreateOrConnectWithoutUsersInput[]
+    connect?: TagWhereUniqueInput | TagWhereUniqueInput[]
+  }
+
   export type FollowsUncheckedCreateNestedManyWithoutFollowingInput = {
     create?: XOR<FollowsCreateWithoutFollowingInput, FollowsUncheckedCreateWithoutFollowingInput> | FollowsCreateWithoutFollowingInput[] | FollowsUncheckedCreateWithoutFollowingInput[]
     connectOrCreate?: FollowsCreateOrConnectWithoutFollowingInput | FollowsCreateOrConnectWithoutFollowingInput[]
@@ -8380,6 +9938,12 @@ export namespace Prisma {
 
   export type UserLocationUncheckedCreateNestedOneWithoutUserInput = {
     connect?: UserLocationWhereUniqueInput
+  }
+
+  export type TagUncheckedCreateNestedManyWithoutUsersInput = {
+    create?: XOR<TagCreateWithoutUsersInput, TagUncheckedCreateWithoutUsersInput> | TagCreateWithoutUsersInput[] | TagUncheckedCreateWithoutUsersInput[]
+    connectOrCreate?: TagCreateOrConnectWithoutUsersInput | TagCreateOrConnectWithoutUsersInput[]
+    connect?: TagWhereUniqueInput | TagWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -8462,6 +10026,19 @@ export namespace Prisma {
     update?: XOR<XOR<UserLocationUpdateToOneWithWhereWithoutUserInput, UserLocationUpdateWithoutUserInput>, UserLocationUncheckedUpdateWithoutUserInput>
   }
 
+  export type TagUpdateManyWithoutUsersNestedInput = {
+    create?: XOR<TagCreateWithoutUsersInput, TagUncheckedCreateWithoutUsersInput> | TagCreateWithoutUsersInput[] | TagUncheckedCreateWithoutUsersInput[]
+    connectOrCreate?: TagCreateOrConnectWithoutUsersInput | TagCreateOrConnectWithoutUsersInput[]
+    upsert?: TagUpsertWithWhereUniqueWithoutUsersInput | TagUpsertWithWhereUniqueWithoutUsersInput[]
+    set?: TagWhereUniqueInput | TagWhereUniqueInput[]
+    disconnect?: TagWhereUniqueInput | TagWhereUniqueInput[]
+    delete?: TagWhereUniqueInput | TagWhereUniqueInput[]
+    connect?: TagWhereUniqueInput | TagWhereUniqueInput[]
+    update?: TagUpdateWithWhereUniqueWithoutUsersInput | TagUpdateWithWhereUniqueWithoutUsersInput[]
+    updateMany?: TagUpdateManyWithWhereWithoutUsersInput | TagUpdateManyWithWhereWithoutUsersInput[]
+    deleteMany?: TagScalarWhereInput | TagScalarWhereInput[]
+  }
+
   export type FollowsUncheckedUpdateManyWithoutFollowingNestedInput = {
     create?: XOR<FollowsCreateWithoutFollowingInput, FollowsUncheckedCreateWithoutFollowingInput> | FollowsCreateWithoutFollowingInput[] | FollowsUncheckedCreateWithoutFollowingInput[]
     connectOrCreate?: FollowsCreateOrConnectWithoutFollowingInput | FollowsCreateOrConnectWithoutFollowingInput[]
@@ -8534,6 +10111,19 @@ export namespace Prisma {
     update?: XOR<XOR<UserLocationUpdateToOneWithWhereWithoutUserInput, UserLocationUpdateWithoutUserInput>, UserLocationUncheckedUpdateWithoutUserInput>
   }
 
+  export type TagUncheckedUpdateManyWithoutUsersNestedInput = {
+    create?: XOR<TagCreateWithoutUsersInput, TagUncheckedCreateWithoutUsersInput> | TagCreateWithoutUsersInput[] | TagUncheckedCreateWithoutUsersInput[]
+    connectOrCreate?: TagCreateOrConnectWithoutUsersInput | TagCreateOrConnectWithoutUsersInput[]
+    upsert?: TagUpsertWithWhereUniqueWithoutUsersInput | TagUpsertWithWhereUniqueWithoutUsersInput[]
+    set?: TagWhereUniqueInput | TagWhereUniqueInput[]
+    disconnect?: TagWhereUniqueInput | TagWhereUniqueInput[]
+    delete?: TagWhereUniqueInput | TagWhereUniqueInput[]
+    connect?: TagWhereUniqueInput | TagWhereUniqueInput[]
+    update?: TagUpdateWithWhereUniqueWithoutUsersInput | TagUpdateWithWhereUniqueWithoutUsersInput[]
+    updateMany?: TagUpdateManyWithWhereWithoutUsersInput | TagUpdateManyWithWhereWithoutUsersInput[]
+    deleteMany?: TagScalarWhereInput | TagScalarWhereInput[]
+  }
+
   export type UserCreateNestedOneWithoutFollowingInput = {
     create?: XOR<UserCreateWithoutFollowingInput, UserUncheckedCreateWithoutFollowingInput>
     connectOrCreate?: UserCreateOrConnectWithoutFollowingInput
@@ -8598,6 +10188,12 @@ export namespace Prisma {
     connect?: EventLocationWhereUniqueInput
   }
 
+  export type TagCreateNestedManyWithoutEventsInput = {
+    create?: XOR<TagCreateWithoutEventsInput, TagUncheckedCreateWithoutEventsInput> | TagCreateWithoutEventsInput[] | TagUncheckedCreateWithoutEventsInput[]
+    connectOrCreate?: TagCreateOrConnectWithoutEventsInput | TagCreateOrConnectWithoutEventsInput[]
+    connect?: TagWhereUniqueInput | TagWhereUniqueInput[]
+  }
+
   export type UserUncheckedCreateNestedManyWithoutLikedEventsInput = {
     create?: XOR<UserCreateWithoutLikedEventsInput, UserUncheckedCreateWithoutLikedEventsInput> | UserCreateWithoutLikedEventsInput[] | UserUncheckedCreateWithoutLikedEventsInput[]
     connectOrCreate?: UserCreateOrConnectWithoutLikedEventsInput | UserCreateOrConnectWithoutLikedEventsInput[]
@@ -8608,9 +10204,19 @@ export namespace Prisma {
     connect?: EventLocationWhereUniqueInput
   }
 
+  export type TagUncheckedCreateNestedManyWithoutEventsInput = {
+    create?: XOR<TagCreateWithoutEventsInput, TagUncheckedCreateWithoutEventsInput> | TagCreateWithoutEventsInput[] | TagUncheckedCreateWithoutEventsInput[]
+    connectOrCreate?: TagCreateOrConnectWithoutEventsInput | TagCreateOrConnectWithoutEventsInput[]
+    connect?: TagWhereUniqueInput | TagWhereUniqueInput[]
+  }
+
   export type EventUpdateimagesInput = {
     set?: string[]
     push?: string | string[]
+  }
+
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
   }
 
   export type UserUpdateOneRequiredWithoutEventsNestedInput = {
@@ -8641,6 +10247,19 @@ export namespace Prisma {
     update?: XOR<XOR<EventLocationUpdateToOneWithWhereWithoutEventInput, EventLocationUpdateWithoutEventInput>, EventLocationUncheckedUpdateWithoutEventInput>
   }
 
+  export type TagUpdateManyWithoutEventsNestedInput = {
+    create?: XOR<TagCreateWithoutEventsInput, TagUncheckedCreateWithoutEventsInput> | TagCreateWithoutEventsInput[] | TagUncheckedCreateWithoutEventsInput[]
+    connectOrCreate?: TagCreateOrConnectWithoutEventsInput | TagCreateOrConnectWithoutEventsInput[]
+    upsert?: TagUpsertWithWhereUniqueWithoutEventsInput | TagUpsertWithWhereUniqueWithoutEventsInput[]
+    set?: TagWhereUniqueInput | TagWhereUniqueInput[]
+    disconnect?: TagWhereUniqueInput | TagWhereUniqueInput[]
+    delete?: TagWhereUniqueInput | TagWhereUniqueInput[]
+    connect?: TagWhereUniqueInput | TagWhereUniqueInput[]
+    update?: TagUpdateWithWhereUniqueWithoutEventsInput | TagUpdateWithWhereUniqueWithoutEventsInput[]
+    updateMany?: TagUpdateManyWithWhereWithoutEventsInput | TagUpdateManyWithWhereWithoutEventsInput[]
+    deleteMany?: TagScalarWhereInput | TagScalarWhereInput[]
+  }
+
   export type UserUncheckedUpdateManyWithoutLikedEventsNestedInput = {
     create?: XOR<UserCreateWithoutLikedEventsInput, UserUncheckedCreateWithoutLikedEventsInput> | UserCreateWithoutLikedEventsInput[] | UserUncheckedCreateWithoutLikedEventsInput[]
     connectOrCreate?: UserCreateOrConnectWithoutLikedEventsInput | UserCreateOrConnectWithoutLikedEventsInput[]
@@ -8661,12 +10280,101 @@ export namespace Prisma {
     update?: XOR<XOR<EventLocationUpdateToOneWithWhereWithoutEventInput, EventLocationUpdateWithoutEventInput>, EventLocationUncheckedUpdateWithoutEventInput>
   }
 
+  export type TagUncheckedUpdateManyWithoutEventsNestedInput = {
+    create?: XOR<TagCreateWithoutEventsInput, TagUncheckedCreateWithoutEventsInput> | TagCreateWithoutEventsInput[] | TagUncheckedCreateWithoutEventsInput[]
+    connectOrCreate?: TagCreateOrConnectWithoutEventsInput | TagCreateOrConnectWithoutEventsInput[]
+    upsert?: TagUpsertWithWhereUniqueWithoutEventsInput | TagUpsertWithWhereUniqueWithoutEventsInput[]
+    set?: TagWhereUniqueInput | TagWhereUniqueInput[]
+    disconnect?: TagWhereUniqueInput | TagWhereUniqueInput[]
+    delete?: TagWhereUniqueInput | TagWhereUniqueInput[]
+    connect?: TagWhereUniqueInput | TagWhereUniqueInput[]
+    update?: TagUpdateWithWhereUniqueWithoutEventsInput | TagUpdateWithWhereUniqueWithoutEventsInput[]
+    updateMany?: TagUpdateManyWithWhereWithoutEventsInput | TagUpdateManyWithWhereWithoutEventsInput[]
+    deleteMany?: TagScalarWhereInput | TagScalarWhereInput[]
+  }
+
   export type EventUpdateOneRequiredWithoutGeoLocationNestedInput = {
     create?: XOR<EventCreateWithoutGeoLocationInput, EventUncheckedCreateWithoutGeoLocationInput>
     connectOrCreate?: EventCreateOrConnectWithoutGeoLocationInput
     upsert?: EventUpsertWithoutGeoLocationInput
     connect?: EventWhereUniqueInput
     update?: XOR<XOR<EventUpdateToOneWithWhereWithoutGeoLocationInput, EventUpdateWithoutGeoLocationInput>, EventUncheckedUpdateWithoutGeoLocationInput>
+  }
+
+  export type UserCreateNestedManyWithoutTagsInput = {
+    create?: XOR<UserCreateWithoutTagsInput, UserUncheckedCreateWithoutTagsInput> | UserCreateWithoutTagsInput[] | UserUncheckedCreateWithoutTagsInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutTagsInput | UserCreateOrConnectWithoutTagsInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+  }
+
+  export type EventCreateNestedManyWithoutTagsInput = {
+    create?: XOR<EventCreateWithoutTagsInput, EventUncheckedCreateWithoutTagsInput> | EventCreateWithoutTagsInput[] | EventUncheckedCreateWithoutTagsInput[]
+    connectOrCreate?: EventCreateOrConnectWithoutTagsInput | EventCreateOrConnectWithoutTagsInput[]
+    connect?: EventWhereUniqueInput | EventWhereUniqueInput[]
+  }
+
+  export type UserUncheckedCreateNestedManyWithoutTagsInput = {
+    create?: XOR<UserCreateWithoutTagsInput, UserUncheckedCreateWithoutTagsInput> | UserCreateWithoutTagsInput[] | UserUncheckedCreateWithoutTagsInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutTagsInput | UserCreateOrConnectWithoutTagsInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+  }
+
+  export type EventUncheckedCreateNestedManyWithoutTagsInput = {
+    create?: XOR<EventCreateWithoutTagsInput, EventUncheckedCreateWithoutTagsInput> | EventCreateWithoutTagsInput[] | EventUncheckedCreateWithoutTagsInput[]
+    connectOrCreate?: EventCreateOrConnectWithoutTagsInput | EventCreateOrConnectWithoutTagsInput[]
+    connect?: EventWhereUniqueInput | EventWhereUniqueInput[]
+  }
+
+  export type UserUpdateManyWithoutTagsNestedInput = {
+    create?: XOR<UserCreateWithoutTagsInput, UserUncheckedCreateWithoutTagsInput> | UserCreateWithoutTagsInput[] | UserUncheckedCreateWithoutTagsInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutTagsInput | UserCreateOrConnectWithoutTagsInput[]
+    upsert?: UserUpsertWithWhereUniqueWithoutTagsInput | UserUpsertWithWhereUniqueWithoutTagsInput[]
+    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    update?: UserUpdateWithWhereUniqueWithoutTagsInput | UserUpdateWithWhereUniqueWithoutTagsInput[]
+    updateMany?: UserUpdateManyWithWhereWithoutTagsInput | UserUpdateManyWithWhereWithoutTagsInput[]
+    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
+  }
+
+  export type EventUpdateManyWithoutTagsNestedInput = {
+    create?: XOR<EventCreateWithoutTagsInput, EventUncheckedCreateWithoutTagsInput> | EventCreateWithoutTagsInput[] | EventUncheckedCreateWithoutTagsInput[]
+    connectOrCreate?: EventCreateOrConnectWithoutTagsInput | EventCreateOrConnectWithoutTagsInput[]
+    upsert?: EventUpsertWithWhereUniqueWithoutTagsInput | EventUpsertWithWhereUniqueWithoutTagsInput[]
+    set?: EventWhereUniqueInput | EventWhereUniqueInput[]
+    disconnect?: EventWhereUniqueInput | EventWhereUniqueInput[]
+    delete?: EventWhereUniqueInput | EventWhereUniqueInput[]
+    connect?: EventWhereUniqueInput | EventWhereUniqueInput[]
+    update?: EventUpdateWithWhereUniqueWithoutTagsInput | EventUpdateWithWhereUniqueWithoutTagsInput[]
+    updateMany?: EventUpdateManyWithWhereWithoutTagsInput | EventUpdateManyWithWhereWithoutTagsInput[]
+    deleteMany?: EventScalarWhereInput | EventScalarWhereInput[]
+  }
+
+  export type UserUncheckedUpdateManyWithoutTagsNestedInput = {
+    create?: XOR<UserCreateWithoutTagsInput, UserUncheckedCreateWithoutTagsInput> | UserCreateWithoutTagsInput[] | UserUncheckedCreateWithoutTagsInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutTagsInput | UserCreateOrConnectWithoutTagsInput[]
+    upsert?: UserUpsertWithWhereUniqueWithoutTagsInput | UserUpsertWithWhereUniqueWithoutTagsInput[]
+    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    update?: UserUpdateWithWhereUniqueWithoutTagsInput | UserUpdateWithWhereUniqueWithoutTagsInput[]
+    updateMany?: UserUpdateManyWithWhereWithoutTagsInput | UserUpdateManyWithWhereWithoutTagsInput[]
+    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
+  }
+
+  export type EventUncheckedUpdateManyWithoutTagsNestedInput = {
+    create?: XOR<EventCreateWithoutTagsInput, EventUncheckedCreateWithoutTagsInput> | EventCreateWithoutTagsInput[] | EventUncheckedCreateWithoutTagsInput[]
+    connectOrCreate?: EventCreateOrConnectWithoutTagsInput | EventCreateOrConnectWithoutTagsInput[]
+    upsert?: EventUpsertWithWhereUniqueWithoutTagsInput | EventUpsertWithWhereUniqueWithoutTagsInput[]
+    set?: EventWhereUniqueInput | EventWhereUniqueInput[]
+    disconnect?: EventWhereUniqueInput | EventWhereUniqueInput[]
+    delete?: EventWhereUniqueInput | EventWhereUniqueInput[]
+    connect?: EventWhereUniqueInput | EventWhereUniqueInput[]
+    update?: EventUpdateWithWhereUniqueWithoutTagsInput | EventUpdateWithWhereUniqueWithoutTagsInput[]
+    updateMany?: EventUpdateManyWithWhereWithoutTagsInput | EventUpdateManyWithWhereWithoutTagsInput[]
+    deleteMany?: EventScalarWhereInput | EventScalarWhereInput[]
   }
 
   export type NestedUuidFilter<$PrismaModel = never> = {
@@ -8778,6 +10486,31 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
   export type FollowsCreateWithoutFollowingInput = {
     follower: UserCreateNestedOneWithoutFollowingInput
   }
@@ -8819,8 +10552,13 @@ export namespace Prisma {
     title: string
     images?: EventCreateimagesInput | string[]
     textDescription: string
+    startTime?: Date | string | null
+    endTime?: Date | string | null
+    recurrenceRule?: string | null
+    recurrenceEnd?: Date | string | null
     likes?: UserCreateNestedManyWithoutLikedEventsInput
     geoLocation?: EventLocationCreateNestedOneWithoutEventInput
+    tags?: TagCreateNestedManyWithoutEventsInput
   }
 
   export type EventUncheckedCreateWithoutUserInput = {
@@ -8828,8 +10566,13 @@ export namespace Prisma {
     title: string
     images?: EventCreateimagesInput | string[]
     textDescription: string
+    startTime?: Date | string | null
+    endTime?: Date | string | null
+    recurrenceRule?: string | null
+    recurrenceEnd?: Date | string | null
     likes?: UserUncheckedCreateNestedManyWithoutLikedEventsInput
     geoLocation?: EventLocationUncheckedCreateNestedOneWithoutEventInput
+    tags?: TagUncheckedCreateNestedManyWithoutEventsInput
   }
 
   export type EventCreateOrConnectWithoutUserInput = {
@@ -8847,8 +10590,13 @@ export namespace Prisma {
     title: string
     images?: EventCreateimagesInput | string[]
     textDescription: string
+    startTime?: Date | string | null
+    endTime?: Date | string | null
+    recurrenceRule?: string | null
+    recurrenceEnd?: Date | string | null
     user: UserCreateNestedOneWithoutEventsInput
     geoLocation?: EventLocationCreateNestedOneWithoutEventInput
+    tags?: TagCreateNestedManyWithoutEventsInput
   }
 
   export type EventUncheckedCreateWithoutLikesInput = {
@@ -8857,12 +10605,34 @@ export namespace Prisma {
     title: string
     images?: EventCreateimagesInput | string[]
     textDescription: string
+    startTime?: Date | string | null
+    endTime?: Date | string | null
+    recurrenceRule?: string | null
+    recurrenceEnd?: Date | string | null
     geoLocation?: EventLocationUncheckedCreateNestedOneWithoutEventInput
+    tags?: TagUncheckedCreateNestedManyWithoutEventsInput
   }
 
   export type EventCreateOrConnectWithoutLikesInput = {
     where: EventWhereUniqueInput
     create: XOR<EventCreateWithoutLikesInput, EventUncheckedCreateWithoutLikesInput>
+  }
+
+  export type TagCreateWithoutUsersInput = {
+    id?: string
+    name: string
+    events?: EventCreateNestedManyWithoutTagsInput
+  }
+
+  export type TagUncheckedCreateWithoutUsersInput = {
+    id?: string
+    name: string
+    events?: EventUncheckedCreateNestedManyWithoutTagsInput
+  }
+
+  export type TagCreateOrConnectWithoutUsersInput = {
+    where: TagWhereUniqueInput
+    create: XOR<TagCreateWithoutUsersInput, TagUncheckedCreateWithoutUsersInput>
   }
 
   export type FollowsUpsertWithWhereUniqueWithoutFollowingInput = {
@@ -8930,6 +10700,10 @@ export namespace Prisma {
     title?: StringFilter<"Event"> | string
     images?: StringNullableListFilter<"Event">
     textDescription?: StringFilter<"Event"> | string
+    startTime?: DateTimeNullableFilter<"Event"> | Date | string | null
+    endTime?: DateTimeNullableFilter<"Event"> | Date | string | null
+    recurrenceRule?: StringNullableFilter<"Event"> | string | null
+    recurrenceEnd?: DateTimeNullableFilter<"Event"> | Date | string | null
   }
 
   export type EventUpsertWithWhereUniqueWithoutLikesInput = {
@@ -8982,6 +10756,30 @@ export namespace Prisma {
     streetAddress?: StringFieldUpdateOperationsInput | string
   }
 
+  export type TagUpsertWithWhereUniqueWithoutUsersInput = {
+    where: TagWhereUniqueInput
+    update: XOR<TagUpdateWithoutUsersInput, TagUncheckedUpdateWithoutUsersInput>
+    create: XOR<TagCreateWithoutUsersInput, TagUncheckedCreateWithoutUsersInput>
+  }
+
+  export type TagUpdateWithWhereUniqueWithoutUsersInput = {
+    where: TagWhereUniqueInput
+    data: XOR<TagUpdateWithoutUsersInput, TagUncheckedUpdateWithoutUsersInput>
+  }
+
+  export type TagUpdateManyWithWhereWithoutUsersInput = {
+    where: TagScalarWhereInput
+    data: XOR<TagUpdateManyMutationInput, TagUncheckedUpdateManyWithoutUsersInput>
+  }
+
+  export type TagScalarWhereInput = {
+    AND?: TagScalarWhereInput | TagScalarWhereInput[]
+    OR?: TagScalarWhereInput[]
+    NOT?: TagScalarWhereInput | TagScalarWhereInput[]
+    id?: UuidFilter<"Tag"> | string
+    name?: StringFilter<"Tag"> | string
+  }
+
   export type UserCreateWithoutFollowingInput = {
     id?: string
     name: string
@@ -8994,6 +10792,7 @@ export namespace Prisma {
     likedEvents?: EventCreateNestedManyWithoutLikesInput
     polygons?: UserPolyCreateNestedManyWithoutUserInput
     geoLocation?: UserLocationCreateNestedOneWithoutUserInput
+    tags?: TagCreateNestedManyWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutFollowingInput = {
@@ -9008,6 +10807,7 @@ export namespace Prisma {
     likedEvents?: EventUncheckedCreateNestedManyWithoutLikesInput
     polygons?: UserPolyUncheckedCreateNestedManyWithoutUserInput
     geoLocation?: UserLocationUncheckedCreateNestedOneWithoutUserInput
+    tags?: TagUncheckedCreateNestedManyWithoutUsersInput
   }
 
   export type UserCreateOrConnectWithoutFollowingInput = {
@@ -9027,6 +10827,7 @@ export namespace Prisma {
     likedEvents?: EventCreateNestedManyWithoutLikesInput
     polygons?: UserPolyCreateNestedManyWithoutUserInput
     geoLocation?: UserLocationCreateNestedOneWithoutUserInput
+    tags?: TagCreateNestedManyWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutFollowersInput = {
@@ -9041,6 +10842,7 @@ export namespace Prisma {
     likedEvents?: EventUncheckedCreateNestedManyWithoutLikesInput
     polygons?: UserPolyUncheckedCreateNestedManyWithoutUserInput
     geoLocation?: UserLocationUncheckedCreateNestedOneWithoutUserInput
+    tags?: TagUncheckedCreateNestedManyWithoutUsersInput
   }
 
   export type UserCreateOrConnectWithoutFollowersInput = {
@@ -9071,6 +10873,7 @@ export namespace Prisma {
     likedEvents?: EventUpdateManyWithoutLikesNestedInput
     polygons?: UserPolyUpdateManyWithoutUserNestedInput
     geoLocation?: UserLocationUpdateOneWithoutUserNestedInput
+    tags?: TagUpdateManyWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutFollowingInput = {
@@ -9085,6 +10888,7 @@ export namespace Prisma {
     likedEvents?: EventUncheckedUpdateManyWithoutLikesNestedInput
     polygons?: UserPolyUncheckedUpdateManyWithoutUserNestedInput
     geoLocation?: UserLocationUncheckedUpdateOneWithoutUserNestedInput
+    tags?: TagUncheckedUpdateManyWithoutUsersNestedInput
   }
 
   export type UserUpsertWithoutFollowersInput = {
@@ -9110,6 +10914,7 @@ export namespace Prisma {
     likedEvents?: EventUpdateManyWithoutLikesNestedInput
     polygons?: UserPolyUpdateManyWithoutUserNestedInput
     geoLocation?: UserLocationUpdateOneWithoutUserNestedInput
+    tags?: TagUpdateManyWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutFollowersInput = {
@@ -9124,6 +10929,7 @@ export namespace Prisma {
     likedEvents?: EventUncheckedUpdateManyWithoutLikesNestedInput
     polygons?: UserPolyUncheckedUpdateManyWithoutUserNestedInput
     geoLocation?: UserLocationUncheckedUpdateOneWithoutUserNestedInput
+    tags?: TagUncheckedUpdateManyWithoutUsersNestedInput
   }
 
   export type UserCreateWithoutGeoLocationInput = {
@@ -9138,6 +10944,7 @@ export namespace Prisma {
     events?: EventCreateNestedManyWithoutUserInput
     likedEvents?: EventCreateNestedManyWithoutLikesInput
     polygons?: UserPolyCreateNestedManyWithoutUserInput
+    tags?: TagCreateNestedManyWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutGeoLocationInput = {
@@ -9152,6 +10959,7 @@ export namespace Prisma {
     events?: EventUncheckedCreateNestedManyWithoutUserInput
     likedEvents?: EventUncheckedCreateNestedManyWithoutLikesInput
     polygons?: UserPolyUncheckedCreateNestedManyWithoutUserInput
+    tags?: TagUncheckedCreateNestedManyWithoutUsersInput
   }
 
   export type UserCreateOrConnectWithoutGeoLocationInput = {
@@ -9182,6 +10990,7 @@ export namespace Prisma {
     events?: EventUpdateManyWithoutUserNestedInput
     likedEvents?: EventUpdateManyWithoutLikesNestedInput
     polygons?: UserPolyUpdateManyWithoutUserNestedInput
+    tags?: TagUpdateManyWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutGeoLocationInput = {
@@ -9196,6 +11005,7 @@ export namespace Prisma {
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
     likedEvents?: EventUncheckedUpdateManyWithoutLikesNestedInput
     polygons?: UserPolyUncheckedUpdateManyWithoutUserNestedInput
+    tags?: TagUncheckedUpdateManyWithoutUsersNestedInput
   }
 
   export type UserCreateWithoutPolygonsInput = {
@@ -9210,6 +11020,7 @@ export namespace Prisma {
     events?: EventCreateNestedManyWithoutUserInput
     likedEvents?: EventCreateNestedManyWithoutLikesInput
     geoLocation?: UserLocationCreateNestedOneWithoutUserInput
+    tags?: TagCreateNestedManyWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutPolygonsInput = {
@@ -9224,6 +11035,7 @@ export namespace Prisma {
     events?: EventUncheckedCreateNestedManyWithoutUserInput
     likedEvents?: EventUncheckedCreateNestedManyWithoutLikesInput
     geoLocation?: UserLocationUncheckedCreateNestedOneWithoutUserInput
+    tags?: TagUncheckedCreateNestedManyWithoutUsersInput
   }
 
   export type UserCreateOrConnectWithoutPolygonsInput = {
@@ -9254,6 +11066,7 @@ export namespace Prisma {
     events?: EventUpdateManyWithoutUserNestedInput
     likedEvents?: EventUpdateManyWithoutLikesNestedInput
     geoLocation?: UserLocationUpdateOneWithoutUserNestedInput
+    tags?: TagUpdateManyWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPolygonsInput = {
@@ -9268,6 +11081,7 @@ export namespace Prisma {
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
     likedEvents?: EventUncheckedUpdateManyWithoutLikesNestedInput
     geoLocation?: UserLocationUncheckedUpdateOneWithoutUserNestedInput
+    tags?: TagUncheckedUpdateManyWithoutUsersNestedInput
   }
 
   export type UserCreateWithoutEventsInput = {
@@ -9282,6 +11096,7 @@ export namespace Prisma {
     likedEvents?: EventCreateNestedManyWithoutLikesInput
     polygons?: UserPolyCreateNestedManyWithoutUserInput
     geoLocation?: UserLocationCreateNestedOneWithoutUserInput
+    tags?: TagCreateNestedManyWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutEventsInput = {
@@ -9296,6 +11111,7 @@ export namespace Prisma {
     likedEvents?: EventUncheckedCreateNestedManyWithoutLikesInput
     polygons?: UserPolyUncheckedCreateNestedManyWithoutUserInput
     geoLocation?: UserLocationUncheckedCreateNestedOneWithoutUserInput
+    tags?: TagUncheckedCreateNestedManyWithoutUsersInput
   }
 
   export type UserCreateOrConnectWithoutEventsInput = {
@@ -9315,6 +11131,7 @@ export namespace Prisma {
     events?: EventCreateNestedManyWithoutUserInput
     polygons?: UserPolyCreateNestedManyWithoutUserInput
     geoLocation?: UserLocationCreateNestedOneWithoutUserInput
+    tags?: TagCreateNestedManyWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutLikedEventsInput = {
@@ -9329,11 +11146,29 @@ export namespace Prisma {
     events?: EventUncheckedCreateNestedManyWithoutUserInput
     polygons?: UserPolyUncheckedCreateNestedManyWithoutUserInput
     geoLocation?: UserLocationUncheckedCreateNestedOneWithoutUserInput
+    tags?: TagUncheckedCreateNestedManyWithoutUsersInput
   }
 
   export type UserCreateOrConnectWithoutLikedEventsInput = {
     where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutLikedEventsInput, UserUncheckedCreateWithoutLikedEventsInput>
+  }
+
+  export type TagCreateWithoutEventsInput = {
+    id?: string
+    name: string
+    users?: UserCreateNestedManyWithoutTagsInput
+  }
+
+  export type TagUncheckedCreateWithoutEventsInput = {
+    id?: string
+    name: string
+    users?: UserUncheckedCreateNestedManyWithoutTagsInput
+  }
+
+  export type TagCreateOrConnectWithoutEventsInput = {
+    where: TagWhereUniqueInput
+    create: XOR<TagCreateWithoutEventsInput, TagUncheckedCreateWithoutEventsInput>
   }
 
   export type UserUpsertWithoutEventsInput = {
@@ -9359,6 +11194,7 @@ export namespace Prisma {
     likedEvents?: EventUpdateManyWithoutLikesNestedInput
     polygons?: UserPolyUpdateManyWithoutUserNestedInput
     geoLocation?: UserLocationUpdateOneWithoutUserNestedInput
+    tags?: TagUpdateManyWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutEventsInput = {
@@ -9373,6 +11209,7 @@ export namespace Prisma {
     likedEvents?: EventUncheckedUpdateManyWithoutLikesNestedInput
     polygons?: UserPolyUncheckedUpdateManyWithoutUserNestedInput
     geoLocation?: UserLocationUncheckedUpdateOneWithoutUserNestedInput
+    tags?: TagUncheckedUpdateManyWithoutUsersNestedInput
   }
 
   export type UserUpsertWithWhereUniqueWithoutLikedEventsInput = {
@@ -9418,13 +11255,34 @@ export namespace Prisma {
     streetAddress?: StringFieldUpdateOperationsInput | string
   }
 
+  export type TagUpsertWithWhereUniqueWithoutEventsInput = {
+    where: TagWhereUniqueInput
+    update: XOR<TagUpdateWithoutEventsInput, TagUncheckedUpdateWithoutEventsInput>
+    create: XOR<TagCreateWithoutEventsInput, TagUncheckedCreateWithoutEventsInput>
+  }
+
+  export type TagUpdateWithWhereUniqueWithoutEventsInput = {
+    where: TagWhereUniqueInput
+    data: XOR<TagUpdateWithoutEventsInput, TagUncheckedUpdateWithoutEventsInput>
+  }
+
+  export type TagUpdateManyWithWhereWithoutEventsInput = {
+    where: TagScalarWhereInput
+    data: XOR<TagUpdateManyMutationInput, TagUncheckedUpdateManyWithoutEventsInput>
+  }
+
   export type EventCreateWithoutGeoLocationInput = {
     id?: string
     title: string
     images?: EventCreateimagesInput | string[]
     textDescription: string
+    startTime?: Date | string | null
+    endTime?: Date | string | null
+    recurrenceRule?: string | null
+    recurrenceEnd?: Date | string | null
     user: UserCreateNestedOneWithoutEventsInput
     likes?: UserCreateNestedManyWithoutLikedEventsInput
+    tags?: TagCreateNestedManyWithoutEventsInput
   }
 
   export type EventUncheckedCreateWithoutGeoLocationInput = {
@@ -9433,7 +11291,12 @@ export namespace Prisma {
     title: string
     images?: EventCreateimagesInput | string[]
     textDescription: string
+    startTime?: Date | string | null
+    endTime?: Date | string | null
+    recurrenceRule?: string | null
+    recurrenceEnd?: Date | string | null
     likes?: UserUncheckedCreateNestedManyWithoutLikedEventsInput
+    tags?: TagUncheckedCreateNestedManyWithoutEventsInput
   }
 
   export type EventCreateOrConnectWithoutGeoLocationInput = {
@@ -9457,8 +11320,13 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     images?: EventUpdateimagesInput | string[]
     textDescription?: StringFieldUpdateOperationsInput | string
+    startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    recurrenceRule?: NullableStringFieldUpdateOperationsInput | string | null
+    recurrenceEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UserUpdateOneRequiredWithoutEventsNestedInput
     likes?: UserUpdateManyWithoutLikedEventsNestedInput
+    tags?: TagUpdateManyWithoutEventsNestedInput
   }
 
   export type EventUncheckedUpdateWithoutGeoLocationInput = {
@@ -9467,7 +11335,112 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     images?: EventUpdateimagesInput | string[]
     textDescription?: StringFieldUpdateOperationsInput | string
+    startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    recurrenceRule?: NullableStringFieldUpdateOperationsInput | string | null
+    recurrenceEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     likes?: UserUncheckedUpdateManyWithoutLikedEventsNestedInput
+    tags?: TagUncheckedUpdateManyWithoutEventsNestedInput
+  }
+
+  export type UserCreateWithoutTagsInput = {
+    id?: string
+    name: string
+    email: string
+    password: string
+    avatar?: string | null
+    preferences: string
+    followers?: FollowsCreateNestedManyWithoutFollowingInput
+    following?: FollowsCreateNestedManyWithoutFollowerInput
+    events?: EventCreateNestedManyWithoutUserInput
+    likedEvents?: EventCreateNestedManyWithoutLikesInput
+    polygons?: UserPolyCreateNestedManyWithoutUserInput
+    geoLocation?: UserLocationCreateNestedOneWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutTagsInput = {
+    id?: string
+    name: string
+    email: string
+    password: string
+    avatar?: string | null
+    preferences: string
+    followers?: FollowsUncheckedCreateNestedManyWithoutFollowingInput
+    following?: FollowsUncheckedCreateNestedManyWithoutFollowerInput
+    events?: EventUncheckedCreateNestedManyWithoutUserInput
+    likedEvents?: EventUncheckedCreateNestedManyWithoutLikesInput
+    polygons?: UserPolyUncheckedCreateNestedManyWithoutUserInput
+    geoLocation?: UserLocationUncheckedCreateNestedOneWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutTagsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutTagsInput, UserUncheckedCreateWithoutTagsInput>
+  }
+
+  export type EventCreateWithoutTagsInput = {
+    id?: string
+    title: string
+    images?: EventCreateimagesInput | string[]
+    textDescription: string
+    startTime?: Date | string | null
+    endTime?: Date | string | null
+    recurrenceRule?: string | null
+    recurrenceEnd?: Date | string | null
+    user: UserCreateNestedOneWithoutEventsInput
+    likes?: UserCreateNestedManyWithoutLikedEventsInput
+    geoLocation?: EventLocationCreateNestedOneWithoutEventInput
+  }
+
+  export type EventUncheckedCreateWithoutTagsInput = {
+    id?: string
+    userId: string
+    title: string
+    images?: EventCreateimagesInput | string[]
+    textDescription: string
+    startTime?: Date | string | null
+    endTime?: Date | string | null
+    recurrenceRule?: string | null
+    recurrenceEnd?: Date | string | null
+    likes?: UserUncheckedCreateNestedManyWithoutLikedEventsInput
+    geoLocation?: EventLocationUncheckedCreateNestedOneWithoutEventInput
+  }
+
+  export type EventCreateOrConnectWithoutTagsInput = {
+    where: EventWhereUniqueInput
+    create: XOR<EventCreateWithoutTagsInput, EventUncheckedCreateWithoutTagsInput>
+  }
+
+  export type UserUpsertWithWhereUniqueWithoutTagsInput = {
+    where: UserWhereUniqueInput
+    update: XOR<UserUpdateWithoutTagsInput, UserUncheckedUpdateWithoutTagsInput>
+    create: XOR<UserCreateWithoutTagsInput, UserUncheckedCreateWithoutTagsInput>
+  }
+
+  export type UserUpdateWithWhereUniqueWithoutTagsInput = {
+    where: UserWhereUniqueInput
+    data: XOR<UserUpdateWithoutTagsInput, UserUncheckedUpdateWithoutTagsInput>
+  }
+
+  export type UserUpdateManyWithWhereWithoutTagsInput = {
+    where: UserScalarWhereInput
+    data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyWithoutTagsInput>
+  }
+
+  export type EventUpsertWithWhereUniqueWithoutTagsInput = {
+    where: EventWhereUniqueInput
+    update: XOR<EventUpdateWithoutTagsInput, EventUncheckedUpdateWithoutTagsInput>
+    create: XOR<EventCreateWithoutTagsInput, EventUncheckedCreateWithoutTagsInput>
+  }
+
+  export type EventUpdateWithWhereUniqueWithoutTagsInput = {
+    where: EventWhereUniqueInput
+    data: XOR<EventUpdateWithoutTagsInput, EventUncheckedUpdateWithoutTagsInput>
+  }
+
+  export type EventUpdateManyWithWhereWithoutTagsInput = {
+    where: EventScalarWhereInput
+    data: XOR<EventUpdateManyMutationInput, EventUncheckedUpdateManyWithoutTagsInput>
   }
 
   export type FollowsCreateManyFollowingInput = {
@@ -9483,6 +11456,10 @@ export namespace Prisma {
     title: string
     images?: EventCreateimagesInput | string[]
     textDescription: string
+    startTime?: Date | string | null
+    endTime?: Date | string | null
+    recurrenceRule?: string | null
+    recurrenceEnd?: Date | string | null
   }
 
   export type FollowsUpdateWithoutFollowingInput = {
@@ -9514,8 +11491,13 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     images?: EventUpdateimagesInput | string[]
     textDescription?: StringFieldUpdateOperationsInput | string
+    startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    recurrenceRule?: NullableStringFieldUpdateOperationsInput | string | null
+    recurrenceEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     likes?: UserUpdateManyWithoutLikedEventsNestedInput
     geoLocation?: EventLocationUpdateOneWithoutEventNestedInput
+    tags?: TagUpdateManyWithoutEventsNestedInput
   }
 
   export type EventUncheckedUpdateWithoutUserInput = {
@@ -9523,8 +11505,13 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     images?: EventUpdateimagesInput | string[]
     textDescription?: StringFieldUpdateOperationsInput | string
+    startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    recurrenceRule?: NullableStringFieldUpdateOperationsInput | string | null
+    recurrenceEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     likes?: UserUncheckedUpdateManyWithoutLikedEventsNestedInput
     geoLocation?: EventLocationUncheckedUpdateOneWithoutEventNestedInput
+    tags?: TagUncheckedUpdateManyWithoutEventsNestedInput
   }
 
   export type EventUncheckedUpdateManyWithoutUserInput = {
@@ -9532,6 +11519,10 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     images?: EventUpdateimagesInput | string[]
     textDescription?: StringFieldUpdateOperationsInput | string
+    startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    recurrenceRule?: NullableStringFieldUpdateOperationsInput | string | null
+    recurrenceEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type EventUpdateWithoutLikesInput = {
@@ -9539,8 +11530,13 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     images?: EventUpdateimagesInput | string[]
     textDescription?: StringFieldUpdateOperationsInput | string
+    startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    recurrenceRule?: NullableStringFieldUpdateOperationsInput | string | null
+    recurrenceEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UserUpdateOneRequiredWithoutEventsNestedInput
     geoLocation?: EventLocationUpdateOneWithoutEventNestedInput
+    tags?: TagUpdateManyWithoutEventsNestedInput
   }
 
   export type EventUncheckedUpdateWithoutLikesInput = {
@@ -9549,7 +11545,12 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     images?: EventUpdateimagesInput | string[]
     textDescription?: StringFieldUpdateOperationsInput | string
+    startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    recurrenceRule?: NullableStringFieldUpdateOperationsInput | string | null
+    recurrenceEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     geoLocation?: EventLocationUncheckedUpdateOneWithoutEventNestedInput
+    tags?: TagUncheckedUpdateManyWithoutEventsNestedInput
   }
 
   export type EventUncheckedUpdateManyWithoutLikesInput = {
@@ -9558,6 +11559,10 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     images?: EventUpdateimagesInput | string[]
     textDescription?: StringFieldUpdateOperationsInput | string
+    startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    recurrenceRule?: NullableStringFieldUpdateOperationsInput | string | null
+    recurrenceEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type UserPolyUpdateWithoutUserInput = {
@@ -9575,6 +11580,23 @@ export namespace Prisma {
     activeFlag?: StringFieldUpdateOperationsInput | string
   }
 
+  export type TagUpdateWithoutUsersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    events?: EventUpdateManyWithoutTagsNestedInput
+  }
+
+  export type TagUncheckedUpdateWithoutUsersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    events?: EventUncheckedUpdateManyWithoutTagsNestedInput
+  }
+
+  export type TagUncheckedUpdateManyWithoutUsersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+  }
+
   export type UserUpdateWithoutLikedEventsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
@@ -9587,6 +11609,7 @@ export namespace Prisma {
     events?: EventUpdateManyWithoutUserNestedInput
     polygons?: UserPolyUpdateManyWithoutUserNestedInput
     geoLocation?: UserLocationUpdateOneWithoutUserNestedInput
+    tags?: TagUpdateManyWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutLikedEventsInput = {
@@ -9601,6 +11624,7 @@ export namespace Prisma {
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
     polygons?: UserPolyUncheckedUpdateManyWithoutUserNestedInput
     geoLocation?: UserLocationUncheckedUpdateOneWithoutUserNestedInput
+    tags?: TagUncheckedUpdateManyWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutLikedEventsInput = {
@@ -9610,6 +11634,102 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
     preferences?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type TagUpdateWithoutEventsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    users?: UserUpdateManyWithoutTagsNestedInput
+  }
+
+  export type TagUncheckedUpdateWithoutEventsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    users?: UserUncheckedUpdateManyWithoutTagsNestedInput
+  }
+
+  export type TagUncheckedUpdateManyWithoutEventsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type UserUpdateWithoutTagsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    preferences?: StringFieldUpdateOperationsInput | string
+    followers?: FollowsUpdateManyWithoutFollowingNestedInput
+    following?: FollowsUpdateManyWithoutFollowerNestedInput
+    events?: EventUpdateManyWithoutUserNestedInput
+    likedEvents?: EventUpdateManyWithoutLikesNestedInput
+    polygons?: UserPolyUpdateManyWithoutUserNestedInput
+    geoLocation?: UserLocationUpdateOneWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutTagsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    preferences?: StringFieldUpdateOperationsInput | string
+    followers?: FollowsUncheckedUpdateManyWithoutFollowingNestedInput
+    following?: FollowsUncheckedUpdateManyWithoutFollowerNestedInput
+    events?: EventUncheckedUpdateManyWithoutUserNestedInput
+    likedEvents?: EventUncheckedUpdateManyWithoutLikesNestedInput
+    polygons?: UserPolyUncheckedUpdateManyWithoutUserNestedInput
+    geoLocation?: UserLocationUncheckedUpdateOneWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateManyWithoutTagsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    preferences?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type EventUpdateWithoutTagsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    images?: EventUpdateimagesInput | string[]
+    textDescription?: StringFieldUpdateOperationsInput | string
+    startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    recurrenceRule?: NullableStringFieldUpdateOperationsInput | string | null
+    recurrenceEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    user?: UserUpdateOneRequiredWithoutEventsNestedInput
+    likes?: UserUpdateManyWithoutLikedEventsNestedInput
+    geoLocation?: EventLocationUpdateOneWithoutEventNestedInput
+  }
+
+  export type EventUncheckedUpdateWithoutTagsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    images?: EventUpdateimagesInput | string[]
+    textDescription?: StringFieldUpdateOperationsInput | string
+    startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    recurrenceRule?: NullableStringFieldUpdateOperationsInput | string | null
+    recurrenceEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    likes?: UserUncheckedUpdateManyWithoutLikedEventsNestedInput
+    geoLocation?: EventLocationUncheckedUpdateOneWithoutEventNestedInput
+  }
+
+  export type EventUncheckedUpdateManyWithoutTagsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    images?: EventUpdateimagesInput | string[]
+    textDescription?: StringFieldUpdateOperationsInput | string
+    startTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    recurrenceRule?: NullableStringFieldUpdateOperationsInput | string | null
+    recurrenceEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
 

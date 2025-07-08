@@ -6,7 +6,6 @@
  * The profile information is fetched from the API, and the user can update it through a dialog.
  * The user's events are displayed in a vertical carousel format.
  *
- * NEED TO FIX PROFILE EDITING - use autocomplete for location
  *
  * @component
  * @example
@@ -19,12 +18,14 @@ import CreateEventButton from "../CreateEventPage/CreateEventButton";
 import VerticalEvents from "../VerticalEvents/VerticalEvents";
 import LocationAutocomplete from "../LocationAutocomplete/LocationAutocomplete";
 import "./ProfilePage.css";
+import TagsSearch from "../Tags/TagsSearch";
 import {
   getUserById,
   getUserEvents,
   getSessionUserId,
   updateUserProfile,
   uploadProfileImage,
+  getAllTags,
 } from "../../api";
 import React, { useRef, useEffect, useState } from "react";
 import { Button } from "../../../components/ui/button";
@@ -41,12 +42,16 @@ import {
 import { Input } from "../../../components/ui/input";
 import { Label } from "../../../components/ui/label";
 import { APIProvider } from "@vis.gl/react-google-maps";
+import { Tag } from "lucide-react";
 
 export default function ProfilePage() {
   const [userData, setUserData] = useState(null);
   const [userEvents, setUserEvents] = useState([]);
   const [editName, setEditName] = useState("");
   const [editLocation, setEditLocation] = useState("");
+  const [editTags, setEditTags] = useState([]);
+  const [allTags, setAllTags] = useState([]);
+  const [tagsToAdd, setTagsToAdd] = useState([]);
   const fileInputRef = useRef();
 
   /**
@@ -61,8 +66,11 @@ export default function ProfilePage() {
         const userId = await getSessionUserId();
         const user = await getUserById(userId);
         setUserData(user);
+        setEditTags(user.tags);
         const events = await getUserEvents(userId);
         setUserEvents(events);
+        const allTags = await getAllTags();
+        setAllTags(allTags);
       } catch (err) {
         setUserData(null);
       }
@@ -76,6 +84,7 @@ export default function ProfilePage() {
       setEditLocation(
         userData.location || { address: "", latitude: 0, longitude: 0 }
       );
+      setEditTags(userData.tags ? userData.tags.map((tag) => tag.id) : []);
     }
   }, [userData]);
 
@@ -93,7 +102,6 @@ export default function ProfilePage() {
     let avatarUrl = userData.avatar;
     const file = fileInputRef.current?.files?.[0];
 
-    // Upload new profile image if selected
     if (file) {
       try {
         avatarUrl = await uploadProfileImage(userData.id, file);
@@ -102,19 +110,29 @@ export default function ProfilePage() {
         return;
       }
     }
+    // Convert tag IDs to tag names
+    const tagNames = editTags.map((tag) => {
+      // If it's an ID, find the tag name
+      const tagObj = allTags.find((t) => t.id === tag);
+      return tagObj ? tagObj.name : tag; // If not found, it's a new tag (string)
+    });
+    if (tagsToAdd.length > 0) {
+      tagNames.push(...tagsToAdd);
+    }
 
-    // Update profile with new name, location, and avatar
     try {
       await updateUserProfile(userData.id, {
         name: editName,
         location: editLocation,
         avatar: avatarUrl,
+        tags: tagNames,
       });
       setUserData({
         ...userData,
         name: editName,
         location: editLocation,
         avatar: avatarUrl,
+        tags: allTags.filter((tag) => editTags.includes(tag.id)),
       });
     } catch (err) {
       alert("Failed to update profile");
@@ -164,7 +182,7 @@ export default function ProfilePage() {
               <DialogTrigger asChild>
                 <Button variant="outline">Edit Profile</Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-[425px]">
+              <DialogContent className="sm:max-w-[525px] max-h-[90vw] overflow-y-auto">
                 <DialogHeader>
                   <DialogTitle>Edit Profile</DialogTitle>
                   <DialogDescription>
@@ -201,6 +219,34 @@ export default function ProfilePage() {
                             latitude: place.Dg.location.lat,
                             longitude: place.Dg.location.lng,
                           });
+                        }}
+                      />
+                    </div>
+                    <div className="grid gap-3">
+                      <Label>Preferences</Label>
+                      <TagsSearch
+                        tags={allTags}
+                        value={editTags}
+                        onTagSelect={(selectedTagIds) =>
+                          setEditTags(selectedTagIds)
+                        }
+                        onAddTag={(newTag) => {
+                          if (newTag && !editTags.includes(newTag)) {
+                            setEditTags([...editTags, newTag]);
+                          }
+                          // Add the new tag to allTags if not already present
+                          if (
+                            newTag &&
+                            !allTags.some(
+                              (tag) =>
+                                tag.name.toLowerCase() === newTag.toLowerCase()
+                            )
+                          ) {
+                            setAllTags([
+                              ...allTags,
+                              { id: newTag, name: newTag }, // Use name as id for new tags (until backend assigns real id)
+                            ]);
+                          }
                         }}
                       />
                     </div>
