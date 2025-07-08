@@ -104,8 +104,6 @@ export default function TagsSearch({
             placeholder="Search tags..."
             value={search}
             onValueChange={(val) => {
-              console.log("Search value changed:", val);
-              console.log("Filtered tags:", filteredTags);
               setSearch(val);
             }}
           />

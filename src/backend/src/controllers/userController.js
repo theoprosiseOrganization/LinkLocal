@@ -98,12 +98,10 @@ exports.updateUser = async (req, res) => {
 
     if (req.body.tags) {
       // Disconnect all current tags
-      console.log("Disconnecting all current tags");
       await prisma.user.update({
         where: { id: req.params.id },
         data: { tags: { set: [] } },
       });
-      console.log("Disconnected all current tags");
       // Connect new tags (array of tag IDs)
       if (req.body.tags.length > 0) {
         for (const tagName of req.body.tags) {
