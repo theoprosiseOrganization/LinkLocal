@@ -51,6 +51,7 @@ export default function ProfilePage() {
   const [editLocation, setEditLocation] = useState("");
   const [editTags, setEditTags] = useState([]);
   const [allTags, setAllTags] = useState([]);
+  const [tagsToAdd, setTagsToAdd] = useState([]);
   const fileInputRef = useRef();
 
   /**
@@ -78,14 +79,14 @@ export default function ProfilePage() {
   }, []);
 
   useEffect(() => {
-  if (userData) {
-    setEditName(userData.name || "");
-    setEditLocation(
-      userData.location || { address: "", latitude: 0, longitude: 0 }
-    );
-    setEditTags(userData.tags ? userData.tags.map((tag) => tag.id) : []);
-  }
-}, [userData]);
+    if (userData) {
+      setEditName(userData.name || "");
+      setEditLocation(
+        userData.location || { address: "", latitude: 0, longitude: 0 }
+      );
+      setEditTags(userData.tags ? userData.tags.map((tag) => tag.id) : []);
+    }
+  }, [userData]);
 
   /**
    * Handles the profile update form submission.
@@ -97,41 +98,45 @@ export default function ProfilePage() {
    * @throws {Error} If the profile update fails or if the image upload fails.
    */
   const handleProfileUpdate = async (e) => {
-  e.preventDefault();
-  let avatarUrl = userData.avatar;
-  const file = fileInputRef.current?.files?.[0];
+    e.preventDefault();
+    let avatarUrl = userData.avatar;
+    const file = fileInputRef.current?.files?.[0];
 
-  if (file) {
-    try {
-      avatarUrl = await uploadProfileImage(userData.id, file);
-    } catch (err) {
-      alert("Failed to upload profile image");
-      return;
+    if (file) {
+      try {
+        avatarUrl = await uploadProfileImage(userData.id, file);
+      } catch (err) {
+        alert("Failed to upload profile image");
+        return;
+      }
     }
-  }
-  // Convert tag IDs to tag names
-  const tagNames = allTags
-    .filter((tag) => editTags.includes(tag.id))
-    .map((tag) => tag.name);
+    // Convert tag IDs to tag names
+    const tagNames = allTags
+      .filter((tag) => editTags.includes(tag.id))
+      .map((tag) => tag.name);
 
-  try {
-    await updateUserProfile(userData.id, {
-      name: editName,
-      location: editLocation,
-      avatar: avatarUrl,
-      tags: tagNames,
-    });
-    setUserData({
-      ...userData,
-      name: editName,
-      location: editLocation,
-      avatar: avatarUrl,
-      tags: allTags.filter((tag) => editTags.includes(tag.id)),
-    });
-  } catch (err) {
-    alert("Failed to update profile");
-  }
-};
+    if (tagsToAdd.length > 0) {
+      tagNames.push(...tagsToAdd);
+    }
+
+    try {
+      await updateUserProfile(userData.id, {
+        name: editName,
+        location: editLocation,
+        avatar: avatarUrl,
+        tags: tagNames,
+      });
+      setUserData({
+        ...userData,
+        name: editName,
+        location: editLocation,
+        avatar: avatarUrl,
+        tags: allTags.filter((tag) => editTags.includes(tag.id)),
+      });
+    } catch (err) {
+      alert("Failed to update profile");
+    }
+  };
 
   return (
     <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
@@ -217,13 +222,18 @@ export default function ProfilePage() {
                       />
                     </div>
                     <div className="grid gap-3">
-                      <Label>Tags</Label>
+                      <Label>Preferences</Label>
                       <TagsSearch
                         tags={allTags}
                         value={editTags}
                         onTagSelect={(selectedTagIds) =>
                           setEditTags(selectedTagIds)
                         }
+                        onAddTag={(newTag) => {
+                          if (newTag && !tagsToAdd.includes(newTag)) {
+                            setTagsToAdd([...tagsToAdd, newTag]);
+                          }
+                        }}
                       />
                     </div>
                   </div>
