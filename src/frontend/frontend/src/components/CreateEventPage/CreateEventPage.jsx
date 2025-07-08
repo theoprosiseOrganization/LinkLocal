@@ -16,6 +16,13 @@ import Layout from "../Layout/Layout";
 import { Input } from "../../../components/ui/input";
 import { Label } from "../../../components/ui/label";
 import { Button } from "../../../components/ui/button";
+import { Calendar } from "../../../components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "../../../components/ui/popover";
+import { ChevronDownIcon } from "lucide-react";
 import React, { useState, useRef, useEffect } from "react";
 import {
   createEvent,
@@ -28,6 +35,11 @@ import { APIProvider } from "@vis.gl/react-google-maps";
 import TagsSearch from "../Tags/TagsSearch";
 
 export default function CreateEventPage() {
+  const [open, setOpen] = useState(false);
+  const [startDate, setStartDate] = useState(new Date());
+  const [startTime, setStartTime] = useState("10:30");
+  const [endDate, setEndDate] = useState(new Date());
+  const [endTime, setEndTime] = useState("12:00");
   const [eventData, setEventData] = useState({
     title: "",
     textDescription: "",
@@ -76,7 +88,7 @@ export default function CreateEventPage() {
    * 5. If images are provided, it uploads them using the `uploadEventImages`
    * function, which returns an array of image URLs.
    * 6. Updates the event with the image URLs if any images were uploaded.
-   * 7. Resets the form state and file input after successful event creation.  
+   * 7. Resets the form state and file input after successful event creation.
    *
    * It must upload images separately, as image upload requires an event ID
    * to be created.
@@ -104,6 +116,13 @@ export default function CreateEventPage() {
       return;
     }
 
+    const startDateTime = new Date(
+      `${startDate.toISOString().split("T")[0]}T${startTime}`
+    );
+    const endDateTime = new Date(
+      `${endDate.toISOString().split("T")[0]}T${endTime}`
+    );
+
     const tagNames = selectedTags.map((tag) => {
       const tagObj = allTags.find((t) => t.id === tag);
       return tagObj ? tagObj.name : tag;
@@ -118,6 +137,8 @@ export default function CreateEventPage() {
         textDescription: eventData.textDescription,
         title: eventData.title,
         tags: tagNames,
+        startTime: startDateTime.toISOString(),
+        endTime: endDateTime.toISOString(),
       });
     } catch (err) {
       alert(err.message);
@@ -203,6 +224,84 @@ export default function CreateEventPage() {
                 placeholder="Describe your event"
                 required
               />
+            </div>
+            <div className="flex gap-4">
+              {/* Start Date/Time */}
+              <div className="flex flex-col gap-3">
+                <Label className="px-1">Start Date</Label>
+                <Popover open={open} onOpenChange={setOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="w-32 justify-between font-normal"
+                    >
+                      {startDate
+                        ? startDate.toLocaleDateString()
+                        : "Select date"}
+                      <ChevronDownIcon />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent
+                    className="w-auto overflow-hidden p-0"
+                    align="start"
+                  >
+                    <Calendar
+                      mode="single"
+                      selected={startDate}
+                      captionLayout="dropdown"
+                      onSelect={(date) => {
+                        setStartDate(date);
+                        setOpen(false);
+                      }}
+                    />
+                  </PopoverContent>
+                </Popover>
+                <Label className="px-1">Start Time</Label>
+                <Input
+                  type="time"
+                  value={startTime}
+                  onChange={(e) => setStartTime(e.target.value)}
+                  step="1"
+                  className="bg-background appearance-none"
+                />
+              </div>
+              {/* End Date/Time */}
+              <div className="flex flex-col gap-3">
+                <Label className="px-1">End Date</Label>
+                <Popover open={open} onOpenChange={setOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="w-32 justify-between font-normal"
+                    >
+                      {endDate ? endDate.toLocaleDateString() : "Select date"}
+                      <ChevronDownIcon />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent
+                    className="w-auto overflow-hidden p-0"
+                    align="start"
+                  >
+                    <Calendar
+                      mode="single"
+                      selected={endDate}
+                      captionLayout="dropdown"
+                      onSelect={(date) => {
+                        setEndDate(date);
+                        setOpen(false);
+                      }}
+                    />
+                  </PopoverContent>
+                </Popover>
+                <Label className="px-1">End Time</Label>
+                <Input
+                  type="time"
+                  value={endTime}
+                  onChange={(e) => setEndTime(e.target.value)}
+                  step="1"
+                  className="bg-background appearance-none"
+                />
+              </div>
             </div>
             <div className="grid w-full max-w-sm items-center gap-3">
               <Label htmlFor="picture">Pictures (up to 5)</Label>

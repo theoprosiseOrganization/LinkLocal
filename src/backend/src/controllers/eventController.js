@@ -15,11 +15,13 @@ const eventSchema = joi.object({
     .required(),
   textDescription: joi.string().required(),
   title: joi.string().required(),
+  startTime: joi.date().iso().required(),
+  endTime: joi.date().iso().required(),
 });
 
 exports.getEvents = async (req, res) => {
   try {
-    const events = await prisma.event.findMany({include: { tags: true },});
+    const events = await prisma.event.findMany({ include: { tags: true } });
     await Promise.all(
       events.map(async (event) => {
         const location = await getEventLocation(event.id);
@@ -66,7 +68,15 @@ const getEventLocation = async (eventId) => {
 };
 
 exports.createEvent = async (req, res) => {
-  const { userId, images, location, textDescription, title } = req.body;
+  const {
+    userId,
+    images,
+    location,
+    textDescription,
+    title,
+    startTime,
+    endTime,
+  } = req.body;
   // Validate input using Joi schema
   const { error } = eventSchema.validate({
     userId,
@@ -74,13 +84,22 @@ exports.createEvent = async (req, res) => {
     location,
     textDescription,
     title,
+    startTime,
+    endTime,
   });
   if (error) {
     return res.status(400).json({ error: error.details[0].message });
   }
   try {
     const event = await prisma.event.create({
-      data: { userId, images, textDescription, title },
+      data: {
+        userId,
+        images,
+        textDescription,
+        title,
+        startTime: new Date(startTime),
+        endTime: new Date(endTime),
+      },
     });
     await createEventLocation(
       event.id,
