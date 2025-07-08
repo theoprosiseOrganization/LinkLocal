@@ -295,4 +295,24 @@ export async function addUserTag(userId, tag) {
     throw new Error(response.error || "Failed to add user tag");
   }
   return response;
+}export async function likeEvent(eventId, userId) {
+  const res = await fetch(`${URL}/events/${eventId}/like`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify({ userId }),
+  });
+  const response = await res.json();
+  if (!res.ok) throw new Error(response.error || "Failed to like event");
+  return response;
+}
+
+export async function unlikeEvent(eventId, userId) {
+  const res = await fetch(`${URL}/events/${eventId}/like/${userId}`, {
+    method: "DELETE",
+    credentials: "include",
+  });
+  const response = await res.json();
+  if (!res.ok) throw new Error(response.error || "Failed to unlike event");
+  return response;
 }
