@@ -138,8 +138,21 @@ export default function ViewEventPage() {
             <strong>Time:</strong>{" "}
             {event.startTime && event.endTime ? (
               <>
-                {new Date(event.startTime).toLocaleString()} &ndash;{" "}
-                {new Date(event.endTime).toLocaleString()}
+                {new Date(event.startTime).toLocaleString(undefined, {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}{" "}
+                &ndash;{" "}
+                {new Date(event.endTime).toLocaleString(undefined, {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
               </>
             ) : (
               "No time specified"

@@ -29,9 +29,23 @@ export default function EventCard({ event }) {
     <Card className="event-card w-full max-w-xl min-w-[250px] mx-auto">
       <CardHeader>
         <CardTitle>{event.title || "Untitled Event"}</CardTitle>
-        <CardDescription>
-          {event.textDescription || "No description"}
-        </CardDescription>
+        {event.startTime && event.endTime && (
+          <p className="text-xs text-gray-500 mt-1">
+            {new Date(event.startTime).toLocaleString(undefined, {
+              year: "numeric",
+              month: "short",
+              day: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+            })} &ndash; {new Date(event.endTime).toLocaleString(undefined, {
+              year: "numeric",
+              month: "short",
+              day: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </p>
+        )}
         <CardAction>
           <ViewEventButton eventId={event.id} />
         </CardAction>
@@ -43,6 +57,7 @@ export default function EventCard({ event }) {
           <p>No images available</p>
         )}
         <p>{event.location.address || "No location"}</p>
+        
       </CardContent>
     </Card>
   );
