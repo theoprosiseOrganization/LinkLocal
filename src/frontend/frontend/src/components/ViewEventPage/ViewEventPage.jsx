@@ -19,12 +19,31 @@ import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import Layout from "../Layout/Layout";
 import HorizontalScroll from "../HorizontalScroll/HorizontalScroll";
-import { getUserById, getEventById } from "../../api";
+import {
+  getUserById,
+  getEventById,
+  getSessionUserId,
+  likeEvent,
+  unlikeEvent,
+  getEventLikes,
+} from "../../api";
 
 export default function ViewEventPage() {
   const { eventId } = useParams();
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [sessionUserId, setSessionUserId] = useState(null);
+  const [likes, setLikes] = useState([]);
+  const [likeLoading, setLikeLoading] = useState(false);
+
+  async function fetchLikes() {
+    try {
+      const likesList = await getEventLikes(eventId);
+      setLikes(likesList);
+    } catch {
+      setLikes([]);
+    }
+  }
 
   /**
    * This effect fetches the event data by its ID when the component mounts.
@@ -39,7 +58,7 @@ export default function ViewEventPage() {
         const fetchedEvent = await getEventById(eventId);
         if (fetchedEvent) {
           const user = await getUserById(fetchedEvent.userId);
-          fetchedEvent.user = user; // Attach user data to the event
+          fetchedEvent.user = user;
           setEvent(fetchedEvent);
         } else {
           setEvent(null);
@@ -51,7 +70,30 @@ export default function ViewEventPage() {
       }
     }
     fetchEvent();
+    fetchLikes();
+    getSessionUserId()
+      .then(setSessionUserId)
+      .catch(() => setSessionUserId(null));
   }, [eventId]);
+
+  const hasLiked = sessionUserId && likes.some((u) => u.id === sessionUserId);
+
+  const handleLike = async () => {
+    if (!sessionUserId) return;
+    setLikeLoading(true);
+    try {
+      if (hasLiked) {
+        await unlikeEvent(eventId, sessionUserId);
+      } else {
+        await likeEvent(eventId, sessionUserId);
+      }
+      await fetchLikes(); // Always refresh likes from backend
+    } catch (e) {
+      // Optionally show error
+    } finally {
+      setLikeLoading(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -121,6 +163,15 @@ export default function ViewEventPage() {
             )}
             <span className="text-gray-400">{event.user.name}</span>
           </Link>
+          <button
+            onClick={handleLike}
+            disabled={!sessionUserId || likeLoading}
+            className={`ml-4 px-3 py-1 rounded ${
+              hasLiked ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-700"
+            }`}
+          >
+            {hasLiked ? "Unlike" : "Like"} ({likes.length})
+          </button>
         </div>
         {event.images && event.images.length > 0 && (
           <HorizontalScroll images={event.images} />

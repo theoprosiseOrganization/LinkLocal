@@ -296,7 +296,7 @@ export async function addUserTag(userId, tag) {
   }
   return response;
 }export async function likeEvent(eventId, userId) {
-  const res = await fetch(`${URL}/events/${eventId}/like`, {
+  const res = await fetch(`${URL}/events/${eventId}/likes`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
@@ -308,7 +308,7 @@ export async function addUserTag(userId, tag) {
 }
 
 export async function unlikeEvent(eventId, userId) {
-  const res = await fetch(`${URL}/events/${eventId}/like/${userId}`, {
+  const res = await fetch(`${URL}/events/${eventId}/likes/${userId}`, {
     method: "DELETE",
     credentials: "include",
   });
@@ -316,3 +316,14 @@ export async function unlikeEvent(eventId, userId) {
   if (!res.ok) throw new Error(response.error || "Failed to unlike event");
   return response;
 }
+
+export async function getEventLikes(eventId) {
+  const res = await fetch(`${URL}/events/${eventId}/likes`, {
+    method: "GET",
+    credentials: "include",
+  });
+  const response = await res.json();
+  if (!res.ok) throw new Error(response.error || "Failed to fetch event likes");
+  return response;
+}
+
