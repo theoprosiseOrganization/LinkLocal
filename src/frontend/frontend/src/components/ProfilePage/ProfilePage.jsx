@@ -182,7 +182,7 @@ export default function ProfilePage() {
               <DialogTrigger asChild>
                 <Button variant="outline">Edit Profile</Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-[425px]">
+              <DialogContent className="sm:max-w-[525px] max-h-[90vw] overflow-y-auto">
                 <DialogHeader>
                   <DialogTitle>Edit Profile</DialogTitle>
                   <DialogDescription>
