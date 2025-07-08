@@ -135,6 +135,17 @@ export default function ViewEventPage() {
             {event.location?.address || "No location specified"}
           </div>
           <div>
+            <strong>Time:</strong>{" "}
+            {event.startTime && event.endTime ? (
+              <>
+                {new Date(event.startTime).toLocaleString()} &ndash;{" "}
+                {new Date(event.endTime).toLocaleString()}
+              </>
+            ) : (
+              "No time specified"
+            )}
+          </div>
+          <div>
             <strong>Tags:</strong>{" "}
             {event.tags && event.tags.length > 0
               ? event.tags.map((tag) => (
@@ -146,7 +157,7 @@ export default function ViewEventPage() {
                   </span>
                 ))
               : "No tags"}
-            </div>
+          </div>
         </div>
       </div>
     </Layout>
