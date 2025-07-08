@@ -90,7 +90,7 @@ export default function TagsSearch({
                 <CommandItem
                   key={tag.id}
                   value={tag.id}
-                  onSelect={() => handleSetValue(tag)}
+                  onSelect={() => handleSetValue(tag.id)}
                 >
                   <Check
                     className={cn(

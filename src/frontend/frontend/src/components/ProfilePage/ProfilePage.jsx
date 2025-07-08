@@ -78,14 +78,14 @@ export default function ProfilePage() {
   }, []);
 
   useEffect(() => {
-    if (userData) {
-      setEditName(userData.name || "");
-      setEditLocation(
-        userData.location || { address: "", latitude: 0, longitude: 0 }
-      );
-      setEditTags(userData.tags ? userData.tag : []);
-    }
-  }, [userData]);
+  if (userData) {
+    setEditName(userData.name || "");
+    setEditLocation(
+      userData.location || { address: "", latitude: 0, longitude: 0 }
+    );
+    setEditTags(userData.tags ? userData.tags.map((tag) => tag.id) : []);
+  }
+}, [userData]);
 
   /**
    * Handles the profile update form submission.
@@ -97,42 +97,41 @@ export default function ProfilePage() {
    * @throws {Error} If the profile update fails or if the image upload fails.
    */
   const handleProfileUpdate = async (e) => {
-    e.preventDefault();
-    let avatarUrl = userData.avatar;
-    const file = fileInputRef.current?.files?.[0];
+  e.preventDefault();
+  let avatarUrl = userData.avatar;
+  const file = fileInputRef.current?.files?.[0];
 
-    // Upload new profile image if selected
-    if (file) {
-      try {
-        avatarUrl = await uploadProfileImage(userData.id, file);
-      } catch (err) {
-        alert("Failed to upload profile image");
-        return;
-      }
-    }
-    let tagNames = editTags.map((tag) => tag.name).filter(Boolean); // Filter out any null values
-    if (tagNames.length === 0) {
-      tagNames = []; // Ensure it's an empty array if no tags are selected
-    }
-    // Update profile with new name, location, avatar, and tag names
+  if (file) {
     try {
-      await updateUserProfile(userData.id, {
-        name: editName,
-        location: editLocation,
-        avatar: avatarUrl,
-        tags: tagNames, // Pass array of tag names
-      });
-      setUserData({
-        ...userData,
-        name: editName,
-        location: editLocation,
-        avatar: avatarUrl,
-        tags: tagNames, // Update local state with tag names
-      });
+      avatarUrl = await uploadProfileImage(userData.id, file);
     } catch (err) {
-      alert("Failed to update profile");
+      alert("Failed to upload profile image");
+      return;
     }
-  };
+  }
+  // Convert tag IDs to tag names
+  const tagNames = allTags
+    .filter((tag) => editTags.includes(tag.id))
+    .map((tag) => tag.name);
+
+  try {
+    await updateUserProfile(userData.id, {
+      name: editName,
+      location: editLocation,
+      avatar: avatarUrl,
+      tags: tagNames,
+    });
+    setUserData({
+      ...userData,
+      name: editName,
+      location: editLocation,
+      avatar: avatarUrl,
+      tags: allTags.filter((tag) => editTags.includes(tag.id)),
+    });
+  } catch (err) {
+    alert("Failed to update profile");
+  }
+};
 
   return (
     <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
