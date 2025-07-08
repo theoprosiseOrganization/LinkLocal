@@ -1,3 +1,18 @@
+/**
+ * TagsSearch Component
+ * A searchable and selectable tags input component with the ability to add new tags.
+ * It uses a popover for the dropdown and allows users to select existing tags or add new ones.
+ * Users can search through available tags, select them, and add new tags if they don't already exist.
+ * 
+ * @component
+ * @param {Object} props - The component props.
+ * @param {Array} props.tags - List of available tags.
+ * @param {Array} props.value - Currently selected tags.
+ * @param {Function} props.onTagSelect - Callback function when tags are selected or deselected.
+ * @param {Function} props.onAddTag - Callback function when a new tag is added.
+ * @returns {JSX.Element} The rendered component.
+ */
+
 import React from "react";
 import { Check, ChevronsUpDown, Plus } from "lucide-react";
 import { cn } from "../../../lib/utils";

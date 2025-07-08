@@ -16,10 +16,16 @@ import Layout from "../Layout/Layout";
 import { Input } from "../../../components/ui/input";
 import { Label } from "../../../components/ui/label";
 import { Button } from "../../../components/ui/button";
-import React, { useState, useRef } from "react";
-import { createEvent, uploadEventImages, getSessionUserId } from "../../api";
+import React, { useState, useRef, useEffect } from "react";
+import {
+  createEvent,
+  uploadEventImages,
+  getSessionUserId,
+  getAllTags,
+} from "../../api";
 import LocationAutocomplete from "../LocationAutocomplete/LocationAutocomplete";
 import { APIProvider } from "@vis.gl/react-google-maps";
+import TagsSearch from "../Tags/TagsSearch";
 
 export default function CreateEventPage() {
   const [eventData, setEventData] = useState({
@@ -30,7 +36,22 @@ export default function CreateEventPage() {
     images: [],
   });
 
+  const [allTags, setAllTags] = useState([]);
+  const [selectedTags, setSelectedTags] = useState([]);
+
   const fileInputRef = useRef();
+
+  useEffect(() => {
+    async function fetchTags() {
+      try {
+        const tags = await getAllTags();
+        setAllTags(tags);
+      } catch (err) {
+        setAllTags([]);
+      }
+    }
+    fetchTags();
+  }, []);
 
   const handleChange = (e) => {
     setEventData({
@@ -71,14 +92,18 @@ export default function CreateEventPage() {
     try {
       userId = await getSessionUserId();
       if (!userId) {
-      alert("Could not get user session.");
-      return;
+        alert("Could not get user session.");
+        return;
       }
     } catch (err) {
       alert("Could not get user session.");
       return;
     }
 
+    const tagNames = selectedTags.map((tag) => {
+      const tagObj = allTags.find((t) => t.id === tag);
+      return tagObj ? tagObj.name : tag;
+    });
 
     let event;
     try {
@@ -88,6 +113,7 @@ export default function CreateEventPage() {
         location: eventData.location,
         textDescription: eventData.textDescription,
         title: eventData.title,
+        tags: tagNames, // <-- Pass tags here
       });
     } catch (err) {
       alert(err.message);
@@ -104,7 +130,6 @@ export default function CreateEventPage() {
       }
     }
 
-    // 4. Update event with image URLs, if any
     if (imageUrls.length > 0) {
       await fetch(
         `${import.meta.env.VITE_API_DB_URL || "http://localhost:3000"}/events/${
@@ -126,6 +151,7 @@ export default function CreateEventPage() {
       location: { address: "", latitude: 0, longitude: 0 },
       images: [],
     });
+    setSelectedTags([]); // Reset tags
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
@@ -182,6 +208,27 @@ export default function CreateEventPage() {
                 multiple
                 accept="image/*"
                 ref={fileInputRef}
+              />
+            </div>
+            <div className="grid gap-3">
+              <Label>Preferences</Label>
+              <TagsSearch
+                tags={allTags}
+                value={selectedTags}
+                onTagSelect={setSelectedTags}
+                onAddTag={(newTag) => {
+                  if (newTag && !selectedTags.includes(newTag)) {
+                    setSelectedTags([...selectedTags, newTag]);
+                  }
+                  if (
+                    newTag &&
+                    !allTags.some(
+                      (tag) => tag.name.toLowerCase() === newTag.toLowerCase()
+                    )
+                  ) {
+                    setAllTags([...allTags, { id: newTag, name: newTag }]);
+                  }
+                }}
               />
             </div>
             <div className="grid gap-2">

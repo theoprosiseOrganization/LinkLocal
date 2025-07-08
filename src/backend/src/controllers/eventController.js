@@ -87,10 +87,38 @@ exports.createEvent = async (req, res) => {
       location.longitude,
       location.address
     );
+    await addEventTags(event.id, req.body.tags);
     res.status(201).json(event);
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }
+};
+
+const addEventTags = async (eventId, tags) => {
+  if (!tags || tags.length === 0) return;
+  const existingTags = await prisma.tag.findMany({
+    where: { name: { in: tags } },
+    select: { id: true, name: true },
+  });
+  const existingTagNames = existingTags.map((tag) => tag.name);
+  const newTagNames = tags.filter((name) => !existingTagNames.includes(name));
+  const createdTags = await Promise.all(
+    newTagNames.map((name) => prisma.tag.create({ data: { name } }))
+  );
+  // Combine all tag IDs
+  const allTagIds = [
+    ...existingTags.map((tag) => tag.id),
+    ...createdTags.map((tag) => tag.id),
+  ];
+  if (allTagIds.length === 0) return;
+  await prisma.event.update({
+    where: { id: eventId },
+    data: {
+      tags: {
+        connect: allTagIds.map((id) => ({ id })),
+      },
+    },
+  });
 };
 
 const createEventLocation = async (eventId, latitude, longitude, address) => {
