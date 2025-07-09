@@ -1,33 +1,35 @@
-import React, { useEffect, useRef } from "react";
-const MAPS_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+import React from 'react';
+import { ControlPosition, Map, MapControl } from '@vis.gl/react-google-maps';
 
-export default function MapWithDrawing() {
-  const ref = useRef(null);
+import { DrawingManager } from './DrawingManager';
+import { UndoRedoControl } from './undo-redo-control';
+import ControlPanel from './control-panel';
 
-  useEffect(() => {
-    const script = document.createElement("script");
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${MAPS_KEY}&libraries=drawing`;
-    script.async = true;
-    script.onload = () => {
-      const map = new window.google.maps.Map(ref.current, {
-        center: { lat: 37.4845, lng: -122.1478 },
-        zoom: 10,
-      });
-      const drawingManager = new window.google.maps.drawing.DrawingManager({
-        drawingMode: null,
-        drawingControl: true,
-        drawingControlOptions: {
-          position: window.google.maps.ControlPosition.TOP_CENTER,
-          drawingModes: [
-            window.google.maps.drawing.OverlayType.POLYGON,
-            window.google.maps.drawing.OverlayType.CIRCLE,
-          ],
-        },
-      });
-      drawingManager.setMap(map);
-    };
-    document.body.appendChild(script);
-  }, []);
+const DrawingExample = () => {
+  // If you need to access the DrawingManager instance, you can use a ref or state.
+  // For now, we'll just render it to enable drawing on the map.
 
-  return <div ref={ref} style={{ width: "80vw", height: "80vh" }} />;
-}
+  return (
+    <>
+      <Map
+        defaultZoom={3}
+        defaultCenter={{ lat: 22.54992, lng: 0 }}
+        gestureHandling={'greedy'}
+        disableDefaultUI={true}
+      >
+        {/* DrawingManager must be a child of Map to access the map context */}
+        <DrawingManager />
+      </Map>
+
+      <ControlPanel />
+
+      <MapControl position={ControlPosition.TOP_CENTER}>
+        {/* If UndoRedoControl needs the drawingManager, 
+            you can lift state up and pass it down as a prop */}
+        <UndoRedoControl />
+      </MapControl>
+    </>
+  );
+};
+
+export default DrawingExample;
