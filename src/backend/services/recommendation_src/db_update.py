@@ -11,7 +11,7 @@ supabase: Client = create_client(url, key)
 def post_recommendations(user_id, recommendations):
     data = {
         "user_id": user_id,
-        "recommendations": recommendations
+        "suggested_ids": recommendations
     }
     
     supabase.table("Recommendations").upsert(data, on_conflict="user_id").execute()

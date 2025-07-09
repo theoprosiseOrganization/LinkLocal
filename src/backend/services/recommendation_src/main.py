@@ -10,7 +10,7 @@ def main():
     for user_id in features:
         recommendations = get_top_k_recommendations(features, user_id, k=3)
         print(f"Top recommendations for user {user_id}: {recommendations}")
-        #post_recommendations(user_id, recommendations)
+        post_recommendations(user_id, recommendations)
     print("Recommendations updated successfully.")
 
 if __name__ == "__main__":
