@@ -9,6 +9,10 @@
  */
 const { PrismaClient } = require("../../generated/prisma");
 const prisma = new PrismaClient();
+const { createClient } = require("@supabase/supabase-js");
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_KEY;
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 // User CRUD
 exports.getUsers = async (req, res) => {
@@ -432,4 +436,34 @@ exports.getAllTags = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }
+};
+
+exports.getSuggestedUsers = async (req, res) => {
+  const { data, error } = await supabase
+    .from("Recommendations")
+    .select("suggested_ids")
+    .eq("user_id", req.params.id)
+    .single();
+
+  if (error) {
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+  if (!data || !data.suggested_ids || data.suggested_ids.length === 0) {
+    return res.status(404).json({ error: "No recommendations found" });
+  }
+
+  // now we have a list of suggested user IDs
+  // Fetch user details for these IDs
+  const users = await prisma.user.findMany({
+    where: { id: { in: data.suggested_ids } },
+    include: { tags: true }, // Include tags if needed
+  });
+  // Attach location to each user
+  await Promise.all(
+    users.map(async (user) => {
+      const location = await getUserLocation(user.id);
+      user.location = location; // will be null if not found
+    })
+  );
+  res.json(users);
 };

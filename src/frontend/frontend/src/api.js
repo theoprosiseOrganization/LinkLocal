@@ -327,3 +327,16 @@ export async function getEventLikes(eventId) {
   return response;
 }
 
+export async function getSuggestedUsers(userId) {
+  const res = await fetch(`${URL}/users/${userId}/suggested`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  const response = await res.json();
+  if (!res.ok) {
+    throw new Error(response.error || "Failed to fetch suggested users");
+  }
+  return response;
+}

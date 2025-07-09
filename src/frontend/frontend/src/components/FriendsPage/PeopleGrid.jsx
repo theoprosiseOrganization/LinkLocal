@@ -13,11 +13,12 @@
  */
 
 import {
-  getUserById,
   getUserFollowers,
   getUserFollowing,
   getSessionUserId,
+  getSuggestedUsers,
 } from "../../api";
+import ViewUserButton from "../ViewUserPage/ViewUserButton";
 import React, { useEffect, useState } from "react";
 import "../ProfilePage/ProfilePage.css";
 
@@ -36,6 +37,9 @@ export default function PeopleGrid(props) {
         if (type === "Following") {
           people = await getUserFollowing(userId);
         }
+        if (type === "Suggested") {
+          people = await getSuggestedUsers(userId);
+        }
         setUserPeople(people);
       } catch (err) {
         // If there's an error fetching user data, set userPeople to an empty array
@@ -47,7 +51,9 @@ export default function PeopleGrid(props) {
 
   return (
     <>
-      <h2 className="events-title">{type}</h2>
+      <h2 className="events-title">
+        {type === "Suggested" ? "Suggested Users" : type}
+      </h2>
       <div
         style={{
           display: "flex",
@@ -73,6 +79,7 @@ export default function PeopleGrid(props) {
                 <h2>{person.name}</h2>
                 <p>{person.email}</p>
                 <p>{person.location && person.location.address}</p>
+                <ViewUserButton userId={person.id} />
               </div>
             </div>
           ))
