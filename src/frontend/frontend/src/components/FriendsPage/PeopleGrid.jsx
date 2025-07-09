@@ -40,6 +40,7 @@ export default function PeopleGrid(props) {
         if (type === "Suggested") {
           people = await getSuggestedUsers(userId);
         }
+        console.log("Fetched people:", people);
         setUserPeople(people);
       } catch (err) {
         // If there's an error fetching user data, set userPeople to an empty array

@@ -451,6 +451,19 @@ exports.getSuggestedUsers = async (req, res) => {
   if (!data || !data.suggested_ids || data.suggested_ids.length === 0) {
     return res.status(404).json({ error: "No recommendations found" });
   }
-  // suggested_ids is assumed to be an array of user IDs
-  return res.json(data.suggested_ids);
+
+  // now we have a list of suggested user IDs
+  // Fetch user details for these IDs
+  const users = await prisma.user.findMany({
+    where: { id: { in: data.suggested_ids } },
+    include: { tags: true }, // Include tags if needed
+  });
+  // Attach location to each user
+  await Promise.all(
+    users.map(async (user) => {
+      const location = await getUserLocation(user.id);
+      user.location = location; // will be null if not found
+    })
+  );
+  res.json(users);
 };
