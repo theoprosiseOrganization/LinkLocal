@@ -8,8 +8,8 @@ export default function MapWithDrawing({ events = [], currentLocation }) {
   const drawingManagerRef = useRef(null);
   const [markers, setMarkers] = useState(events);
 
-  const onMapLoad = useCallback((event) => {
-    mapRef.current = event.target;
+  const onMapLoad = useCallback((mapInstance) => {
+    mapRef.current = mapInstance.target;
 
     drawingManagerRef.current = new google.maps.drawing.DrawingManager({
       drawingMode: google.maps.drawing.OverlayType.POLYGON,
@@ -63,6 +63,7 @@ export default function MapWithDrawing({ events = [], currentLocation }) {
     <APIProvider apiKey={MAPS_KEY} libraries={["drawing"]}>
       <div style={{ width: "100%", height: "100%" }}>
         <Map
+        onLoad={onMapLoad}
           defaultCenter={
             currentLocation
               ? { lat: currentLocation.lat, lng: currentLocation.lng }
@@ -72,11 +73,7 @@ export default function MapWithDrawing({ events = [], currentLocation }) {
           gestureHandling={"greedy"}
           style={{ width: "100%", height: "100%" }}
           options={{
-            styles: [
-              {
-                disableDefaultUI: true,
-              },
-            ],
+            disableDefaultUI: true,
           }}
         >
           {/* Current location marker */}
