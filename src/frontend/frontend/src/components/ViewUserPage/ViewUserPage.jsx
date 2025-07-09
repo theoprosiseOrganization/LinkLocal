@@ -1,8 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getUserById, getUserEvents, followUser, getSessionUserId } from "../../api";
+import {
+  getUserById,
+  getUserEvents,
+  followUser,
+  getSessionUserId,
+} from "../../api";
 import VerticalEvents from "../VerticalEvents/VerticalEvents";
 import Layout from "../Layout/Layout";
+import { AlignCenter } from "lucide-react";
 
 export default function ViewUserPage() {
   const { userId } = useParams();
@@ -104,7 +110,16 @@ export default function ViewUserPage() {
           </div>
         </div>
         <h2 className="events-title">{user.name}'s Events</h2>
-        <VerticalEvents events={events} />
+        <div
+          className="events-list"
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            marginTop: "4rem",
+          }}
+        >
+          <VerticalEvents events={events} />
+        </div>
       </div>
     </Layout>
   );
