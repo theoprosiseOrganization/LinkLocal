@@ -17,6 +17,7 @@ import {
   getUserFollowers,
   getUserFollowing,
   getSessionUserId,
+  getSuggestedUsers,
 } from "../../api";
 import React, { useEffect, useState } from "react";
 import "../ProfilePage/ProfilePage.css";
@@ -35,6 +36,9 @@ export default function PeopleGrid(props) {
         }
         if (type === "Following") {
           people = await getUserFollowing(userId);
+        }
+        if (type === "Suggested") {
+          people = await getSuggestedUsers(userId);
         }
         setUserPeople(people);
       } catch (err) {
