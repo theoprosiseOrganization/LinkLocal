@@ -19,8 +19,10 @@ import {
   getSessionUserId,
   getSuggestedUsers,
 } from "../../api";
+import ViewUserButton from "../ViewUserPage/ViewUserButton";
 import React, { useEffect, useState } from "react";
 import "../ProfilePage/ProfilePage.css";
+import { View } from "lucide-react";
 
 export default function PeopleGrid(props) {
   const type = props.type || "Followers";
@@ -40,7 +42,6 @@ export default function PeopleGrid(props) {
         if (type === "Suggested") {
           people = await getSuggestedUsers(userId);
         }
-        console.log("Fetched people:", people);
         setUserPeople(people);
       } catch (err) {
         // If there's an error fetching user data, set userPeople to an empty array
@@ -78,6 +79,7 @@ export default function PeopleGrid(props) {
                 <h2>{person.name}</h2>
                 <p>{person.email}</p>
                 <p>{person.location && person.location.address}</p>
+                <ViewUserButton userId={person.id} />
               </div>
             </div>
           ))
