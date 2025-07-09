@@ -1,3 +1,13 @@
+/**
+ * ViewUserPage Component
+ * Displays user profile and their events.
+ * Allows the current user to follow the viewed user.
+ * 
+ * @component
+ * @example
+ * <ViewUserPage />
+ * @returns {JSX.Element} The rendered ViewUserPage component.
+ */
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
@@ -5,10 +15,10 @@ import {
   getUserEvents,
   followUser,
   getSessionUserId,
+  getUserFollowing,
 } from "../../api";
 import VerticalEvents from "../VerticalEvents/VerticalEvents";
 import Layout from "../Layout/Layout";
-import { AlignCenter } from "lucide-react";
 
 export default function ViewUserPage() {
   const { userId } = useParams();
@@ -36,16 +46,20 @@ export default function ViewUserPage() {
   }, [userId]);
 
   useEffect(() => {
-    async function fetchCurrentUserId() {
-      try {
-        const id = await getSessionUserId();
-        setCurrentUserId(id);
-      } catch (e) {
-        setCurrentUserId(null);
+  async function fetchCurrentUserId() {
+    try {
+      const id = await getSessionUserId();
+      setCurrentUserId(id);
+      const currentUserFollowing = await getUserFollowing(id); // use id, not currentUserId
+      if (currentUserFollowing.some((u) => u.id === userId)) {
+        setFollowed(true);
       }
+    } catch (e) {
+      setCurrentUserId(null);
     }
-    fetchCurrentUserId();
-  }, []);
+  }
+  fetchCurrentUserId();
+}, [userId]);
 
   const handleFollow = async (followingId) => {
     if (!currentUserId) return;
