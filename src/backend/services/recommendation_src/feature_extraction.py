@@ -12,9 +12,42 @@ url: str = os.getenv("SUPABASE_URL")
 key: str = os.getenv("SUPABASE_KEY")
 supabase: Client = create_client(url, key)
 
+def fetch_user_locations():
+    response = (
+        supabase.table("user_locations")
+        .select("userId, location")
+        .execute()
+    )
+    location_map = {}
+    for row in response.data:
+        geo = row["location"]
+        lon, lat = geo["coordinates"]
+        location_map[row["userId"]] = (lat, lon)  # Store as (lat, lon)
+    return location_map
+
+def fetch_user_tags():
+    response = (
+        supabase.table("_UserTags")
+        .select("A, B")
+        .execute()
+    )
+    tag_map = {}
+    for row in response.data:
+        tag_map.setdefault(row["B"], []).append(row["A"])
+    return tag_map
+
 def fetch_users():
-    response = supabase.table("User").select("id, geoLocation, tags").execute()
-    return response.data
+    response = supabase.table("User").select("id").execute()
+    base = [{"id": row["id"]} for row in response.data]
+
+    location_map = fetch_user_locations()
+    tag_map = fetch_user_tags()
+
+    for user in base:
+        uid = user["id"]
+        user["geoLocation"] = location_map.get(uid)
+        user["tags"] = tag_map.get(uid, [])
+    return base
 
 def fetch_follows():
     response = supabase.table("Follows").select("*").execute()
@@ -23,7 +56,7 @@ def fetch_follows():
 def build_follow_adjacency(follows):
     adj = {}
     for follow in follows:
-        adj.setdefault(f["followerId"], []).append(f["followingId"])
+        adj.setdefault(follow["followerId"], []).append(follow["followingId"])
     return adj
 
 def bfs_distance(start_user, adj):
