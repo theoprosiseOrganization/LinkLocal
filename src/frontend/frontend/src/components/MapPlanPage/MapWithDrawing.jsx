@@ -8,10 +8,10 @@ export default function MapWithDrawing({ events = [], currentLocation }) {
   const drawingManagerRef = useRef(null);
   const [markers, setMarkers] = useState(events);
 
-  const onMapLoad = useCallback((mapInstance) => {
-    mapRef.current = mapInstance.target;
+  const onMapLoad = useCallback((map) => {
+    mapRef.current = map;
 
-    drawingManagerRef.current = new google.maps.drawing.DrawingManager({
+    const dm = new google.maps.drawing.DrawingManager({
       drawingMode: google.maps.drawing.OverlayType.POLYGON,
       drawingControl: true,
       drawingControlOptions: {
@@ -27,13 +27,10 @@ export default function MapWithDrawing({ events = [], currentLocation }) {
         draggable: false,
       },
     });
-    drawingManagerRef.current.setMap(mapRef.current);
+    dm.setMap(map);
+    drawingManagerRef.current = dm;
 
-    google.maps.event.addListener(
-      drawingManagerRef.current,
-      "polygoncomplete",
-      handlePolygonComplete
-    );
+    google.maps.event.addListener(dm, "polygoncomplete", handlePolygonComplete);
   }, []);
 
   const handlePolygonComplete = async (polygon) => {
@@ -63,15 +60,11 @@ export default function MapWithDrawing({ events = [], currentLocation }) {
     <APIProvider apiKey={MAPS_KEY} libraries={["drawing"]}>
       <div style={{ width: "100%", height: "100%" }}>
         <Map
-        onLoad={onMapLoad}
-          defaultCenter={
-            currentLocation
-              ? { lat: currentLocation.lat, lng: currentLocation.lng }
-              : { lat: 37.4845, lng: -122.1478 }
-          }
+          onLoad={onMapLoad}
+          defaultCenter={currentLocation || { lat: 37.4845, lng: -122.1478 }}
           defaultZoom={10}
           gestureHandling={"greedy"}
-          style={{ width: "100%", height: "100%" }}
+          style={{ width: "80%", height: "80%" }}
           options={{
             disableDefaultUI: true,
           }}
