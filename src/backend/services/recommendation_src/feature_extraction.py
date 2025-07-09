@@ -1,3 +1,13 @@
+'''
+Feature extraction module for user recommendation system.
+This module fetches user data, computes features based on location, tags, and friend network,
+and prepares the data for recommendation algorithms.
+The features include:
+1. Friend network score based on BFS distance in the follow graph.
+2. Location score based on geographical proximity.
+3. Preference score based on shared tags using cosine similarity.
+'''
+
 import os
 from supabase import create_client, Client
 from dotenv import load_dotenv

@@ -1,3 +1,8 @@
+'''
+Recommender module for generating user recommendations based on location, preferences, and friend networks.
+This module uses a scoring system to rank users based on their features and returns the top K recommendations.
+'''
+
 import heapq
 
 WEIGHTS = {
