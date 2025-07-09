@@ -31,6 +31,11 @@ export default function NavHeader() {
             </NavigationMenuLink>
           </NavigationMenuItem>
           <NavigationMenuItem>
+          <NavigationMenuLink asChild>
+            <Link to="/plan">Plan</Link>
+          </NavigationMenuLink>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
             <NavigationMenuLink asChild>
               <Link to="/profile">Profile</Link>
             </NavigationMenuLink>

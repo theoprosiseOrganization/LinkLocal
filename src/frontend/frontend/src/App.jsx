@@ -11,6 +11,7 @@ import WithAuth from "./components/WithAuth/WithAuth";
 import CreateEventPage from "./components/CreateEventPage/CreateEventPage";
 import ViewEventPage from "./components/ViewEventPage/ViewEventPage";
 import ViewUserPage from "./components/ViewUserPage/ViewUserPage";
+import MapPlan from "./components/MapPlanPage/MapPlan";
 
 function App() {
   return (
@@ -64,6 +65,14 @@ function App() {
           element={
             <WithAuth>
               <ViewUserPage />
+            </WithAuth>
+          }
+        />
+        <Route
+          path="/plan"
+          element={
+            <WithAuth>
+              <MapPlan />
             </WithAuth>
           }
         />
