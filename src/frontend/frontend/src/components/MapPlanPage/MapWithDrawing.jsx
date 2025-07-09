@@ -1,35 +1,48 @@
-import React from 'react';
-import { ControlPosition, Map, MapControl } from '@vis.gl/react-google-maps';
+/**
+ * MapWithDrawing.jsx
+ * This component renders a Google Map with drawing capabilities using the @vis.gl/react-google-maps library.
+ * It allows users to draw polygons on the map and logs the coordinates of the drawn polygons.
+ * 
+ * @component
+ * @example
+ * <MapWithDrawing />
+ * @returns {JSX.Element} The rendered MapWithDrawing component.
+ */
+import React, { useEffect } from 'react';
+import { Map } from '@vis.gl/react-google-maps';
+import { useDrawingManager } from './useDrawingManager';
 
-import { DrawingManager } from './DrawingManager';
-import { UndoRedoControl } from './undo-redo-control';
-import ControlPanel from './control-panel';
+const MapWithDrawing = () => {
+  const drawingManager = useDrawingManager();
 
-const DrawingExample = () => {
-  // If you need to access the DrawingManager instance, you can use a ref or state.
-  // For now, we'll just render it to enable drawing on the map.
+  useEffect(() => {
+    if (!drawingManager) return;
+
+    const listener = drawingManager.addListener('overlaycomplete', (e) => {
+      const poly = e.overlay;
+      if (poly && poly.getPath) {
+        const coords = poly.getPath().getArray().map(point => ({
+          lat: point.lat(),
+          lng: point.lng()
+        }));
+        // Log the coordinates of the drawn polygon - just for demonstrating working functionality
+        console.log(coords);
+      }
+    });
+
+    return () => {
+      if (listener) listener.remove();
+    };
+  }, [drawingManager]);
 
   return (
-    <>
-      <Map
-        defaultZoom={3}
-        defaultCenter={{ lat: 22.54992, lng: 0 }}
-        gestureHandling={'greedy'}
-        disableDefaultUI={true}
-      >
-        {/* DrawingManager must be a child of Map to access the map context */}
-        <DrawingManager />
-      </Map>
-
-      <ControlPanel />
-
-      <MapControl position={ControlPosition.TOP_CENTER}>
-        {/* If UndoRedoControl needs the drawingManager, 
-            you can lift state up and pass it down as a prop */}
-        <UndoRedoControl />
-      </MapControl>
-    </>
+    <Map
+      defaultZoom={3}
+      defaultCenter={{ lat: 22.54992, lng: 0 }}
+      gestureHandling={'greedy'}
+      disableDefaultUI={true}
+    />
   );
 };
 
-export default DrawingExample;
+export default MapWithDrawing;
