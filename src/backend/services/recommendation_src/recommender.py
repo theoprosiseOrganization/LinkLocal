@@ -12,7 +12,7 @@ def score_features(features):
 
 def get_top_k_recommendations(features, user_id, k=3):
     heap = []
-    for other_user_id, feature_scores in features.items():
+    for other_user_id, feature_scores in features[user_id].items():
         score = score_features(feature_scores)
         heapq.heappush(heap, (-score, other_user_id))
     top_k = [heapq.heappop(heap)[1] for _ in range(min(k, len(heap)))]
