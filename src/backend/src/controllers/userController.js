@@ -9,6 +9,10 @@
  */
 const { PrismaClient } = require("../../generated/prisma");
 const prisma = new PrismaClient();
+const { createClient } = require("@supabase/supabase-js");
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_KEY;
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 // User CRUD
 exports.getUsers = async (req, res) => {
@@ -432,4 +436,21 @@ exports.getAllTags = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }
+};
+
+exports.getSuggestedUsers = async (req, res) => {
+  const { data, error } = await supabase
+    .from("Recommendations")
+    .select("suggested_ids")
+    .eq("user_id", req.params.id)
+    .single();
+
+  if (error) {
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+  if (!data || !data.suggested_ids || data.suggested_ids.length === 0) {
+    return res.status(404).json({ error: "No recommendations found" });
+  }
+  // suggested_ids is assumed to be an array of user IDs
+  return res.json(data.suggested_ids);
 };
