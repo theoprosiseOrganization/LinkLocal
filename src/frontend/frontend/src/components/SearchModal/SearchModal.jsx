@@ -35,6 +35,7 @@ import {
 } from "../../../components/ui/dialog";
 import { Input } from "../../../components/ui/input";
 import { Label } from "../../../components/ui/label";
+import ViewUserButton from "../ViewUserPage/ViewUserButton";
 
 import {
   searchForUsers,
@@ -141,6 +142,8 @@ export default function SearchModal() {
                 >
                   Follow User
                 </Button>
+                <ViewUserButton
+                  userId={selectedFriend.id} />
               </DialogTitle>
               <DialogDescription>
                 Email: {selectedFriend.email}

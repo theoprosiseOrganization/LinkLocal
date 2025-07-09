@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getUserById, getUserEvents } from "../../api";
+import { getUserById, getUserEvents, followUser, getSessionUserId } from "../../api";
 import VerticalEvents from "../VerticalEvents/VerticalEvents";
 import Layout from "../Layout/Layout";
 
@@ -9,6 +9,8 @@ export default function ViewUserPage() {
   const [user, setUser] = useState(null);
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentUserId, setCurrentUserId] = useState(null);
+  const [followed, setFollowed] = useState(false);
 
   useEffect(() => {
     async function fetchUserData() {
@@ -26,6 +28,28 @@ export default function ViewUserPage() {
     }
     fetchUserData();
   }, [userId]);
+
+  useEffect(() => {
+    async function fetchCurrentUserId() {
+      try {
+        const id = await getSessionUserId();
+        setCurrentUserId(id);
+      } catch (e) {
+        setCurrentUserId(null);
+      }
+    }
+    fetchCurrentUserId();
+  }, []);
+
+  const handleFollow = async (followingId) => {
+    if (!currentUserId) return;
+    try {
+      await followUser(currentUserId, followingId);
+      setFollowed(true);
+    } catch (e) {
+      // Handle error
+    }
+  };
 
   if (loading) {
     return <div>Loading...</div>;
@@ -66,6 +90,16 @@ export default function ViewUserPage() {
                 <strong>Preferences:</strong>{" "}
                 {user.tags.map((tag) => tag.name).join(", ")}
               </div>
+            )}
+            {currentUserId && currentUserId !== user.id && (
+              <button
+                className="btn btn-outline"
+                onClick={() => handleFollow(user.id)}
+                disabled={followed}
+                style={{ marginTop: "1rem" }}
+              >
+                {followed ? "Following" : "Follow"}
+              </button>
             )}
           </div>
         </div>
