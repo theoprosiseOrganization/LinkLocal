@@ -3,6 +3,8 @@ from supabase import create_client, Client
 from dotenv import load_dotenv
 import pandas as pd
 import numpy as np
+from collections import deque
+import math
 
 load_dotenv()
 
@@ -18,19 +20,31 @@ def fetch_follows():
     response = supabase.table("Follows").select("*").execute()
     return response.data
 
-def build_friend_network(users, follows):
-    user_map = {user['id']: user for user in users}
-    friend_network = {}
-
+def build_follow_adjacency(follows):
+    adj = {}
     for follow in follows:
-        follower_id = follow['follower_id']
-        followed_id = follow['followed_id']
+        adj.setdefault(f["followerId"], []).append(f["followingId"])
+    return adj
 
-        if follower_id not in friend_network:
-            friend_network[follower_id] = []
-        friend_network[follower_id].append(followed_id)
+def bfs_distance(start_user, adj):
+    dist = {start_user: 0}
+    queue = deque([start_user])
 
-    return friend_network
+    while queue:
+        current = queue.popleft()
+        for neighbor in adj.get(current, []):
+            if neighbor not in dist:
+                dist[neighbor] = dist[current] + 1
+                queue.append(neighbor)
+    return dist
+
+def friend_network_score(dist_map, target_user, max_distance=4):
+    if target_user not in dist_map:
+        return 0
+    distance = dist_map[target_user]
+    if distance > max_distance:
+        return 0
+    return 1 - (distance / max_distance)  # Normalize to a score between 0 and 1
 
 def location_score(loc1, loc2):
     if loc1 is None or loc2 is None:
@@ -56,3 +70,36 @@ def preference_score(tags1, tags2):
     ret = float(vec1.dot(vec2)) / (norm1 * norm2)
     return ret
 
+
+def compute_all_features():
+    users = fetch_users()
+    follows = fetch_follows()
+    # Build adjacency list for follow relationships
+    adj = build_follow_adjacency(follows)
+
+    bfs_maps = {}
+    for user in users:
+        bfs_maps[user['id']] = bfs_distance(user['id'], adj)
+
+    features = {user['id']: {} for user in users}
+    
+    for idx, user1 in enumerate(users):
+        for user2 in users[idx + 1:]:
+            uid1, uid2 = user1['id'], user2['id']
+
+            # Friend network score
+            dist_map1 = bfs_maps[uid1]
+            dist_map2 = bfs_maps[uid2]
+            score1 = friend_network_score(dist_map1, uid2)
+            score2 = friend_network_score(dist_map2, uid1)
+            friend_score = (score1 + score2) / 2
+            
+            # location score
+            loc_score = location_score(user1['geoLocation'], user2['geoLocation'])
+            # Preference score
+            pref_score = preference_score(user1['tags'], user2['tags'])
+
+            features[uid1][uid2] = (loc_score, pref_score, friend_score)
+            features[uid2][uid1] = (loc_score, pref_score, friend_score)
+    
+    return features
