@@ -13,7 +13,6 @@
  */
 
 import {
-  getUserById,
   getUserFollowers,
   getUserFollowing,
   getSessionUserId,
@@ -22,7 +21,6 @@ import {
 import ViewUserButton from "../ViewUserPage/ViewUserButton";
 import React, { useEffect, useState } from "react";
 import "../ProfilePage/ProfilePage.css";
-import { View } from "lucide-react";
 
 export default function PeopleGrid(props) {
   const type = props.type || "Followers";
@@ -53,7 +51,9 @@ export default function PeopleGrid(props) {
 
   return (
     <>
-      <h2 className="events-title">{type}</h2>
+      <h2 className="events-title">
+        {type === "Suggested" ? "Suggested Users" : type}
+      </h2>
       <div
         style={{
           display: "flex",
