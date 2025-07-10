@@ -360,3 +360,19 @@ export async function eventsWithinPolygon(coords){
   }
   return response;
 }
+
+export async function getOptimalRoute(start, events) {
+  const res = await fetch(`${URL}/events/optimal-route`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ start, events }),
+    credentials: "include",
+  });
+  const response = await res.json();
+  if (!res.ok) {
+    throw new Error(response.error || "Failed to get optimal route");
+  }
+  return response;
+}

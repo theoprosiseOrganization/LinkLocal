@@ -19,7 +19,8 @@ const MAPS_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 import { APIProvider } from "@vis.gl/react-google-maps";
 import { Label } from "../../../components/ui/label";
 import { Input } from "../../../components/ui/input";
-import { getEventById } from "../../api";
+import { Button } from "../../../components/ui/button";
+import { getEventById, getSessionUserId, getUserById } from "../../api";
 import EventCard from "../EventCard/EventCard";
 
 export default function MapPlan() {
@@ -79,6 +80,8 @@ export default function MapPlan() {
           </div>
         </div>
         <p>Step 3: Choose which events from your criteria you want to attend:</p>
+        <p>When selected, calculate the optimal route from your location to your events:</p>
+        <Button>Calculate</Button>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {filteredEvents.map((event) => (
             <div
@@ -154,7 +157,6 @@ export default function MapPlan() {
         <p className="mt-4">
           Selected Event IDs: {selectedEventIds.join(", ") || "None"}
         </p>
-        <p>Step 4: Calculate the optimal route from your location to your events:</p>
       </div>
     </Layout>
   );
