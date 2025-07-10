@@ -31,7 +31,7 @@ export default function MapPlan() {
           </APIProvider>
           <ul>
             {eventsInPoly.map(event => (
-            <li key={event.id}>{event.id}</li>
+            <li key={event.id}> Event ID: {event.id}</li>
           ))}
           </ul>
       </div>

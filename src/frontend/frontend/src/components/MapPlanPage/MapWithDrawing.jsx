@@ -39,8 +39,6 @@ const MapWithDrawing = ({ onEventsFound }) => {
               lat: point.lat(),
               lng: point.lng(),
             }));
-          // Log the coordinates of the drawn polygon - just for demonstrating working functionality
-          console.log(coords);
           try {
             const events = await eventsWithinPolygon(coords);
             if (onEventsFound) {
