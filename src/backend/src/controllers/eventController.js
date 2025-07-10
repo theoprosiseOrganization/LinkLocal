@@ -232,7 +232,6 @@ exports.getEventsWithinPolygon = async (req, res) => {
     `);
     res.json(events);
   } catch (error) {
-    console.error("Error fetching events within polygon:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
