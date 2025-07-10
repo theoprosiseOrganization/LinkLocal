@@ -11,6 +11,7 @@
 import React, { useEffect } from 'react';
 import { Map } from '@vis.gl/react-google-maps';
 import { useDrawingManager } from './useDrawingManager';
+import {eventsWithinPolygon} from '../../api'
 
 const MapWithDrawing = () => {
   const drawingManager = useDrawingManager();
@@ -18,7 +19,7 @@ const MapWithDrawing = () => {
   useEffect(() => {
     if (!drawingManager) return;
 
-    const listener = drawingManager.addListener('overlaycomplete', (e) => {
+    const listener = drawingManager.addListener('overlaycomplete', async (e) => {
       const poly = e.overlay;
       if (poly && poly.getPath) {
         const coords = poly.getPath().getArray().map(point => ({
@@ -27,6 +28,12 @@ const MapWithDrawing = () => {
         }));
         // Log the coordinates of the drawn polygon - just for demonstrating working functionality
         console.log(coords);
+        try {
+          const events = await eventsWithinPolygon(coords);
+          console.log("Events within polygon:", events);
+        } catch (err) {
+          console.error("Failed to fetch events within polygon:", err);
+        }
       }
     });
 

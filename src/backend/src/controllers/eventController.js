@@ -216,7 +216,7 @@ exports.unlikeEvent = async (req, res) => {
   }
 };
 
-exports.queryEventsInPolygon = async (req, res) => {
+exports.getEventsWithinPolygon = async (req, res) => {
   const { polygon } = req.body; // GeoJSON Polygon
   if (!polygon || polygon.type !== "Polygon") {
     return res.status(400).json({ error: "Invalid polygon" });
