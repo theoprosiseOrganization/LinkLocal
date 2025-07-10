@@ -20,11 +20,13 @@ import { APIProvider } from "@vis.gl/react-google-maps";
 import { Label } from "../../../components/ui/label";
 import { Input } from "../../../components/ui/input";
 import { getEventById } from "../../api";
+import EventCard from "../EventCard/EventCard";
 
 export default function MapPlan() {
   const [eventsInPoly, setEventsInPoly] = useState([]);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [selectedEventIds, setSelectedEventIds] = useState([]);
 
   const filteredEvents = eventsInPoly.filter((event) => {
     if (!startDate && !endDate) return true;
@@ -32,13 +34,20 @@ export default function MapPlan() {
     const eventEnd = new Date(event.endTime);
     const filterStart = startDate ? new Date(startDate) : null;
     const filterEnd = endDate ? new Date(endDate) : null;
-
-    // Check for overlap between event and filter period
     return (
       (!filterStart || eventEnd >= filterStart) &&
       (!filterEnd || eventStart <= filterEnd)
     );
   });
+
+  // Toggle event selection
+  const handleSelectEvent = (eventId) => {
+    setSelectedEventIds((prev) =>
+      prev.includes(eventId)
+        ? prev.filter((id) => id !== eventId)
+        : [...prev, eventId]
+    );
+  };
 
   return (
     <Layout>
@@ -49,7 +58,6 @@ export default function MapPlan() {
           <MapWithDrawing onEventsFound={setEventsInPoly} />
         </APIProvider>
         <p>Step 2: What period are you available for your events?</p>
-
         <div className="flex gap-4 mb-4">
           <div>
             <Label htmlFor="filter-start">Start</Label>
@@ -70,11 +78,33 @@ export default function MapPlan() {
             />
           </div>
         </div>
-        <ul>
+        <p>Step 3: Choose which events from your criteria you want to attend:</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {filteredEvents.map((event) => (
-            <li key={event.id}>Event ID: {event.id}</li>
+            <div
+              key={event.id}
+              className={`border rounded p-2 cursor-pointer ${
+                selectedEventIds.includes(event.id)
+                  ? "border-blue-500 bg-blue-50"
+                  : "border-gray-200"
+              }`}
+              onClick={() => handleSelectEvent(event.id)}
+            >
+              <input
+                type="checkbox"
+                checked={selectedEventIds.includes(event.id)}
+                onChange={() => handleSelectEvent(event.id)}
+                className="mr-2"
+                onClick={(e) => e.stopPropagation()}
+              />
+              <EventCard event={event} />
+            </div>
           ))}
-        </ul>
+        </div>
+        <p className="mt-4">
+          Selected Event IDs: {selectedEventIds.join(", ") || "None"}
+        </p>
+        <p>Step 4: Calculate the optimal route from your location to your events:</p>
       </div>
     </Layout>
   );
