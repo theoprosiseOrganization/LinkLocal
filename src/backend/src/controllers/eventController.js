@@ -121,29 +121,28 @@ exports.createEvent = async (req, res) => {
 };
 
 const addEventTags = async (eventId, tags) => {
-  if (!tags || tags.length === 0) return;
-  const existingTags = await prisma.tag.findMany({
-    where: { name: { in: tags } },
-    select: { id: true, name: true },
-  });
-  const existingTagNames = existingTags.map((tag) => tag.name);
-  const newTagNames = tags.filter((name) => !existingTagNames.includes(name));
-  const createdTags = await Promise.all(
-    newTagNames.map((name) => prisma.tag.create({ data: { name } }))
-  );
-  // Combine all tag IDs
-  const allTagIds = [
-    ...existingTags.map((tag) => tag.id),
-    ...createdTags.map((tag) => tag.id),
-  ];
-  if (allTagIds.length === 0) return;
+  if (!tags || tags.length === 0) {
+    // If tags is empty, remove all tags from the event
+    await prisma.event.update({
+      where: { id: eventId },
+      data: { tags: { set: [] } },
+    });
+    return;
+  }
+  // Upsert each tag and collect their IDs
+  const tagIds = [];
+  for (const tagName of tags) {
+    const tag = await prisma.tag.upsert({
+      where: { name: tagName },
+      update: {},
+      create: { name: tagName },
+    });
+    tagIds.push({ id: tag.id });
+  }
+  // Set event's tags to the new set (removes old, adds new)
   await prisma.event.update({
     where: { id: eventId },
-    data: {
-      tags: {
-        connect: allTagIds.map((id) => ({ id })),
-      },
-    },
+    data: { tags: { set: tagIds } },
   });
 };
 
