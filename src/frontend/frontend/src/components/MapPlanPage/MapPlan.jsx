@@ -39,7 +39,6 @@ export default function MapPlan() {
       (!filterEnd || eventStart <= filterEnd)
     );
   });
-console.log("Filtered Events:", filteredEvents);
 
   return (
     <Layout>
