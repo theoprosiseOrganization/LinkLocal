@@ -23,6 +23,10 @@ import { eventsWithinPolygon } from "../../api";
 
 const MapWithDrawing = ({ onEventsFound }) => {
   const drawingManager = useDrawingManager();
+  const defaultCoordinates = {
+    lat: 37.4845,
+    lng: -122.1478,
+  };
 
   useEffect(() => {
     if (!drawingManager) return;
@@ -59,7 +63,7 @@ const MapWithDrawing = ({ onEventsFound }) => {
   return (
     <Map
       defaultZoom={10}
-      defaultCenter={{ lat: 37.4845, lng: -122.1478 }}
+      defaultCenter={defaultCoordinates}
       gestureHandling={"greedy"}
       disableDefaultUI={true}
     />
