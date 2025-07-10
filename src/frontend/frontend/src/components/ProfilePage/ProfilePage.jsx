@@ -176,7 +176,7 @@ export default function ProfilePage() {
                 </div>
               </div>
             ) : (
-              <div>No User Data Found...</div>
+              <div>No User Data Found.</div>
             )}
             <Dialog>
               <DialogTrigger asChild>

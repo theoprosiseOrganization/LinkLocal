@@ -41,7 +41,7 @@ export default function SignInPage() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const { email, password } = formData;
     if (!email || !password) {
@@ -49,15 +49,15 @@ export default function SignInPage() {
       return;
     }
     try {
-      const response = loginUser({
-        email,
-        password,
-      });
-      // Redirect to profile page after successful login
+      const response = await loginUser({ email, password });
+      if (response.error || response.success === false) {
+        alert(response.message || "Invalid email or password. Check your credentials.");
+        return;
+      }
       alert("Signed in successfully!");
       navigate("/profile");
     } catch (error) {
-      alert(error.message);
+      alert(error.message || "Login failed. Please try again.");
     }
   };
 

@@ -69,6 +69,10 @@ export default function MapComponent({
   const [selectedMarker, setSelectedMarker] = useState(null);
   const [infoWindowShown, setInfoWindowShown] = useState(false);
   const [closeInfoWindow, setCloseInfoWindow] = useState(false);
+  const defaultCoordinates = {
+    lat: 37.4845,
+    lng: -122.1478,
+  };
 
   const onMarkerClick = useCallback(
     (id, marker) => {
@@ -103,7 +107,7 @@ export default function MapComponent({
           defaultCenter={
             currentLocation
               ? { lat: currentLocation.lat, lng: currentLocation.lng }
-              : { lat: 37.4845, lng: -122.1478 }
+              : defaultCoordinates
           }
           defaultZoom={10}
           gestureHandling={"greedy"}

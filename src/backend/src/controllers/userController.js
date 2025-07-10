@@ -40,6 +40,12 @@ exports.getUserById = async (req, res) => {
   }
 };
 
+const parsePoint = (point) => {
+  // Parse a point in the format "POINT(lon lat)"
+  const match = point.match(/POINT\(([-\d.]+) ([-\d.]+)\)/);
+  return match;
+};
+
 const getUserLocation = async (userId) => {
   const result = await prisma.$queryRaw`
     SELECT "streetAddress", ST_AsText("location") AS location
@@ -48,7 +54,7 @@ const getUserLocation = async (userId) => {
   if (!result || result.length === 0) return null;
   const { streetAddress, location } = result[0];
   // location is in format "POINT(lon lat)"
-  const match = location.match(/POINT\(([-\d.]+) ([-\d.]+)\)/);
+  const match = parsePoint(location);
   if (!match) return null;
   const [, longitude, latitude] = match;
   return {
@@ -101,17 +107,21 @@ exports.updateUser = async (req, res) => {
     }
 
     if (req.body.tags) {
-      // Disconnect all current tags
+      // Upsert tags and collect their IDs
+      const tagIds = [];
+      for (const tagName of req.body.tags) {
+        const tag = await prisma.tag.upsert({
+          where: { name: tagName },
+          update: {},
+          create: { name: tagName },
+        });
+        tagIds.push({ id: tag.id });
+      }
+      // Set user's tags to the new set
       await prisma.user.update({
         where: { id: req.params.id },
-        data: { tags: { set: [] } },
+        data: { tags: { set: tagIds } },
       });
-      // Connect new tags (array of tag IDs)
-      if (req.body.tags.length > 0) {
-        for (const tagName of req.body.tags) {
-          await addUserTag(req.params.id, tagName);
-        }
-      }
     }
 
     res.json(user);
@@ -243,7 +253,7 @@ const getEventLocation = async (eventId) => {
   if (!result || result.length === 0) return null;
   const { streetAddress, location } = result[0];
   // location is in format "POINT(lon lat)"
-  const match = location.match(/POINT\(([-\d.]+) ([-\d.]+)\)/);
+  const match = parsePoint(location);
   if (!match) return null;
   const [, longitude, latitude] = match;
   return {

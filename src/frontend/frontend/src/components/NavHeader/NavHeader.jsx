@@ -3,6 +3,8 @@ import {
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
+  NavigationMenuTrigger,
+  NavigationMenuContent,
 } from "../../../components/ui/navigation-menu";
 
 import "./NavHeader.css";
@@ -15,6 +17,26 @@ export default function NavHeader() {
     <div className="nav-header">
       <NavigationMenu>
         <NavigationMenuList>
+          <NavigationMenuItem>
+            <NavigationMenuTrigger className="navigation-menu__trigger">
+              Sign In/Up
+            </NavigationMenuTrigger>
+            <NavigationMenuContent>
+              <ul className="grid w-[200px] gap-4">
+                <NavigationMenuItem>
+                  <NavigationMenuLink asChild className="trigger-link">
+                    <Link to="/signin">Sign In</Link>
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+                <NavigationMenuLink asChild className="trigger-link">
+                  <Link to="/signup">Sign Up</Link>
+                </NavigationMenuLink>
+                <NavigationMenuLink asChild className="trigger-link">
+                  <Link onClick={logoutUser}>Logout</Link>
+                </NavigationMenuLink>
+              </ul>
+            </NavigationMenuContent>
+          </NavigationMenuItem>
           <NavigationMenuItem>
             <NavigationMenuLink asChild>
               <Link to="/">Home</Link>
@@ -31,28 +53,13 @@ export default function NavHeader() {
             </NavigationMenuLink>
           </NavigationMenuItem>
           <NavigationMenuItem>
-          <NavigationMenuLink asChild>
-            <Link to="/plan">Plan</Link>
-          </NavigationMenuLink>
+            <NavigationMenuLink asChild>
+              <Link to="/plan">Plan</Link>
+            </NavigationMenuLink>
           </NavigationMenuItem>
           <NavigationMenuItem>
             <NavigationMenuLink asChild>
               <Link to="/profile">Profile</Link>
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuLink asChild>
-              <Link to="/signin">Sign In</Link>
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuLink asChild>
-              <Link to="/signup">Sign Up</Link>
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuLink asChild>
-              <Link onClick={logoutUser}>Logout</Link>
             </NavigationMenuLink>
           </NavigationMenuItem>
         </NavigationMenuList>

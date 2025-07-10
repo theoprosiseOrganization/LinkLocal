@@ -16,6 +16,7 @@ import { APIProvider, useMapsLibrary } from "@vis.gl/react-google-maps";
 
 const LocationAutocomplete = ({ onPlaceSelect }) => {
   const [placeAutocomplete, setPlaceAutocomplete] = useState(null);
+  const [loadError, setLoadError] = useState(false);
   const inputRef = useRef(null);
   const containerRef = useRef(null); // Add a ref for the container
   const places = useMapsLibrary("places");
@@ -61,8 +62,15 @@ const LocationAutocomplete = ({ onPlaceSelect }) => {
     );
   }, [onPlaceSelect, placeAutocomplete]);
 
+  if (loadError) {
+    return <div>Error loading Google Maps Places API</div>;
+  }
+
   return (
-    <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
+    <APIProvider
+      apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
+      onLoadError={() => setLoadError(true)}
+    >
       <div className="autocomplete-container" ref={containerRef}></div>
     </APIProvider>
   );

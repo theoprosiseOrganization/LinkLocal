@@ -4,6 +4,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 
 import { cn } from "../../lib/utils";
 import { Button } from "./button";
+import { Arrow } from "@radix-ui/react-popover";
 
 const CarouselContext = React.createContext(null);
 
@@ -52,12 +53,13 @@ function Carousel({
 
   const handleKeyDown = React.useCallback(
     (event) => {
-      if (event.key === "ArrowLeft") {
+      const handlers = {
+        ArrowLeft: scrollPrev,
+        ArrowRight: scrollNext,
+      };
+      if (handlers[event.key]) {
         event.preventDefault();
-        scrollPrev();
-      } else if (event.key === "ArrowRight") {
-        event.preventDefault();
-        scrollNext();
+        handlers[event.key]();
       }
     },
     [scrollPrev, scrollNext]
