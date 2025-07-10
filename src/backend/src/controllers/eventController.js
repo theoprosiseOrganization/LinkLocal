@@ -215,3 +215,23 @@ exports.unlikeEvent = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+exports.queryEventsInPolygon = async (req, res) => {
+  const { polygon } = req.body; // GeoJSON Polygon
+  if (!polygon || polygon.type !== "Polygon") {
+    return res.status(400).json({ error: "Invalid polygon" });
+  }
+  try {
+    const events = await prisma.$queryRawUnsafe(`
+      SELECT *
+      FROM event_locations
+      WHERE ST_Contains(
+        ST_GeomFromGeoJSON('${JSON.stringify(polygon)}'),
+        location
+    )
+    `);
+    res.json(events);
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};

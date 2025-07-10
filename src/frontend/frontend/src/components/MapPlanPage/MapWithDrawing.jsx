@@ -37,8 +37,8 @@ const MapWithDrawing = () => {
 
   return (
     <Map
-      defaultZoom={3}
-      defaultCenter={{ lat: 22.54992, lng: 0 }}
+      defaultZoom={10}
+      defaultCenter={{ lat: 37.4845, lng: -122.1478 }}
       gestureHandling={'greedy'}
       disableDefaultUI={true}
     />
