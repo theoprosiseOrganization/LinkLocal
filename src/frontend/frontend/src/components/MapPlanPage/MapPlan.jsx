@@ -50,6 +50,28 @@ export default function MapPlan() {
     );
   };
 
+  const getRoute = async () => {
+    if (selectedEventIds.length === 0) {
+      alert("Please select at least one event to calculate the route.");
+      return;
+    }
+    const userId = await getSessionUserId();
+    if (!userId) {
+      alert("You must be logged in to calculate a route.");
+      return;
+    }
+    const user = await getUserById(userId);
+    if (!user || !user.location) {
+      alert("Your location is not set. Please update your profile.");
+      return;
+    }
+    const userLocation = {
+      lat: user.location.latitude,
+      lng: user.location.longitude,
+    };
+   // const routeEvents =
+  }
+
   return (
     <Layout>
       <div className="map-plan-page">
@@ -81,7 +103,7 @@ export default function MapPlan() {
         </div>
         <p>Step 3: Choose which events from your criteria you want to attend:</p>
         <p>When selected, calculate the optimal route from your location to your events:</p>
-        <Button>Calculate</Button>
+        <Button onClick={getRoute}>Calculate</Button>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {filteredEvents.map((event) => (
             <div
