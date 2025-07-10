@@ -340,3 +340,23 @@ export async function getSuggestedUsers(userId) {
   }
   return response;
 }
+
+export async function eventsWithinPolygon(coords){
+  const geojson = {
+          type: "Polygon",
+          coordinates: [coords.map(coord => [coord.lng, coord.lat])]
+        };
+  const res = await fetch(`${URL}/events/within-polygon`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({polygon: geojson}),
+    credentials: "include",
+  });
+  const response = await res.json();
+  if (!res.ok) {
+    throw new Error(response.error || "Failed to fetch events within polygon");
+  }
+  return response;
+}
