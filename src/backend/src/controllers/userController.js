@@ -107,17 +107,21 @@ exports.updateUser = async (req, res) => {
     }
 
     if (req.body.tags) {
-      // Disconnect all current tags
+      // Upsert tags and collect their IDs
+      const tagIds = [];
+      for (const tagName of req.body.tags) {
+        const tag = await prisma.tag.upsert({
+          where: { name: tagName },
+          update: {},
+          create: { name: tagName },
+        });
+        tagIds.push({ id: tag.id });
+      }
+      // Set user's tags to the new set
       await prisma.user.update({
         where: { id: req.params.id },
-        data: { tags: { set: [] } },
+        data: { tags: { set: tagIds } },
       });
-      // Connect new tags (array of tag IDs)
-      if (req.body.tags.length > 0) {
-        for (const tagName of req.body.tags) {
-          await addUserTag(req.params.id, tagName);
-        }
-      }
     }
 
     res.json(user);
