@@ -18,6 +18,11 @@ import { Label } from "../../../components/ui/label";
 import { Button } from "../../../components/ui/button";
 import { Calendar } from "../../../components/ui/calendar";
 import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "../../../components/ui/alert";
+import {
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -33,8 +38,10 @@ import {
 import LocationAutocomplete from "../LocationAutocomplete/LocationAutocomplete";
 import { APIProvider } from "@vis.gl/react-google-maps";
 import TagsSearch from "../Tags/TagsSearch";
+import { set } from "date-fns";
 
 export default function CreateEventPage() {
+  const [isUploading, setIsUploading] = useState(false);
   const [startPopoverOpen, setStartPopoverOpen] = useState(false);
   const [endPopoverOpen, setEndPopoverOpen] = useState(false);
   const [startDate, setStartDate] = useState(new Date());
@@ -149,11 +156,13 @@ export default function CreateEventPage() {
     let imageUrls = [];
     const files = fileInputRef.current?.files;
     if (files && files.length > 0 && files.length <= 5) {
+      setIsUploading(true);
       try {
         imageUrls = await uploadEventImages(event.id, files);
       } catch (err) {
         alert("Image upload failed");
       }
+      setIsUploading(false);
     }
 
     if (imageUrls.length > 0) {
@@ -327,7 +336,17 @@ export default function CreateEventPage() {
                 multiple
                 accept="image/*"
                 ref={fileInputRef}
+                disabled={isUploading}
               />
+              {isUploading && (
+                <Alert variant="default | destructive">
+                  <AlertTitle>Uploading!</AlertTitle>
+                  <AlertDescription>
+                    Please wait while your images are being uploaded to our
+                    servers.
+                  </AlertDescription>
+                </Alert>
+              )}
             </div>
             <div className="grid gap-3">
               <Label>Tags</Label>
