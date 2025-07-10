@@ -4,7 +4,7 @@
   top: 0;
   left: 0;
   z-index: 100;
-  background: #1a202c; 
+  background: #1a202c;
   border-bottom: 1px solid #2d3748;
   display: flex;
   justify-content: center;
@@ -21,7 +21,7 @@
 
 .navigation-menu__link,
 .nav-header a {
-  color: #f7fafc; 
+  color: #f7fafc;
   text-decoration: none;
   padding: 0.5rem 1rem;
   transition: background 0.2s;
@@ -33,7 +33,7 @@
   border-radius: 4px;
 }
 
-.trigger-link{
+.trigger-link {
   background: #2d3748;
   border-radius: 4px;
 }

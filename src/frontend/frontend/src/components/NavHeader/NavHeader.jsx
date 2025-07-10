@@ -23,23 +23,17 @@ export default function NavHeader() {
             </NavigationMenuTrigger>
             <NavigationMenuContent>
               <ul className="grid w-[200px] gap-4">
-                  <NavigationMenuItem> 
+                <NavigationMenuItem>
                   <NavigationMenuLink asChild className="trigger-link">
-                    <Link to="/signin">
-                      Sign In
-                    </Link>
+                    <Link to="/signin">Sign In</Link>
                   </NavigationMenuLink>
-                  </NavigationMenuItem>
-                  <NavigationMenuLink asChild className="trigger-link">
-                    <Link to="/signup" >
-                      Sign Up
-                    </Link>
-                  </NavigationMenuLink>
-                  <NavigationMenuLink asChild className="trigger-link">
-                    <Link onClick={logoutUser}>
-                      Logout
-                    </Link>
-                  </NavigationMenuLink>
+                </NavigationMenuItem>
+                <NavigationMenuLink asChild className="trigger-link">
+                  <Link to="/signup">Sign Up</Link>
+                </NavigationMenuLink>
+                <NavigationMenuLink asChild className="trigger-link">
+                  <Link onClick={logoutUser}>Logout</Link>
+                </NavigationMenuLink>
               </ul>
             </NavigationMenuContent>
           </NavigationMenuItem>

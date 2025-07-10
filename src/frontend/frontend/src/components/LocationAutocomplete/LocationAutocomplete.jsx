@@ -62,12 +62,15 @@ const LocationAutocomplete = ({ onPlaceSelect }) => {
     );
   }, [onPlaceSelect, placeAutocomplete]);
 
-  if(loadError){
+  if (loadError) {
     return <div>Error loading Google Maps Places API</div>;
   }
 
   return (
-    <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY} onLoadError={() => setLoadError(true)}>
+    <APIProvider
+      apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
+      onLoadError={() => setLoadError(true)}
+    >
       <div className="autocomplete-container" ref={containerRef}></div>
     </APIProvider>
   );
