@@ -351,7 +351,7 @@ export async function eventsWithinPolygon(coords){
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(geojson),
+    body: JSON.stringify({polygon: geojson}),
     credentials: "include",
   });
   const response = await res.json();

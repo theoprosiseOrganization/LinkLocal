@@ -223,15 +223,16 @@ exports.getEventsWithinPolygon = async (req, res) => {
   }
   try {
     const events = await prisma.$queryRawUnsafe(`
-      SELECT *
+      SELECT id, "eventId", "streetAddress", ST_AsText(location) AS location
       FROM event_locations
       WHERE ST_Contains(
         ST_GeomFromGeoJSON('${JSON.stringify(polygon)}'),
         location
-    )
+      )
     `);
     res.json(events);
   } catch (error) {
+    console.error("Error fetching events within polygon:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
