@@ -13,6 +13,7 @@ const { createClient } = require("@supabase/supabase-js");
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
+const RECOMMENDATION_SERVICE_URL = process.env.RECOMMENDATION_SERVICE_URL;
 
 // User CRUD
 exports.getUsers = async (req, res) => {
@@ -459,31 +460,35 @@ exports.getAllTags = async (req, res) => {
 };
 
 exports.getSuggestedUsers = async (req, res) => {
-  const { data, error } = await supabase
-    .from("Recommendations")
-    .select("suggested_ids")
-    .eq("user_id", req.params.id)
-    .single();
+  const userId = req.params.id;
+  try {
+    const recRes = await fetch(`${RECOMMENDATION_SERVICE_URL}/recommendation/${userId}`);
+    if (!recRes.ok) {
+      const error = await recRes.text();
+      return res.status(502).json({ error: `Recommendation service error: ${error}` });
+    }
+    const recommendations = await recRes.json();
+    if (!recommendations || recommendations.length === 0) {
+      return res.status(404).json({ message: "No recommendations found" });
+    }
 
-  if (error) {
-    return res.status(500).json({ error: "Internal Server Error" });
-  }
-  if (!data || !data.suggested_ids || data.suggested_ids.length === 0) {
-    return res.status(404).json({ error: "No recommendations found" });
+    const suggestedIds = recommendations.map((rec) => rec.userId);
+    const users = await prisma.user.findMany({
+      where: { id: { in: suggestedIds } },
+      include: { tags: true },
+    });
+    await Promise.all(
+      users.map(async (user) => {
+        const location = await getUserLocation(user.id);
+        user.location = location; // will be null if not found
+      })
+    );
+    const usersById = Object.fromEntries(users.map((u) => [u.id, u]));
+    const orderedUsers = suggestedIds.map((id) => usersById[id]).filter(Boolean);
+    res.json(orderedUsers);
+  } catch (error) {
+    console.error("Error fetching suggested users:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 
-  // now we have a list of suggested user IDs
-  // Fetch user details for these IDs
-  const users = await prisma.user.findMany({
-    where: { id: { in: data.suggested_ids } },
-    include: { tags: true }, // Include tags if needed
-  });
-  // Attach location to each user
-  await Promise.all(
-    users.map(async (user) => {
-      const location = await getUserLocation(user.id);
-      user.location = location; // will be null if not found
-    })
-  );
-  res.json(users);
 };
