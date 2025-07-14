@@ -21,7 +21,7 @@ import { Map } from "@vis.gl/react-google-maps";
 import { useDrawingManager } from "./useDrawingManager";
 import { eventsWithinPolygon } from "../../api";
 
-const MapWithDrawing = ({ onEventsFound }) => {
+const MapWithDrawing = ({ onEventsFound, onPolygonDrawn }) => {
   const drawingManager = useDrawingManager();
   const defaultCoordinates = {
     lat: 37.4845,
@@ -35,6 +35,7 @@ const MapWithDrawing = ({ onEventsFound }) => {
       "overlaycomplete",
       async (e) => {
         const poly = e.overlay;
+        onPolygonDrawn?.(poly);
         if (poly && poly.getPath) {
           const coords = poly
             .getPath()

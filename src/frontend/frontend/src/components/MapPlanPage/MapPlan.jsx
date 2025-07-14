@@ -11,7 +11,7 @@
  * @returns {JSX.Element} The rendered MapPlan component.
  */
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Layout from "../Layout/Layout";
 import MapWithDrawing from "./MapWithDrawing";
 import "./MapPlan.css";
@@ -35,6 +35,7 @@ export default function MapPlan() {
   const [endDate, setEndDate] = useState("");
   const [selectedEventIds, setSelectedEventIds] = useState([]);
   const [routeData, setRouteData] = useState(null);
+  const drawnPolygon = useRef(null);
 
   const filteredEvents = eventsInPoly.filter((event) => {
     if (!startDate && !endDate) return true;
@@ -88,6 +89,10 @@ export default function MapPlan() {
     const result = await getOptimalRoute(userLocation, waypoints);
     console.log("Route Result:", result);
     setRouteData(result.routes?.[0] || null);
+    if (drawnPolygon.current) {
+      drawnPolygon.current.setMap(null); // Clear polygon to highlight the route
+      drawnPolygon.current = null;
+    }
   };
 
   return (
@@ -96,7 +101,7 @@ export default function MapPlan() {
         <h1>Map Plan Page</h1>
         <p>Step 1: Draw your area for events:</p>
         <APIProvider apiKey={MAPS_KEY}>
-          <MapWithDrawing onEventsFound={setEventsInPoly} />
+          <MapWithDrawing onEventsFound={setEventsInPoly} onPolygonDrawn={(poly) => (drawnPolygon.current = poly)}/>
           {routeData && <Route route={routeData} />}
         </APIProvider>
         <p>Step 2: What period are you available for your events?</p>
