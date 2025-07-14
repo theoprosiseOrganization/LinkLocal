@@ -25,9 +25,11 @@ import "../ProfilePage/ProfilePage.css";
 export default function PeopleGrid(props) {
   const type = props.type || "Followers";
   const [userPeople, setUserPeople] = useState([]);
+  const [loading, setLoading] = useState(true); // Add loading state
 
   useEffect(() => {
     const fetchUserData = async () => {
+      setLoading(true); // Start loading
       try {
         const userId = await getSessionUserId();
         let people = [];
@@ -42,12 +44,13 @@ export default function PeopleGrid(props) {
         }
         setUserPeople(people);
       } catch (err) {
-        // If there's an error fetching user data, set userPeople to an empty array
         setUserPeople([]);
+      } finally {
+        setLoading(false); // End loading
       }
     };
     fetchUserData();
-  }, []);
+  }, [type]);
 
   return (
     <>
@@ -62,8 +65,9 @@ export default function PeopleGrid(props) {
           justifyContent: "center",
         }}
       >
-        {/* This displays a list of people cards with their information */}
-        {userPeople.length === 0 ? (
+        {loading ? (
+          <div>Loading...</div>
+        ) : userPeople.length === 0 ? (
           <div>No friends found.</div>
         ) : (
           userPeople.map((person) => (
