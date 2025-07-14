@@ -97,6 +97,7 @@ export default function MapPlan() {
         <p>Step 1: Draw your area for events:</p>
         <APIProvider apiKey={MAPS_KEY}>
           <MapWithDrawing onEventsFound={setEventsInPoly} />
+          {routeData && <Route route={routeData} />}
         </APIProvider>
         <p>Step 2: What period are you available for your events?</p>
         <div className="flex gap-4 mb-4">
