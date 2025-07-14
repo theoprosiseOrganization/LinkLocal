@@ -6,6 +6,8 @@ from supabase import create_client, Client
 from dotenv import load_dotenv
 from recommender import get_top_k_recommendations_for_user
 
+load_dotenv()
+
 url: str = os.getenv("SUPABASE_URL")
 key: str = os.getenv("SUPABASE_KEY")
 supabase: Client = create_client(url, key)
@@ -34,7 +36,7 @@ def get_recommendations(user_id: str, k: int = 3):
     dist_map = bfs_distances(user_id)
 
     direct = {n for n,d in dist_map.items() if d == 1}
-    candidates = set(friends_graph.nodes) - {user_id} - direct
+    candidates = set(friends_graph.nodes()) - {user_id} - direct
 
     WEIGHTS = {
         "location_score": 0.5,

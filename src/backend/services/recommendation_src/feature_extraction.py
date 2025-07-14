@@ -113,40 +113,6 @@ def preference_score(tags1, tags2):
     ret = float(vec1.dot(vec2)) / (norm1 * norm2)
     return ret
 
-
-def compute_all_features():
-    users = fetch_users()
-    follows = fetch_follows()
-    # Build adjacency list for follow relationships
-    adj = build_follow_adjacency(follows)
-
-    bfs_maps = {}
-    for user in users:
-        bfs_maps[user['id']] = bfs_distance(user['id'], adj)
-
-    features = {user['id']: {} for user in users}
-    
-    for idx, user1 in enumerate(users):
-        for user2 in users[idx + 1:]:
-            uid1, uid2 = user1['id'], user2['id']
-
-            # Friend network score
-            dist_map1 = bfs_maps[uid1]
-            dist_map2 = bfs_maps[uid2]
-            score1 = friend_network_score(dist_map1, uid2)
-            score2 = friend_network_score(dist_map2, uid1)
-            friend_score = (score1 + score2) / 2
-            
-            # location score
-            loc_score = location_score(user1['geoLocation'], user2['geoLocation'])
-            # Preference score
-            pref_score = preference_score(user1['tags'], user2['tags'])
-
-            features[uid1][uid2] = (loc_score, pref_score, friend_score)
-            features[uid2][uid1] = (loc_score, pref_score, friend_score)
-    
-    return features
-
 def compute_features_for_user(user_id: str, candidates: list[str], dist_map: dict[str,int], max_distance: int = 4) -> pd.DataFrame:
     location_map = fetch_user_locations()
     tag_map = fetch_user_tags()

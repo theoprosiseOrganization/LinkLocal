@@ -14,7 +14,7 @@ class FollowGraph:
         self.load_all()
 
     def load_all(self):
-        resp = supabase.table("Follow").select("follower_id, followed_id").execute()
+        resp = supabase.table("Follows").select("followerId, followingId").execute()
         for {"follower_id": follower_id, "followed_id": followed_id} in resp.data:
             self.graph.add_edge(follower_id, followed_id)
 
