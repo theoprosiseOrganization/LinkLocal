@@ -207,9 +207,6 @@ export default function MapPlan() {
             </div>
           ))}
         </div>
-        <p className="mt-4">
-          Selected Event IDs: {selectedEventIds.join(", ") || "None"}
-        </p>
       </div>
     </Layout>
   );
