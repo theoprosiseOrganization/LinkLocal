@@ -2,10 +2,6 @@
 Feature extraction module for user recommendation system.
 This module fetches user data, computes features based on location, tags, and friend network,
 and prepares the data for recommendation algorithms.
-The features include:
-1. Friend network score based on BFS distance in the follow graph.
-2. Location score based on geographical proximity.
-3. Preference score based on shared tags using cosine similarity.
 '''
 
 import os
@@ -78,17 +74,16 @@ def fetch_liked_events_tags():
     return liked_tags
 
 def ratio_score(a, b):
+    """
+    Calculate the ratio score between two values.
+    :param a: First value.
+    :param b: Second value.
+    :return: Score between 0 and 1, where 1 means both values are equal,
+             and 0 means one of the values is zero.
+    """
     if a == 0 and b == 0:
         return 1.0
     return max(0.0, 1-abs(a-b) / max(a,b,1))
-
-def friend_network_score(dist_map, target_user, max_distance=4):
-    if target_user not in dist_map:
-        return 0
-    distance = dist_map[target_user]
-    if distance > max_distance:
-        return 0
-    return 1 - (distance / max_distance)  # Normalize to a score between 0 and 1
 
 def haversine_distance(coord1, coord2):
     """
@@ -127,7 +122,22 @@ def location_score(loc1, loc2, max_distance=100.0):
 
 def preference_score(tags1, tags2, liked_tags1, liked_tags2):
     """
-    Combines tag cosine and jaccards of liked tags
+    Calculate the preference score between two users based on their tags and liked events.
+    :param tags1: List of tags for user 1.
+    :param tags2: List of tags for user 2.
+    :param liked_tags1: Set of liked tags for user 1.
+    :param liked_tags2: Set of liked tags for user 2.
+    :return: Preference score between 0 and 1.
+    This function computes the cosine similarity of the tags and the Jaccard similarity of the liked tags.
+    The final score is a weighted average of the two scores, ensuring it is between 0 and 1.
+    1. Compute the union of tags between the two users.
+    2. Create indicator vectors for each user based on the union of tags.
+    3. Calculate the cosine similarity between the two vectors.
+    4. If either vector is zero, return a score of 0.
+    5. Compute the Jaccard similarity of the liked tags.
+    6. Combine the two scores with equal weights.
+    7. Ensure the final score is between 0 and 1.
+    8. Return the final score.
     """
     # union of tags between two users
     all_tags = list(set(tags1) | set(tags2))
@@ -153,6 +163,20 @@ def preference_score(tags1, tags2, liked_tags1, liked_tags2):
     return ret
 
 def compute_features_for_user(user_id: str, candidates: list[str], dist_map: dict[str,int], max_distance: int = 4) -> pd.DataFrame:
+    """
+    Compute features for user recommendations based on location, tags, and friend network.
+    :param user_id: The user ID for whom to compute features.
+    :param candidates: List of candidate user IDs to compute features for.
+    :param dist_map: Dictionary mapping user IDs to their distance from the user_id in the friend network.
+    :param max_distance: Maximum distance to consider for friend network similarity.
+    :return: DataFrame containing features for each candidate user.
+    This function computes the following features for each candidate user:
+    1. Friend score based on network similarity.
+    2. Location score based on geographical distance.
+    3. Preference score based on tags and liked events.
+    The function fetches user locations, tags, follower counts, event counts, and liked events tags from the database.
+    It then calculates the scores for each candidate user and returns a DataFrame with the computed features.
+    """
     location_map = fetch_user_locations()
     tag_map = fetch_user_tags()
     follower_counts = fetch_follower_counts()

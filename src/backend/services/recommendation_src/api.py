@@ -19,6 +19,10 @@ for row in resp.data:
     friends_graph.add_edge(row["followerId"], row["followingId"])
 
 def bfs_distances(user_id: str, max_depth: int = 5):
+    """
+    Perform a breadth-first search to find distances from the user_id
+    up to a maximum depth.
+    """
     distances = nx.single_source_shortest_path_length(friends_graph, user_id, cutoff=max_depth)
     return distances
 
@@ -33,6 +37,9 @@ def add_follow(payload: FollowIn):
 
 @app.get("/recommendation/{user_id}")
 def get_recommendations(user_id: str, k: int = 3):
+    """
+    Get top K recommendations for a user based on their friends and features.
+    """
     dist_map = bfs_distances(user_id)
 
     direct = {n for n,d in dist_map.items() if d == 1}

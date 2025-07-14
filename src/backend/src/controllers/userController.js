@@ -487,7 +487,6 @@ exports.getSuggestedUsers = async (req, res) => {
     const orderedUsers = suggestedIds.map((id) => usersById[id]).filter(Boolean);
     res.json(orderedUsers);
   } catch (error) {
-    console.error("Error fetching suggested users:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 
