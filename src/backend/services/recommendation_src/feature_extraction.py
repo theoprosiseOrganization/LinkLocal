@@ -50,7 +50,7 @@ def fetch_follower_counts():
     resp = supabase.table("Follows").select("followingId").execute()
     counts = {}
     for row in resp.data:
-        uid = row["followerId"]
+        uid = row["followingId"]
         counts[uid] = counts.get(uid, 0) + 1
     return counts
 
@@ -63,15 +63,15 @@ def fetch_event_counts():
     return counts
 
 def fetch_liked_events_tags():
-    respEvents = supabase.table("_LikedEvents").select("userId, eventId").execute()
+    respEvents = supabase.table("_LikedEvents").select("B, A").execute()
     likes = {}
     for row in respEvents.data:
-        likes.setdefault(row["userId"], set()).add(row["eventId"])
-    respLikes = supabase.table("_EventTags").select("eventId, tagId").in_("eventId", [e for s in likes.values() for e in s]).execute()
+        likes.setdefault(row["B"], set()).add(row["A"])
+    respLikes = supabase.table("_EventTags").select("A, B").in_("A", [e for s in likes.values() for e in s]).execute()
     liked_tags = {uid: set() for uid in likes}
     for row in respLikes.data:
-        event_id = row["eventId"]
-        tag_id = row["tagId"]
+        event_id = row["A"]
+        tag_id = row["B"]
         for uid, events in likes.items():
             if event_id in events:
                 liked_tags[uid].add(tag_id)
