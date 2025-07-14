@@ -11,7 +11,7 @@ export default function Polyline({encodedPath, strokeWeight = 3, strokeColor = "
 
   useEffect(() => {
    if( maps && map){
-    const polyline = new maps.Polyline({maps, strokeWeight, strokeColor});
+    const polyline = new maps.Polyline({map, strokeWeight, strokeColor});
     setPoly(polyline);
     return () => polyline.setMap(null);
    }
