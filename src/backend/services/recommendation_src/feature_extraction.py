@@ -46,41 +46,6 @@ def fetch_user_tags():
         tag_map.setdefault(row["B"], []).append(row["A"])
     return tag_map
 
-def fetch_users():
-    response = supabase.table("User").select("id").execute()
-    base = [{"id": row["id"]} for row in response.data]
-
-    location_map = fetch_user_locations()
-    tag_map = fetch_user_tags()
-
-    for user in base:
-        uid = user["id"]
-        user["geoLocation"] = location_map.get(uid)
-        user["tags"] = tag_map.get(uid, [])
-    return base
-
-def fetch_follows():
-    response = supabase.table("Follows").select("*").execute()
-    return response.data
-
-def build_follow_adjacency(follows):
-    adj = {}
-    for follow in follows:
-        adj.setdefault(follow["followerId"], []).append(follow["followingId"])
-    return adj
-
-def bfs_distance(start_user, adj):
-    dist = {start_user: 0}
-    queue = deque([start_user])
-
-    while queue:
-        current = queue.popleft()
-        for neighbor in adj.get(current, []):
-            if neighbor not in dist:
-                dist[neighbor] = dist[current] + 1
-                queue.append(neighbor)
-    return dist
-
 def friend_network_score(dist_map, target_user, max_distance=4):
     if target_user not in dist_map:
         return 0
