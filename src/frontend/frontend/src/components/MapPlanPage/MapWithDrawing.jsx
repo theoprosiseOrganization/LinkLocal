@@ -6,7 +6,7 @@
  * of the drawn polygon and fetches events within that polygon using the `eventsWithinPolygon`
  * API function.
  * It also accepts a callback function `onEventsFound` to handle the fetched events.
- * 
+ *
  *
  * @component
  * @param {Object} props - The properties passed to the component.
@@ -21,7 +21,7 @@ import { Map } from "@vis.gl/react-google-maps";
 import { useDrawingManager } from "./useDrawingManager";
 import { eventsWithinPolygon } from "../../api";
 
-const MapWithDrawing = ({ onEventsFound }) => {
+const MapWithDrawing = ({ onEventsFound, onPolygonDrawn }) => {
   const drawingManager = useDrawingManager();
   const defaultCoordinates = {
     lat: 37.4845,
@@ -35,6 +35,7 @@ const MapWithDrawing = ({ onEventsFound }) => {
       "overlaycomplete",
       async (e) => {
         const poly = e.overlay;
+        onPolygonDrawn?.(poly);
         if (poly && poly.getPath) {
           const coords = poly
             .getPath()
@@ -62,6 +63,7 @@ const MapWithDrawing = ({ onEventsFound }) => {
 
   return (
     <Map
+      mapId="4f917a8c04fdd7367b6986a1"
       defaultZoom={10}
       defaultCenter={defaultCoordinates}
       gestureHandling={"greedy"}

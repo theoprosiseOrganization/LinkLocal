@@ -2,6 +2,14 @@ const { PrismaClient } = require("../../generated/prisma");
 const prisma = new PrismaClient();
 const { v4: uuidv4 } = require("uuid");
 const joi = require("joi");
+const ROUTES_API_ENDPOINT =
+  "https://routes.googleapis.com/directions/v2:computeRoutes";
+const FIELD_MASK = [
+  "routes.viewport",
+  "routes.legs",
+  "routes.polyline",
+  "routes.optimizedIntermediateWaypointIndex",
+].join(",");
 
 const eventSchema = joi.object({
   userId: joi.string().uuid().required(),
@@ -227,7 +235,7 @@ exports.getEventsWithinPolygon = async (req, res) => {
     return res.status(400).json({ error: "Invalid polygon" });
   }
   try {
-    const events = await prisma.$queryRawUnsafe(`
+    const eventsIds = await prisma.$queryRawUnsafe(`
       SELECT id, "eventId", "streetAddress", ST_AsText(location) AS location
       FROM event_locations
       WHERE ST_Contains(
@@ -235,8 +243,94 @@ exports.getEventsWithinPolygon = async (req, res) => {
         location
       )
     `);
+    const events = await prisma.event.findMany({
+      where: { id: { in: eventsIds.map((e) => e.eventId) } },
+      include: { tags: true },
+    });
+    // Add location to each event
+    for (const event of events) {
+      const loc = eventsIds.find((e) => e.eventId === event.id);
+      if (loc) {
+        const match = parsePoint(loc.location);
+        if (match) {
+          const [, longitude, latitude] = match;
+          event.location = {
+            address: loc.streetAddress,
+            latitude: parseFloat(latitude),
+            longitude: parseFloat(longitude),
+          };
+        } else {
+          event.location = null; // No valid location found
+        }
+      }
+    }
     res.json(events);
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+// Get optimal route using Google Maps Directions API
+// This function calculates the optimal route starting from a given location,
+// visiting multiple events, and returning to the starting point.
+exports.getOptimalRoute = async (req, res) => {
+  try {
+    const { start, events } = req.body;
+    if (!start || !events || events.length === 0) {
+      return res.status(400).json({ error: "Invalid input" });
+    }
+    const routeRequest = {
+      origin: {
+        location: {
+          latLng: {
+            latitude: start.lat,
+            longitude: start.lng,
+          },
+        },
+      },
+      destination: {
+        location: {
+          latLng: {
+            latitude: start.lat,
+            longitude: start.lng,
+          },
+        },
+      },
+      intermediates: events.map((event) => ({
+        location: {
+          latLng: {
+            latitude: event.lat,
+            longitude: event.lng,
+          },
+        },
+      })),
+      travelMode: "DRIVE",
+      optimizeWaypointOrder: "true",
+      computeAlternativeRoutes: false,
+      units: "METRIC",
+    };
+
+    const url = new URL(ROUTES_API_ENDPOINT);
+    url.searchParams.set("fields", FIELD_MASK);
+
+    const apiKey = process.env.VITE_GOOGLE_MAPS_API_KEY;
+    const response = await fetch(url.toString(), {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Goog-Api-Key": apiKey,
+      },
+      body: JSON.stringify(routeRequest),
+    });
+    if (!response.ok) {
+      const errorText = await response.text();
+      return res
+        .status(response.status)
+        .json({ error: "Failed to fetch route" });
+    }
+    const data = await response.json();
+    return res.json(data);
+  } catch (error) {
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 };
