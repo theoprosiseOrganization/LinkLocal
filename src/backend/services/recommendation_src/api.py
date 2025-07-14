@@ -12,9 +12,9 @@ supabase: Client = create_client(url, key)
 
 app = FastAPI()
 friends_graph = nx.DiGraph()
-resp = supabase.table("Follow").select("follower_id, followed_id").execute()
+resp = supabase.table("Follows").select("followerId, followingId").execute()
 for row in resp.data:
-    friends_graph.add_edge(row["follower_id"], row["followed_id"])
+    friends_graph.add_edge(row["followerId"], row["followingId"])
 
 def bfs_distances(user_id: str, max_depth: int = 5):
     distances = nx.single_source_shortest_path_length(friends_graph, user_id, cutoff=max_depth)
@@ -27,9 +27,9 @@ class FollowIn(BaseModel):
 @app.post("/add_follow")
 def add_follow(payload: FollowIn):
     friends_graph.add_edge(payload.followerId, payload.followingId)
-    supabase.table("Follow").insert({
-        "follower_id": payload.followerId,
-        "followed_id": payload.followingId
+    supabase.table("Follows").insert({
+        "followerId": payload.followerId,
+        "followingId": payload.followingId
     }).execute()
     return {"message": "Follow added successfully"}
 

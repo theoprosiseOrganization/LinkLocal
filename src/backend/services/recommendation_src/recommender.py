@@ -24,7 +24,7 @@ def get_top_k_recommendations(features, user_id, k=3):
     top_k = [heapq.heappop(heap)[1] for _ in range(min(k, len(heap)))]
     return top_k
 
-def get_otp_k_recommendations_for_user(user_id, dist_map, candidates, weights, k):
+def get_top_k_recommendations_for_user(user_id, dist_map, candidates, weights, k):
     df = compute_features_for_user(user_id, candidates, dist_map)
     df['score'] = 0
     for feature, weight in weights.items():
