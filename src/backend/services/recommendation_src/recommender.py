@@ -7,7 +7,7 @@ from feature_extraction import compute_features_for_user
 
 WEIGHTS = {
         "location_score": 0.5,
-        "bfs_score": 0.3,
+        "friend_score": 0.3,
         "preference_score": 0.2,
     }
 
@@ -16,7 +16,7 @@ def score_features(features):
     return (
         WEIGHTS["location_score"] * loc_score +
         WEIGHTS["preference_score"] * pref_score +
-        WEIGHTS["bfs_score"] * friend_score
+        WEIGHTS["friend_score"] * friend_score
     )
 
 def get_top_k_recommendations_for_user(user_id, dist_map, candidates, weights, k):

@@ -46,6 +46,42 @@ def fetch_user_tags():
         tag_map.setdefault(row["B"], []).append(row["A"])
     return tag_map
 
+def fetch_follower_counts():
+    resp = supabase.table("Follows").select("followerId").execute()
+    counts = {}
+    for row in resp.data:
+        uid = row["followerId"]
+        counts[uid] = counts.get(uid, 0) + 1
+    return counts
+
+def fetch_event_counts():
+    resp = supabase.table("Events").select("userId").execute()
+    counts = {}
+    for row in resp.data:
+        uid = row["userId"]
+        counts[uid] = counts.get(uid, 0) + 1
+    return counts
+
+def fetch_liked_events_tags():
+    respEvents = supabase.table("_LikedEvents").select("userId, eventId").execute()
+    likes = {}
+    for row in respEvents.data:
+        likes.setdefault(row["userId"], set()).add(row["eventId"])
+    respLikes = supabase.table("_EventTags").select("eventId, tagId").in_("eventId", [e for s in likes.values() for e in s]).execute()
+    liked_tags = {uid: set() for uid in likes}
+    for row in respLikes.data:
+        event_id = row["eventId"]
+        tag_id = row["tagId"]
+        for uid, events in likes.items():
+            if event_id in events:
+                liked_tags[uid].add(tag_id)
+    return liked_tags
+
+def ratio_score(a, b):
+    if a == 0 and b == 0:
+        return 1.0
+    return max(0.0, 1-abs(a-b) / max(a,b,1))
+
 def friend_network_score(dist_map, target_user, max_distance=4):
     if target_user not in dist_map:
         return 0
@@ -55,6 +91,16 @@ def friend_network_score(dist_map, target_user, max_distance=4):
     return 1 - (distance / max_distance)  # Normalize to a score between 0 and 1
 
 def haversine_distance(coord1, coord2):
+    """
+    Calculate the Haversine distance between two geographical coordinates.
+    :param coord1: Tuple of (latitude, longitude) for the first coordinate.
+    :param coord2: Tuple of (latitude, longitude) for the second coordinate.
+    :return: Distance in kilometers.
+    https://en.wikipedia.org/wiki/Haversine_formula
+    1. Convert latitude and longitude from degrees to radians.
+    2. Use the Haversine formula to calculate the distance.
+    If either coordinate is None, return infinity to indicate no distance.
+    """
     if coord1 is None or coord2 is None:
         return float('inf')
     lat1, lon1 = coord1
@@ -79,7 +125,10 @@ def location_score(loc1, loc2, max_distance=100.0):
     # If the distance is greater than max_distance, return 0
     return max(0.0, 1 - dist_km / max_distance)  # Normalize distance to a score between 0 and 1
 
-def preference_score(tags1, tags2):
+def preference_score(tags1, tags2, liked_tags1, liked_tags2):
+    """
+    Combines tag cosine and jaccards of liked tags
+    """
     # union of tags between two users
     all_tags = list(set(tags1) | set(tags2))
     # indicator vectors for each user
@@ -96,22 +145,32 @@ def preference_score(tags1, tags2):
 def compute_features_for_user(user_id: str, candidates: list[str], dist_map: dict[str,int], max_distance: int = 4) -> pd.DataFrame:
     location_map = fetch_user_locations()
     tag_map = fetch_user_tags()
+    follower_counts = fetch_follower_counts()
+    event_counts = fetch_event_counts()
 
     rows ={}
 
     for candidate in candidates:
+
+        # get network similarity score
         d = dist_map.get(candidate, max_distance + 1)
         bfs = 0 if d < 2 or d > max_distance else 1 - (d / max_distance)
+        follower_score = ratio_score(follower_counts.get(user_id, 0), follower_counts.get(candidate, 0))
+        event_score = ratio_score(event_counts.get(user_id, 0), event_counts.get(candidate, 0))
+        friend_score = 0.7 * bfs + 0.15 * follower_score + 0.15 * event_score
 
+        # get location score
         loc1 = location_map.get(user_id)
         loc2 = location_map.get(candidate)
         loc_score = location_score(loc1, loc2)
+
+        # get preference score
         tags1 = tag_map.get(user_id, [])
         tags2 = tag_map.get(candidate, [])
         pref_score = preference_score(tags1, tags2)
 
         rows[candidate] = {
-            "bfs_score": bfs,
+            "friend_score": friend_score,
             "location_score": loc_score,
             "preference_score": pref_score
         }

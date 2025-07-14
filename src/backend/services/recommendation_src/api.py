@@ -40,7 +40,7 @@ def get_recommendations(user_id: str, k: int = 3):
 
     WEIGHTS = {
         "location_score": 0.5,
-        "bfs_score": 0.3,
+        "friend_score": 0.3,
         "preference_score": 0.2,
     }
     recommendations = get_top_k_recommendations_for_user(user_id, dist_map, list(candidates), WEIGHTS, k)
