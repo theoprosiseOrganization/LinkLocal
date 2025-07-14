@@ -369,6 +369,16 @@ exports.followUser = async (req, res) => {
         followingId,
       },
     });
+    await fetch(`${process.env.RECOMMENDATION_SERVICE_URL}/graph/follow`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        followerId,
+        followingId,
+      }),
+    })
     res.json({ message: "User followed" });
   } catch (error) {
     if (error.code === "P2002") {

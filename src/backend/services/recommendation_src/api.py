@@ -37,7 +37,7 @@ def add_follow(payload: FollowIn):
 def get_recommendations(user_id: str, k: int = 3):
     dist_map = bfs_distances(user_id)
 
-    direct = {n for n,d in dmap.items() if d == 1}
+    direct = {n for n,d in dist_map.items() if d == 1}
     candidates = set(friends_graph.nodes) - {user_id} - direct
 
     weights = {
