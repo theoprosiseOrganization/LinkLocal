@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
-import { Polyline, useMap } from "@vis.gl/react-google-maps";
+import { useMap } from "@vis.gl/react-google-maps";
+import Polyline from "./Polyline";
 
 const Route = ({ route }) => {
   const map = useMap();
@@ -30,7 +31,7 @@ const Route = ({ route }) => {
         />
       ))}
     </>
-    
+
   );
 };
 
