@@ -9,6 +9,11 @@ key: str = os.getenv("SUPABASE_KEY")
 supabase: Client = create_client(url, key)
 
 class FollowGraph:
+    """
+    A directed graph representing user follows.
+    This graph is used to compute distances and relationships between users.
+    It is initialized with data from the Supabase database.
+    """
     def __init__(self):
         self.graph = nx.DiGraph()
         self.load_all()
