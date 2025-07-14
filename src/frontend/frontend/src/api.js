@@ -1,4 +1,12 @@
 const URL = import.meta.env.VITE_API_DB_URL || "http://localhost:3000";
+const ROUTES_API_ENDPOINT =
+  "https://routes.googleapis.com/directions/v2:computeRoutes";
+const routes_fields = [
+  "routes.viewport",
+  "routes.legs",
+  "routes.polylineDetails",
+];
+const ROUTES_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
 export async function createUser(data) {
   const res = await fetch(`${URL}/auth/signup`, {
@@ -295,7 +303,8 @@ export async function addUserTag(userId, tag) {
     throw new Error(response.error || "Failed to add user tag");
   }
   return response;
-}export async function likeEvent(eventId, userId) {
+}
+export async function likeEvent(eventId, userId) {
   const res = await fetch(`${URL}/events/${eventId}/likes`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -341,17 +350,17 @@ export async function getSuggestedUsers(userId) {
   return response;
 }
 
-export async function eventsWithinPolygon(coords){
+export async function eventsWithinPolygon(coords) {
   const geojson = {
-          type: "Polygon",
-          coordinates: [coords.map(coord => [coord.lng, coord.lat])]
-        };
+    type: "Polygon",
+    coordinates: [coords.map((coord) => [coord.lng, coord.lat])],
+  };
   const res = await fetch(`${URL}/events/within-polygon`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({polygon: geojson}),
+    body: JSON.stringify({ polygon: geojson }),
     credentials: "include",
   });
   const response = await res.json();

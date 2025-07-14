@@ -20,14 +20,21 @@ import { APIProvider } from "@vis.gl/react-google-maps";
 import { Label } from "../../../components/ui/label";
 import { Input } from "../../../components/ui/input";
 import { Button } from "../../../components/ui/button";
-import { getEventById, getSessionUserId, getUserById } from "../../api";
+import {
+  getEventById,
+  getSessionUserId,
+  getUserById,
+  getOptimalRoute,
+} from "../../api";
 import EventCard from "../EventCard/EventCard";
+import Route from "./Route";
 
 export default function MapPlan() {
   const [eventsInPoly, setEventsInPoly] = useState([]);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [selectedEventIds, setSelectedEventIds] = useState([]);
+  const [routeData, setRouteData] = useState(null);
 
   const filteredEvents = eventsInPoly.filter((event) => {
     if (!startDate && !endDate) return true;
@@ -69,8 +76,40 @@ export default function MapPlan() {
       lat: user.location.latitude,
       lng: user.location.longitude,
     };
-   // const routeEvents =
-  }
+    const selectedEvents = filteredEvents.filter((e) =>
+      selectedEventIds.includes(e.id)
+    );
+    const waypoints = selectedEvents.map((e) => ({
+      lat: e.location.latitude,
+      lng: e.location.longitude,
+    }));
+     // Build route: user -> events... -> user
+    const routePoints = [userLocation, ...waypoints, userLocation];
+      const routeOptions = {
+      travelMode: "DRIVE",
+      units: "METRIC",
+      waypoints: waypoints.map(loc => ({
+        location: { latLng: { latitude: loc.lat, longitude: loc.lng } }
+      })),
+      origin: { location: { latLng: { latitude: userLocation.lat, longitude: userLocation.lng } } },
+      destination: { location: { latLng: { latitude: userLocation.lat, longitude: userLocation.lng } } },
+      computeAlternativeRoutes: false,
+    };
+    try {
+      const result = await getOptimalRoute(
+        userLocation,
+        userLocation,
+        routeOptions
+      );
+      setRouteData(result.routes?.[0] || null);
+    } catch (err) {
+      alert("Failed to calculate route.");
+    }
+
+
+
+    // const routeEvents =
+  };
 
   return (
     <Layout>
@@ -101,8 +140,13 @@ export default function MapPlan() {
             />
           </div>
         </div>
-        <p>Step 3: Choose which events from your criteria you want to attend:</p>
-        <p>When selected, calculate the optimal route from your location to your events:</p>
+        <p>
+          Step 3: Choose which events from your criteria you want to attend:
+        </p>
+        <p>
+          When selected, calculate the optimal route from your location to your
+          events:
+        </p>
         <Button onClick={getRoute}>Calculate</Button>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {filteredEvents.map((event) => (
@@ -162,7 +206,9 @@ export default function MapPlan() {
                     className="rounded w-full max-h-32 object-cover"
                   />
                 ) : (
-                  <span className="text-gray-500 text-sm">No images available</span>
+                  <span className="text-gray-500 text-sm">
+                    No images available
+                  </span>
                 )}
               </div>
               <div className="card-content mt-2">
