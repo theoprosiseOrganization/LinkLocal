@@ -54,15 +54,30 @@ def friend_network_score(dist_map, target_user, max_distance=4):
         return 0
     return 1 - (distance / max_distance)  # Normalize to a score between 0 and 1
 
-def location_score(loc1, loc2):
-    if loc1 is None or loc2 is None:
+def haversine_distance(coord1, coord2):
+    if coord1 is None or coord2 is None:
+        return float('inf')
+    lat1, lon1 = coord1
+    lat2, lon2 = coord2
+    R = 6371.0  # Radius of the Earth in kilometers
+    latRad1 = math.radians(lat1)
+    latRad2 = math.radians(lat2)
+    deltaLat = math.radians(lat2 - lat1)
+    lonRad1 = math.radians(lon1)
+    lonRad2 = math.radians(lon2)
+    deltaLon = math.radians(lon2 - lon1)
+    a = (math.sin(deltaLat / 2) ** 2 +
+         math.cos(latRad1) * math.cos(latRad2) *
+         math.sin(deltaLon / 2) ** 2)
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+    return R * c  # Distance in kilometers
+
+def location_score(loc1, loc2, max_distance=100.0):
+    dist_km = haversine_distance(loc1, loc2)
+    if dist_km == float('inf'):
         return 0
-    if loc1 == loc2:
-        return 1
-    lat1, lon1 = loc1
-    lat2, lon2 = loc2
-    distance = ((lat1 - lat2) ** 2 + (lon1 - lon2) ** 2) ** 0.5
-    return max(0, 1 - distance / 100)  # Normalize distance to a score between 0 and 1
+    # If the distance is greater than max_distance, return 0
+    return max(0.0, 1 - dist_km / max_distance)  # Normalize distance to a score between 0 and 1
 
 def preference_score(tags1, tags2):
     # union of tags between two users
