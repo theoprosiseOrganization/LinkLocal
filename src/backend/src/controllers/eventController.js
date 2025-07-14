@@ -2,6 +2,9 @@ const { PrismaClient } = require("../../generated/prisma");
 const prisma = new PrismaClient();
 const { v4: uuidv4 } = require("uuid");
 const joi = require("joi");
+const ROUTES_API_ENDPOINT =
+  'https://routes.googleapis.com/directions/v2:computeRoutes';
+
 
 const eventSchema = joi.object({
   userId: joi.string().uuid().required(),
@@ -261,3 +264,67 @@ exports.getEventsWithinPolygon = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+exports.getOptimalRoute = async (req, res) => {
+  try{
+    const {start, events} = req.body;
+    if (!start || !events || events.length === 0) {
+      return res.status(400).json({ error: "Invalid input" });
+    }
+    const routeRequest = {
+      origin: {
+        location: {
+          latLng: {
+            latitude: start.latitude,
+            longitude: start.longitude,
+          },
+        },
+      }, 
+      destination: {
+        location: {
+          latLng: {
+            latitude: start.latitude,
+            longitude: start.longitude,
+          },
+        },
+      },
+      intermediateWaypoints: events.map(event => ({
+        location: {
+          latLng: {
+            latitude: event.location.latitude,
+            longitude: event.location.longitude,
+          },
+        },
+      })),
+      travelMode: "DRIVE",
+      optimizeWaypointOrder: "true",
+      computeAlternativeRoutes: false,
+      units: "METRIC",
+    };
+
+    const url = new URL(ROUTES_API_ENDPOINT);
+    url.searchParams.set('fields', FIELD_MASK);
+
+    const apiKey = process.env.GOOGLE_API_KEY;
+
+    const response = await fetch(url.toString(), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Goog-Api-Key': apiKey, 
+      },
+      body: JSON.stringify(routeRequest),
+    });
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Error fetching route:", errorText);
+      return res.status(response.status).json({ error: "Failed to fetch route" });
+    }
+    const data = await response.json();
+    return res.json(data);
+  } catch (error) {
+    console.error("Error in getOptimalRoute:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+
+  }
+}

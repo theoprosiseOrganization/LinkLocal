@@ -83,32 +83,8 @@ export default function MapPlan() {
       lat: e.location.latitude,
       lng: e.location.longitude,
     }));
-     // Build route: user -> events... -> user
-    const routePoints = [userLocation, ...waypoints, userLocation];
-      const routeOptions = {
-      travelMode: "DRIVE",
-      units: "METRIC",
-      waypoints: waypoints.map(loc => ({
-        location: { latLng: { latitude: loc.lat, longitude: loc.lng } }
-      })),
-      origin: { location: { latLng: { latitude: userLocation.lat, longitude: userLocation.lng } } },
-      destination: { location: { latLng: { latitude: userLocation.lat, longitude: userLocation.lng } } },
-      computeAlternativeRoutes: false,
-    };
-    try {
-      const result = await getOptimalRoute(
-        userLocation,
-        userLocation,
-        routeOptions
-      );
-      setRouteData(result.routes?.[0] || null);
-    } catch (err) {
-      alert("Failed to calculate route.");
-    }
-
-
-
-    // const routeEvents =
+    const result = await getOptimalRoute(userLocation, waypoints);
+    setRouteData(result.routes?.[0] || null);
   };
 
   return (
