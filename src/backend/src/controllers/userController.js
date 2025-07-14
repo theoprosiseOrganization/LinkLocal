@@ -370,7 +370,7 @@ exports.followUser = async (req, res) => {
         followingId,
       },
     });
-    await fetch(`${process.env.RECOMMENDATION_SERVICE_URL}/graph/follow`, {
+    await fetch(`${process.env.RECOMMENDATION_SERVICE_URL}/add_follow`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -7,15 +7,19 @@ import heapq
 from feature_extraction import compute_features_for_user
 
 WEIGHTS = {
-    "nearby": 0.5,
-    "friend_network": 0.3,
-    "preference": 0.2,
-}
+        "location_score": 0.5,
+        "bfs_score": 0.3,
+        "preference_score": 0.2,
+    }
 
 def score_features(features):
     loc_score, pref_score, friend_score = features
-    return WEIGHTS["nearby"] * loc_score + WEIGHTS["friend_network"] * friend_score + WEIGHTS["preference"] * pref_score
-
+    return (
+        WEIGHTS["location_score"] * loc_score +
+        WEIGHTS["preference_score"] * pref_score +
+        WEIGHTS["bfs_score"] * friend_score
+    )
+    
 def get_top_k_recommendations(features, user_id, k=3):
     heap = []
     for other_user_id, feature_scores in features[user_id].items():

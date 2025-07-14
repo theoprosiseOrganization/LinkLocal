@@ -27,23 +27,19 @@ class FollowIn(BaseModel):
 @app.post("/add_follow")
 def add_follow(payload: FollowIn):
     friends_graph.add_edge(payload.followerId, payload.followingId)
-    supabase.table("Follows").insert({
-        "followerId": payload.followerId,
-        "followingId": payload.followingId
-    }).execute()
     return {"message": "Follow added successfully"}
 
-@app.get("/recommendations/{user_id}")
+@app.get("/recommendation/{user_id}")
 def get_recommendations(user_id: str, k: int = 3):
     dist_map = bfs_distances(user_id)
 
     direct = {n for n,d in dist_map.items() if d == 1}
     candidates = set(friends_graph.nodes) - {user_id} - direct
 
-    weights = {
-        "nearby": 0.5,
-        "friend_network": 0.3,
-        "preference": 0.2,
+    WEIGHTS = {
+        "location_score": 0.5,
+        "bfs_score": 0.3,
+        "preference_score": 0.2,
     }
-    recommendations = get_top_k_recommendations_for_user(user_id, dist_map, list(candidates), weights, k)
+    recommendations = get_top_k_recommendations_for_user(user_id, dist_map, list(candidates), WEIGHTS, k)
     return [{"userId": uid, "score": score} for uid, score in recommendations]
