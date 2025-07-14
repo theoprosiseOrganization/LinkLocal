@@ -23,6 +23,8 @@ def bfs_distances(user_id: str, max_depth: int = 5):
     Perform a breadth-first search to find distances from the user_id
     up to a maximum depth.
     """
+    if user_id not in friends_graph:
+        friends_graph.add_node(user_id)
     distances = nx.single_source_shortest_path_length(friends_graph, user_id, cutoff=max_depth)
     return distances
 
