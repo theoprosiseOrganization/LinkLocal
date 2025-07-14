@@ -6,7 +6,7 @@
  * of the drawn polygon and fetches events within that polygon using the `eventsWithinPolygon`
  * API function.
  * It also accepts a callback function `onEventsFound` to handle the fetched events.
- * 
+ *
  *
  * @component
  * @param {Object} props - The properties passed to the component.
@@ -63,6 +63,7 @@ const MapWithDrawing = ({ onEventsFound, onPolygonDrawn }) => {
 
   return (
     <Map
+      mapId="4f917a8c04fdd7367b6986a1"
       defaultZoom={10}
       defaultCenter={defaultCoordinates}
       gestureHandling={"greedy"}

@@ -1,5 +1,8 @@
 import React, { useEffect } from "react";
-import { useMap } from "@vis.gl/react-google-maps";
+import {
+  useMap,
+  AdvancedMarker,
+} from "@vis.gl/react-google-maps";
 import Polyline from "./Polyline";
 
 const Route = ({ route }) => {
@@ -19,9 +22,30 @@ const Route = ({ route }) => {
   if (!route) return null;
 
   const routeSteps = route.legs.flatMap((leg) => leg.steps);
+  const markers = [];
+  route.legs.forEach((leg, idx) => {
+    const { latitude, longitude } = leg.startLocation.latLng;
+    markers.push(
+      <AdvancedMarker
+        key={`stop-${idx}`}
+        position={{ lat: latitude, lng: longitude }}
+      />
+    );
+  });
+  const endLocation = route.legs[route.legs.length - 1];
+  markers.push(
+    <AdvancedMarker
+      key="destination"
+      position={{
+        lat: endLocation.endLocation.latLng.latitude,
+        lng: endLocation.endLocation.latLng.longitude,
+      }}
+    />
+  );
 
   return (
     <>
+      {markers}
       {routeSteps.map((step, idx) => (
         <Polyline
           key={idx}
@@ -31,7 +55,6 @@ const Route = ({ route }) => {
         />
       ))}
     </>
-
   );
 };
 
