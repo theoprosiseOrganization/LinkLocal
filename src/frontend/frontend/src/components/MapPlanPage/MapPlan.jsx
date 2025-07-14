@@ -101,7 +101,10 @@ export default function MapPlan() {
         <h1>Map Plan Page</h1>
         <p>Step 1: Draw your area for events:</p>
         <APIProvider apiKey={MAPS_KEY}>
-          <MapWithDrawing onEventsFound={setEventsInPoly} onPolygonDrawn={(poly) => (drawnPolygon.current = poly)}/>
+          <MapWithDrawing
+            onEventsFound={setEventsInPoly}
+            onPolygonDrawn={(poly) => (drawnPolygon.current = poly)}
+          />
           {routeData && <Route route={routeData} />}
         </APIProvider>
         <p>Step 2: What period are you available for your events?</p>

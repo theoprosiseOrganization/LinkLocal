@@ -270,7 +270,6 @@ exports.getEventsWithinPolygon = async (req, res) => {
   }
 };
 
-
 // Get optimal route using Google Maps Directions API
 // This function calculates the optimal route starting from a given location,
 // visiting multiple events, and returning to the starting point.
