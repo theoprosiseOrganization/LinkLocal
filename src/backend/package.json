@@ -4,7 +4,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon src/server.js"
+    "dev:backend": "nodemon src/server.js",
+    "dev:recs": "cd services/recommendation_src && source venv/bin/activate && uvicorn api:app --host 0.0.0.0 --port 8001",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:recs\""
   },
   "keywords": [],
   "author": "",
@@ -25,5 +27,8 @@
     "nodemon": "^3.1.10",
     "prisma": "^6.10.1",
     "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.0"
   }
 }
