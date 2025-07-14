@@ -3,8 +3,13 @@ const prisma = new PrismaClient();
 const { v4: uuidv4 } = require("uuid");
 const joi = require("joi");
 const ROUTES_API_ENDPOINT =
-  'https://routes.googleapis.com/directions/v2:computeRoutes';
-
+  "https://routes.googleapis.com/directions/v2:computeRoutes";
+const FIELD_MASK = [
+  "routes.viewport",
+  "routes.legs",
+  "routes.polyline",
+  "routes.optimizedIntermediateWaypointIndex",
+].join(",");
 
 const eventSchema = joi.object({
   userId: joi.string().uuid().required(),
@@ -266,8 +271,8 @@ exports.getEventsWithinPolygon = async (req, res) => {
 };
 
 exports.getOptimalRoute = async (req, res) => {
-  try{
-    const {start, events} = req.body;
+  try {
+    const { start, events } = req.body;
     if (!start || !events || events.length === 0) {
       return res.status(400).json({ error: "Invalid input" });
     }
@@ -275,24 +280,24 @@ exports.getOptimalRoute = async (req, res) => {
       origin: {
         location: {
           latLng: {
-            latitude: start.latitude,
-            longitude: start.longitude,
-          },
-        },
-      }, 
-      destination: {
-        location: {
-          latLng: {
-            latitude: start.latitude,
-            longitude: start.longitude,
+            latitude: start.lat,
+            longitude: start.lng,
           },
         },
       },
-      intermediateWaypoints: events.map(event => ({
+      destination: {
         location: {
           latLng: {
-            latitude: event.location.latitude,
-            longitude: event.location.longitude,
+            latitude: start.lat,
+            longitude: start.lng,
+          },
+        },
+      },
+      intermediates: events.map((event) => ({
+        location: {
+          latLng: {
+            latitude: event.lat,
+            longitude: event.lng,
           },
         },
       })),
@@ -303,28 +308,30 @@ exports.getOptimalRoute = async (req, res) => {
     };
 
     const url = new URL(ROUTES_API_ENDPOINT);
-    url.searchParams.set('fields', FIELD_MASK);
+    url.searchParams.set("fields", FIELD_MASK);
 
-    const apiKey = process.env.GOOGLE_API_KEY;
+    const apiKey = process.env.VITE_GOOGLE_MAPS_API_KEY;
+;
 
     const response = await fetch(url.toString(), {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'X-Goog-Api-Key': apiKey, 
+        "Content-Type": "application/json",
+        "X-Goog-Api-Key": apiKey,
       },
       body: JSON.stringify(routeRequest),
     });
     if (!response.ok) {
       const errorText = await response.text();
       console.error("Error fetching route:", errorText);
-      return res.status(response.status).json({ error: "Failed to fetch route" });
+      return res
+        .status(response.status)
+        .json({ error: "Failed to fetch route" });
     }
     const data = await response.json();
     return res.json(data);
   } catch (error) {
     console.error("Error in getOptimalRoute:", error);
     return res.status(500).json({ error: "Internal Server Error" });
-
   }
-}
+};

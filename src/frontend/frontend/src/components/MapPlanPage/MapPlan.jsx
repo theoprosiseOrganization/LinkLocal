@@ -83,7 +83,10 @@ export default function MapPlan() {
       lat: e.location.latitude,
       lng: e.location.longitude,
     }));
+    console.log("User Location:", userLocation);
+    console.log("Waypoints:", waypoints);
     const result = await getOptimalRoute(userLocation, waypoints);
+    console.log("Route Result:", result);
     setRouteData(result.routes?.[0] || null);
   };
 
