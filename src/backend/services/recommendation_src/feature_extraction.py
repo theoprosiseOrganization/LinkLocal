@@ -146,3 +146,28 @@ def compute_all_features():
             features[uid2][uid1] = (loc_score, pref_score, friend_score)
     
     return features
+
+def compute_features_for_user(user_id: str, candidates: list[str], dist_map: dict[str,int], max_distance: int = 4) -> pd.DataFrame:
+    location_map = fetch_user_locations()
+    tag_map = fetch_user_tags()
+
+    rows ={}
+
+    for candidate in candidates:
+        d = dist_map.get(candidate, max_distance + 1)
+        bfs = 0 if d < 2 or d > max_distance else 1 - (d / max_distance)
+
+        loc1 = location_map.get(user_id)
+        loc2 = location_map.get(candidate)
+        loc_score = location_score(loc1, loc2)
+        tags1 = tag_map.get(user_id, [])
+        tags2 = tag_map.get(candidate, [])
+        pref_score = preference_score(tags1, tags2)
+
+        rows[candidate] = {
+            "bfs_score": bfs,
+            "location_score": loc_score,
+            "preference_score": pref_score
+        }
+    df = pd.DataFrame.from_dict(rows, orient='index')
+    return df
