@@ -47,7 +47,7 @@ def fetch_user_tags():
     return tag_map
 
 def fetch_follower_counts():
-    resp = supabase.table("Follows").select("followerId").execute()
+    resp = supabase.table("Follows").select("followingId").execute()
     counts = {}
     for row in resp.data:
         uid = row["followerId"]
@@ -55,7 +55,7 @@ def fetch_follower_counts():
     return counts
 
 def fetch_event_counts():
-    resp = supabase.table("Events").select("userId").execute()
+    resp = supabase.table("Event").select("userId").execute()
     counts = {}
     for row in resp.data:
         uid = row["userId"]
@@ -139,7 +139,17 @@ def preference_score(tags1, tags2, liked_tags1, liked_tags2):
     norm2 = np.linalg.norm(vec2)
     if norm1 == 0 or norm2 == 0:
         return 0
-    ret = float(vec1.dot(vec2)) / (norm1 * norm2)
+    preference_sim = float(vec1.dot(vec2)) / (norm1 * norm2)
+    set1,set2 = liked_tags1, liked_tags2
+    # jaccard similarity of liked tags
+    if set1 and set2:
+        liked_sim = len(set1 & set2) / len(set1 | set2)
+    else:
+        liked_sim = 0.0
+    # combine the two scores
+    ret = 0.5 * preference_sim + 0.5 * liked_sim
+    # ensure the score is between 0 and 1
+    ret = max(0.0, min(1.0, ret))
     return ret
 
 def compute_features_for_user(user_id: str, candidates: list[str], dist_map: dict[str,int], max_distance: int = 4) -> pd.DataFrame:
@@ -147,6 +157,7 @@ def compute_features_for_user(user_id: str, candidates: list[str], dist_map: dic
     tag_map = fetch_user_tags()
     follower_counts = fetch_follower_counts()
     event_counts = fetch_event_counts()
+    liked_tags = fetch_liked_events_tags()
 
     rows ={}
 
@@ -167,7 +178,9 @@ def compute_features_for_user(user_id: str, candidates: list[str], dist_map: dic
         # get preference score
         tags1 = tag_map.get(user_id, [])
         tags2 = tag_map.get(candidate, [])
-        pref_score = preference_score(tags1, tags2)
+        liked_tags1 = liked_tags.get(user_id, set())
+        liked_tags2 = liked_tags.get(candidate, set())
+        pref_score = preference_score(tags1, tags2, liked_tags1, liked_tags2)
 
         rows[candidate] = {
             "friend_score": friend_score,
