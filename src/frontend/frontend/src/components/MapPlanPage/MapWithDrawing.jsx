@@ -6,7 +6,7 @@
  * of the drawn polygon and fetches events within that polygon using the `eventsWithinPolygon`
  * API function.
  * It also accepts a callback function `onEventsFound` to handle the fetched events.
- *
+ * 
  *
  * @component
  * @param {Object} props - The properties passed to the component.

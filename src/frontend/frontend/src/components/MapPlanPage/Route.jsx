@@ -1,3 +1,15 @@
+/**
+ * Route Component
+ * Displays the route on the map with markers for start, end, and stops.
+ * Adjusts the map viewport to fit the route bounds.
+ * 
+ * @component
+ * @param {Object} props - Component properties.
+ * @param {Object} props.route - The route data containing legs and steps.
+ * @returns {JSX.Element|null} The rendered Route component or null if no route is provided.
+ * @example
+ * <Route route={routeData} />
+ */
 import React, { useEffect } from "react";
 import {
   useMap,

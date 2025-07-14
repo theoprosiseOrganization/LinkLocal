@@ -270,6 +270,10 @@ exports.getEventsWithinPolygon = async (req, res) => {
   }
 };
 
+
+// Get optimal route using Google Maps Directions API
+// This function calculates the optimal route starting from a given location,
+// visiting multiple events, and returning to the starting point.
 exports.getOptimalRoute = async (req, res) => {
   try {
     const { start, events } = req.body;
@@ -311,8 +315,6 @@ exports.getOptimalRoute = async (req, res) => {
     url.searchParams.set("fields", FIELD_MASK);
 
     const apiKey = process.env.VITE_GOOGLE_MAPS_API_KEY;
-;
-
     const response = await fetch(url.toString(), {
       method: "POST",
       headers: {
@@ -323,7 +325,6 @@ exports.getOptimalRoute = async (req, res) => {
     });
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("Error fetching route:", errorText);
       return res
         .status(response.status)
         .json({ error: "Failed to fetch route" });
@@ -331,7 +332,6 @@ exports.getOptimalRoute = async (req, res) => {
     const data = await response.json();
     return res.json(data);
   } catch (error) {
-    console.error("Error in getOptimalRoute:", error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };

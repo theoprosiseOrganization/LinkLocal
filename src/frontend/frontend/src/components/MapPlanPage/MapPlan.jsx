@@ -4,6 +4,9 @@
  * It requires a Google Maps API key to function.
  * The map allows users to draw polygons and view them on the map.
  * It also fetches events within the drawn polygon and displays them in a list.
+ * It includes functionality to filter events by date and select events to calculate an optimal route.
+ * The component also allows users to select events and calculate a route from their location to the selected
+ * events.
  *
  * @component
  * @example
@@ -84,10 +87,7 @@ export default function MapPlan() {
       lat: e.location.latitude,
       lng: e.location.longitude,
     }));
-    console.log("User Location:", userLocation);
-    console.log("Waypoints:", waypoints);
     const result = await getOptimalRoute(userLocation, waypoints);
-    console.log("Route Result:", result);
     setRouteData(result.routes?.[0] || null);
     if (drawnPolygon.current) {
       drawnPolygon.current.setMap(null); // Clear polygon to highlight the route

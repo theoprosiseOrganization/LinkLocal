@@ -28,13 +28,12 @@ import ViewEventButton from "../ViewEventPage/ViewEventButton";
 
 const MAPS_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
-
 /**
- * 
+ *
  * AdvancedMarkerWithRef component
  * This component wraps the AdvancedMarker component and provides a ref to the marker.
  * It allows for handling marker click events and passing the marker reference to the parent component.
- * 
+ *
  * @component
  * @param {Object} props - The properties passed to the component.
  * @param {React.ReactNode} props.children - The children to render inside the marker.
