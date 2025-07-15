@@ -3,6 +3,8 @@
  * Displays the route on the map with markers for start, end, and stops.
  * Adjusts the map viewport to fit the route bounds.
  * Renders polylines for each step in the route.
+ * Displays event markers with info windows when clicked.
+ * Fetches event details based on provided event IDs.
  *
  * @component
  * @param {Object} props - Component properties.
@@ -13,16 +15,12 @@
  * <Route route={routeData} />
  */
 import React, { useEffect, useState, useCallback } from "react";
-import {
-  useMap,
-  AdvancedMarker,
-  useAdvancedMarkerRef,
-  InfoWindow,
-} from "@vis.gl/react-google-maps";
+import { useMap, AdvancedMarker, InfoWindow } from "@vis.gl/react-google-maps";
 import { AdvancedMarkerWithRef } from "../MapComponent/MapComponent";
 import Polyline from "./Polyline";
 import { getEventById } from "../../api";
 import ViewEventButton from "../ViewEventPage/ViewEventButton";
+import { Info } from "lucide-react";
 
 const Route = ({ route, event_ids }) => {
   const map = useMap();
@@ -80,15 +78,6 @@ const Route = ({ route, event_ids }) => {
 
   const routeSteps = route.legs.flatMap((leg) => leg.steps);
   const markers = [];
-  route.legs.forEach((leg, idx) => {
-    const { latitude, longitude } = leg.startLocation.latLng;
-    markers.push(
-      <AdvancedMarker
-        key={`stop-${idx}`}
-        position={{ lat: latitude, lng: longitude }}
-      />
-    );
-  });
   const endLocation = route.legs[route.legs.length - 1];
   markers.push(
     <AdvancedMarker
@@ -126,7 +115,7 @@ const Route = ({ route, event_ids }) => {
           />
         ) : null
       )}
-
+      
       {infoWindowShown && selectedMarker && (
         <InfoWindow
           anchor={selectedMarker}

@@ -30,10 +30,32 @@ export default function PlanViewer() {
   return (
     <Layout>
       <div className="map-plan-page" style={{ height: "100vh", width: "100%" }}>
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            background: "rgba(26,32,44,0.85)",
+            color: "#fff",
+            padding: "16px 0",
+            textAlign: "center",
+            zIndex: 10,
+            fontSize: "2rem",
+            fontWeight: "bold",
+            letterSpacing: "1px",
+            paddingTop: "5rem",
+          }}
+        >
+          {plan.title || "Plan Title"}
+        </div>
         <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
           <Map
             mapId="4f917a8c04fdd7367b6986a1"
             defaultZoom={4}
+            mapTypeControl={false}
+            fullscreenControl={false}
+            streetViewControl={false}
             defaultCenter={{
               lat: plan.route_data?.viewport?.high?.latitude,
               lng: plan.route_data?.viewport?.high?.longitude,
