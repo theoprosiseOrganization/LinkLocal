@@ -8,7 +8,6 @@ import Layout from "../Layout/Layout";
 export default function PlanViewer() {
   const { planId } = useParams();
   const [plan, setPlan] = useState(null);
-  console.log("Plan ID:", planId);
 
   useEffect(() => {
     getPlanById(planId)
@@ -30,7 +29,7 @@ export default function PlanViewer() {
           lng: plan.route_data?.viewport?.high?.longitude,
         }}
       >
-        {plan.route_data && <Route route={plan.route_data} />}
+        {plan.route_data && <Route route={plan.route_data} events={plan.event_ids} />}
       </Map>
     </APIProvider>
     </div>

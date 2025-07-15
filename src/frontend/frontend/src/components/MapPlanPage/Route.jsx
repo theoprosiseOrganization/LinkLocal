@@ -14,7 +14,7 @@ import React, { useEffect } from "react";
 import { useMap, AdvancedMarker } from "@vis.gl/react-google-maps";
 import Polyline from "./Polyline";
 
-const Route = ({ route }) => {
+const Route = ({ route, event_ids = [] }) => {
   const map = useMap();
 
   useEffect(() => {

@@ -501,8 +501,6 @@ exports.createPlan = async (req, res) => {
   try{
     const ownerId = req.params.id;
     const { title, eventIds, routeData } = req.body;
-    console.log("Creating plan for ownerId:", ownerId);
-    console.log("Plan details:", { title, eventIds, routeData });
     const {data, error} = await supabase
       .from("plans")
       .insert([{ owner_id: ownerId, title, event_ids: eventIds, route_data: routeData }])
