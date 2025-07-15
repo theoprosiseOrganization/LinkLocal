@@ -1,9 +1,8 @@
 import { useParams } from "react-router";
 import React, { useEffect, useState } from "react";
-import { getPlan } from "../../api";
+import { getPlanById } from "../../api";
 import { APIProvider, Map } from "@vis.gl/react-google-maps";
 import Route from "./Route";
-import { al } from "react-router/dist/development/register-DCE0tH5m";
 
 export default function PlanViewer() {
   const { planId } = useParams();
