@@ -507,14 +507,11 @@ exports.createPlan = async (req, res) => {
       .select()
       .single();
       if (error) {
-        console.error("Error plan:", error);
         return res.status(500).json({ error: `Failed to create plan: ${error.message}` });
       }
-      console.log("Plan created:", data);
       res.json(data);
 
   } catch (error) {
-    console.error("Error creating plan:", error);
     res.status(500).json({ error: `Failed to create plan: ${error.message}` });
 
   }

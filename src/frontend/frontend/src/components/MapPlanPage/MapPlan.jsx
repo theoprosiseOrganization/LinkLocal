@@ -118,7 +118,6 @@ export default function MapPlan() {
       eventIds: selectedEventIds,
       routeData: routeData,
     });
-    console.log("Plan created:", plan);
     setPlanId(plan.id);
     setIsInviteOpen(true);
   }

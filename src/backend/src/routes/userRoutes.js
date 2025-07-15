@@ -67,6 +67,6 @@ router.get("/:id/following", getUserFollowing); // get following users
 router.post("/:id/plans", createPlan); // Create a new plan
 router.post("/:id/plans/:planId/invite", inviteUsers); // Invite users to a plan
 router.get("/:id/invitations", listInvitations); // List invitations for the user
-router.get("/:id/plans:planId", getPlanById); // Get a specific plan by ID
+router.get("/:id/plans/:planId", getPlanById); // Get a specific plan by ID
 
 module.exports = router;
