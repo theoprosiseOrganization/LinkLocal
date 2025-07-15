@@ -39,15 +39,6 @@
   overflow: hidden;
 }
 
-.vertical-events-container {
-  height: 80vh;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  overflow: hidden;
-}
-
 .homepage-bottom-overlay {
   position: relative;
   width: 100%;

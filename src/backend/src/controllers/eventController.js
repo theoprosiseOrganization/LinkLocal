@@ -38,7 +38,6 @@ exports.getEvents = async (req, res) => {
     );
     res.json(events);
   } catch (error) {
-    console.error("Error fetching events:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
