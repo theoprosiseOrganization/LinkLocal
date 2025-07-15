@@ -10,7 +10,7 @@
  */
 import { useEffect, useState } from "react";
 import { getMyInvitations } from "../../api";
-import ViewPlanButton from "../MapPlanPage/ViewPlanButton";
+import { Link } from "react-router-dom";
 
 export default function InvitesList() {
   const [invites, setInvites] = useState([]);
@@ -18,18 +18,28 @@ export default function InvitesList() {
   useEffect(() => {
     getMyInvitations().then(setInvites);
   }, []);
+
   if (invites.length === 0) {
-    return <div className="text-center text-gray-500">No invites found.</div>;
+    return (
+      <div className="text-center text-[var(--muted-foreground)] py-8">
+        No invites found.
+      </div>
+    );
   }
+
   return (
     <div className="space-y-4">
       {invites.map((invite) => (
-        <div key={invite.id} className="p-4 border rounded-md shadow-sm">
-          <span>
-            <strong>{invite.plans.title}</strong>
-          </span>
-          <ViewPlanButton planId={invite.plans.id} />
-        </div>
+        <Link to={`/plan/${invite.plans.id}`} key={invite.id}>
+          <div
+            key={invite.id}
+            className="flex items-center justify-between bg-[var(--card)] text-[var(--card-foreground)] border border-[var(--border)] rounded-xl shadow p-4"
+          >
+            <span className="font-semibold text-[var(--primary)]">
+              {invite.plans.title}
+            </span>
+          </div>
+        </Link>
       ))}
     </div>
   );
