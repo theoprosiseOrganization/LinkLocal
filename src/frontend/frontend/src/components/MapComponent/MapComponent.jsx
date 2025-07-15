@@ -99,7 +99,10 @@ export default function MapComponent({
 
   return (
     <APIProvider apiKey={MAPS_KEY}>
-      <div className="MapComponent-root" style={{ width: "100%", height: "100%" }}>
+      <div
+        className="MapComponent-root"
+        style={{ width: "100%", height: "100%" }}
+      >
         <Map
           mapId="4f917a8c04fdd7367b6986a1"
           style={{ width: "100%", height: "100%" }}
@@ -130,6 +133,10 @@ export default function MapComponent({
                 lng: currentLocation.lng,
               }}
               title="Your Location"
+              icon={{
+                url: "/humanWaving.png", 
+                scaledSize: { width: 40, height: 40 },
+              }}
             />
           )}
 
