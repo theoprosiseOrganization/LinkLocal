@@ -28,6 +28,8 @@ import {
   getSessionUserId,
   getUserById,
   getOptimalRoute,
+  createPlan,
+  inviteUsers,
 } from "../../api";
 import EventCard from "../EventCard/EventCard";
 import Route from "./Route";
@@ -95,6 +97,14 @@ export default function MapPlan() {
     }
   };
 
+  async function saveAndShare(){
+    const plan = await createPlan({
+      title: "My Event Plan",
+      eventIds: selectedEventIds,
+      routeData: routeData,
+    });
+  }
+
   return (
     <Layout>
       <div className="map-plan-page">
@@ -136,6 +146,9 @@ export default function MapPlan() {
           events:
         </p>
         <Button onClick={getRoute}>Calculate</Button>
+        <Button onClick={saveAndShare} className="ml-2">
+          Save and Share Plan
+        </Button>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {filteredEvents.map((event) => (
             <div
