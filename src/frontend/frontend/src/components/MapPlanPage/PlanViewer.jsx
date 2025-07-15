@@ -21,11 +21,11 @@ export default function PlanViewer() {
       <Map
         defaultZoom={10}
         defaultCenter={{
-          lat: plan.route_data.viewport.high.lat,
-          lng: plan.route_data.viewport.high.lng,
+          lat: plan.route_data?.viewport?.high?.lat,
+          lng: plan.route_data?.viewport?.high?.lng,
         }}
       >
-        {routeData && <Route route={routeData} />}
+        {plan.route_data && <Route route={plan.route_data} />}
       </Map>
     </APIProvider>
   );

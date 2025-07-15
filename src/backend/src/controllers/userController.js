@@ -548,7 +548,7 @@ exports.listInvitations = async (req, res) => {
     const recipientId = req.params.id;
     const { data, error } = await supabase
       .from("invitations")
-      .select(`id, plan_id, plans(title)`)
+      .select(`id, plan_id, plans(id, title)`)
       .eq("recipient_id", recipientId);
     if (error) {
       return res.status(500).json({ error: `Failed to list invitations: ${error.message}` });
