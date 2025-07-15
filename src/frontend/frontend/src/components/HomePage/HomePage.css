@@ -1,19 +1,24 @@
 .homepage-vertical {
   display: flex;
   flex-direction: column;
-  height: 100vh - 100px;
+  min-height: 100vh;
   box-sizing: border-box;
+  background: var(--card);
+  color: var(--card-foreground);
 }
 
 .homepage-top {
   width: 100%;
-  background: #f8fafc;
-  padding: 24px 0 16px 0;
+  background: var(--background);
+  padding: 32px 0 20px 0;
   text-align: center;
-  border-bottom: 1px solid #e2e8f0;
-  font-size: 1.5rem;
-  font-weight: 600;
+  border-bottom: 1px solid var(--border);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary);
+  letter-spacing: 0.01em;
 }
+
 
 .homepage-bottom {
   display: flex;
@@ -76,17 +81,21 @@
   width: 80vw;
   max-width: 900px;
   pointer-events: auto;
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 16px;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
-  padding: 24px 50px;
+  background: var(--card);
+  color: var(--card-foreground);
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  padding: 32px 56px;
   height: auto;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: stretch;
+  border: 1px solid var(--border);
 }
 
 .MapComponent-root {
   background: transparent;
 }
+
+
