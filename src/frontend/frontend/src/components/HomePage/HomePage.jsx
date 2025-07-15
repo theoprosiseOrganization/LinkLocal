@@ -44,6 +44,8 @@ export default function HomePage() {
         <MapComponent events={eventsToDisplay} />
         <div className="homepage-overlay">
           <div className="vertical-events-container">
+                <h2>View Some Nearby Events</h2>
+
             <HorizontalEvents events={eventsToDisplay} />
           </div>
         </div>
