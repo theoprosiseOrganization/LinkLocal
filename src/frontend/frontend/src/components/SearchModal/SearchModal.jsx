@@ -11,38 +11,25 @@
  * <SearchModal />
  * @returns {JSX.Element} The rendered SearchModal component.
  */
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 
 import {
   Command,
-  CommandEmpty,
-  CommandGroup,
   CommandInput,
-  CommandItem,
   CommandList,
-  CommandSeparator,
 } from "../../../components/ui/command";
 import { Button } from "../../../components/ui/button";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "../../../components/ui/dialog";
-import { Input } from "../../../components/ui/input";
 import { Label } from "../../../components/ui/label";
 import ViewUserButton from "../ViewUserPage/ViewUserButton";
 
-import {
-  searchForUsers,
-  followUser,
-  getSessionUserId,
-  addUserFriend,
-} from "../../api";
+import { searchForUsers, followUser, getSessionUserId } from "../../api";
 
 export default function SearchModal() {
   const [open, setOpen] = React.useState(false);
@@ -106,13 +93,15 @@ export default function SearchModal() {
           {friendsResults.map((friend) => (
             <div
               key={friend.id}
-              className="flex items-center justify-between bg-white dark:bg-gray-800 rounded-lg shadow p-4 mb-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              className="flex items-center justify-between bg-[var(--card)] text-[var(--card-foreground)] rounded-xl shadow p-4 mb-2 hover:bg-[var(--muted)] transition-colors"
             >
               <div className="flex-1 text-center">
-                <div className="font-semibold text-gray-900 dark:text-gray-100">
+                <div className="font-semibold text-[var(--primary)]">
                   {friend.name}
                 </div>
-                <div className="text-gray-500 text-sm">{friend.email}</div>
+                <div className="text-[var(--muted-foreground)] text-sm">
+                  {friend.email}
+                </div>
               </div>
               <Button
                 variant="outline"
@@ -130,10 +119,12 @@ export default function SearchModal() {
       </Command>
       {selectedFriend && (
         <Dialog open={open} onOpenChange={setOpen}>
-          <DialogContent>
+          <DialogContent className="sm:max-w-[500px] bg-[var(--card)] text-[var(--card-foreground)] border border-[var(--border)] rounded-xl shadow-lg">
             <DialogHeader>
-              <DialogTitle>
-                {selectedFriend.name}
+              <DialogTitle className="flex items-center gap-2">
+                <span className="text-[var(--primary)]">
+                  {selectedFriend.name}
+                </span>
                 <Button
                   type="button"
                   variant="outline"
@@ -142,25 +133,23 @@ export default function SearchModal() {
                 >
                   Follow User
                 </Button>
-                <ViewUserButton
-                  userId={selectedFriend.id} />
+                <ViewUserButton userId={selectedFriend.id} />
               </DialogTitle>
-              <DialogDescription>
+              <DialogDescription className="text-[var(--muted-foreground)]">
                 Email: {selectedFriend.email}
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
               <Label>Location</Label>
               {selectedFriend.location ? (
-                <div className="text-gray-700 dark:text-gray-300">
+                <div className="text-[var(--foreground)]">
                   {selectedFriend.location.address}
-                  </div>
-                ) : (
-                <div className="text-gray-500 dark:text-gray-400">
+                </div>
+              ) : (
+                <div className="text-[var(--muted-foreground)]">
                   No location provided
-                  </div>
-                )}
-
+                </div>
+              )}
             </div>
           </DialogContent>
         </Dialog>
