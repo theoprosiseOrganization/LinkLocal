@@ -386,8 +386,8 @@ export async function getOptimalRoute(start, events) {
   return response;
 }
 
-export async function createPlan({title, eventIds, routeData}){
-  const res = await fetch(`${URL}/plans`, {
+export async function createPlan(userId, {title, eventIds, routeData}){
+  const res = await fetch(`${URL}/users/${userId}/plans`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -402,8 +402,8 @@ export async function createPlan({title, eventIds, routeData}){
   return response;
 }
 
-export async function inviteUsers(planId, recipientIds) {
-  const res = await fetch(`${URL}/plans/${planId}/invite`, {
+export async function inviteUsers(userId, planId, recipientIds) {
+  const res = await fetch(`${URL}/users/${userId}/plans/${planId}/invite`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -418,8 +418,8 @@ export async function inviteUsers(planId, recipientIds) {
   return response;
 }
 
-export async function getPlanById(planId) {
-  const res = await fetch(`${URL}/plans/${planId}`, {
+export async function getPlanById(userId, planId) {
+  const res = await fetch(`${URL}/users/${userId}/plans/${planId}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
