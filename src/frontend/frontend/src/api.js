@@ -385,3 +385,50 @@ export async function getOptimalRoute(start, events) {
   }
   return response;
 }
+
+export async function createPlan({title, eventIds, routeData}){
+  const res = await fetch(`${URL}/plans`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ title, eventIds, routeData }),
+    credentials: "include",
+  });
+  const response = await res.json();
+  if (!res.ok) {
+    throw new Error(response.error || "Failed to create plan");
+  }
+  return response;
+}
+
+export async function inviteUsers(planId, recipientIds) {
+  const res = await fetch(`${URL}/plans/${planId}/invite`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ recipientIds }),
+    credentials: "include",
+  });
+  const response = await res.json();
+  if (!res.ok) {
+    throw new Error(response.error || "Failed to invite users");
+  }
+  return response;
+}
+
+export async function getPlanById(planId) {
+  const res = await fetch(`${URL}/plans/${planId}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+  });
+  const response = await res.json();
+  if (!res.ok) {
+    throw new Error(response.error || "Failed to fetch plan");
+  }
+  return response;
+}
