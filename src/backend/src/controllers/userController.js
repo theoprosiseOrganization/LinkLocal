@@ -498,30 +498,36 @@ exports.getSuggestedUsers = async (req, res) => {
 };
 
 exports.createPlan = async (req, res) => {
-  try{
+  try {
     const ownerId = req.params.id;
     const { title, eventIds, routeData } = req.body;
-    const {data, error} = await supabase
+    const { data, error } = await supabase
       .from("plans")
-      .insert([{ owner_id: ownerId, title, event_ids: eventIds, route_data: routeData }])
+      .insert([
+        {
+          owner_id: ownerId,
+          title,
+          event_ids: eventIds,
+          route_data: routeData,
+        },
+      ])
       .select()
       .single();
-      if (error) {
-        return res.status(500).json({ error: `Failed to create plan: ${error.message}` });
-      }
-      res.json(data);
-
+    if (error) {
+      return res
+        .status(500)
+        .json({ error: `Failed to create plan: ${error.message}` });
+    }
+    res.json(data);
   } catch (error) {
     res.status(500).json({ error: `Failed to create plan: ${error.message}` });
-
   }
-}
-
+};
 
 exports.inviteUsers = async (req, res) => {
-  try{
-    const {planId} = req.params
-    const {recipientIds} = req.body;
+  try {
+    const { planId } = req.params;
+    const { recipientIds } = req.body;
     if (!recipientIds || recipientIds.length === 0) {
       return res.status(400).json({ error: "No recipients provided" });
     }
@@ -533,10 +539,13 @@ exports.inviteUsers = async (req, res) => {
       .from("invitations")
       .insert(rows)
       .select();
-    if (error) throw new Error(`Failed to create invitations: ${error.message}`);
+    if (error)
+      throw new Error(`Failed to create invitations: ${error.message}`);
     res.json(data);
   } catch (error) {
-    res.status(500).json({ error: `Failed to create invitations: ${error.message}` });
+    res
+      .status(500)
+      .json({ error: `Failed to create invitations: ${error.message}` });
   }
 };
 
@@ -548,11 +557,15 @@ exports.listInvitations = async (req, res) => {
       .select(`id, plan_id, plans(id, title)`)
       .eq("recipient_id", recipientId);
     if (error) {
-      return res.status(500).json({ error: `Failed to list invitations: ${error.message}` });
+      return res
+        .status(500)
+        .json({ error: `Failed to list invitations: ${error.message}` });
     }
     res.json(data);
   } catch (error) {
-    res.status(500).json({ error: `Failed to list invitations: ${error.message}` });
+    res
+      .status(500)
+      .json({ error: `Failed to list invitations: ${error.message}` });
   }
 };
 
@@ -565,10 +578,12 @@ exports.getPlanById = async (req, res) => {
       .eq("id", planId)
       .single();
     if (error) {
-      return res.status(404).json({ error: `Plan not found: ${error.message}` });
+      return res
+        .status(404)
+        .json({ error: `Plan not found: ${error.message}` });
     }
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: `Failed to get plan: ${error.message}` });
   }
-}
+};

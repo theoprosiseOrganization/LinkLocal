@@ -8,7 +8,7 @@
  * The component also allows users to select events and calculate a route from their location to the selected
  * events.
  * It provides the feature to save and share the plan with followers.
- * 
+ *
  *
  * @component
  * @example
@@ -27,16 +27,13 @@ import { Input } from "../../../components/ui/input";
 import { Button } from "../../../components/ui/button";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "../../../components/ui/dialog";
 import {
-  getEventById,
   getSessionUserId,
   getUserById,
   getOptimalRoute,
@@ -44,7 +41,6 @@ import {
   inviteUsers,
   getUserFollowers,
 } from "../../api";
-import EventCard from "../EventCard/EventCard";
 import Route from "./Route";
 
 export default function MapPlan() {
@@ -138,7 +134,7 @@ export default function MapPlan() {
             onEventsFound={setEventsInPoly}
             onPolygonDrawn={(poly) => (drawnPolygon.current = poly)}
           />
-          {routeData && <Route route={routeData} />}
+          {routeData && <Route route={routeData} event_ids={selectedEventIds} />}
         </APIProvider>
         <p>Step 2: What period are you available for your events?</p>
         <div className="flex gap-4 mb-4">
@@ -223,7 +219,6 @@ export default function MapPlan() {
               <Button
                 disabled={selectedFollowers.length === 0 || !planTitle.trim()}
                 onClick={async () => {
-                  console.log("selectedEventIds", selectedEventIds);
                   const plan = await createPlan({
                     title: planTitle,
                     eventIds: selectedEventIds,

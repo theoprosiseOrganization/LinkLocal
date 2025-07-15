@@ -2,11 +2,11 @@
  * InvitesList component displays a list of invitations
  * received by the user. Each invitation shows the plan title and a button to view the plan.
  * If there are no invitations, a message is displayed.
- * 
+ *
  * @component
  * @example
  * <InvitesList />
- * @returns {JSX.Element} The rendered InvitesList component. 
+ * @returns {JSX.Element} The rendered InvitesList component.
  */
 import { useEffect, useState } from "react";
 import { getMyInvitations } from "../../api";

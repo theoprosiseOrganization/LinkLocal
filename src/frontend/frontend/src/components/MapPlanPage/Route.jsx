@@ -29,7 +29,7 @@ const Route = ({ route, event_ids }) => {
   const [selectedId, setSelectedId] = useState(null);
   const [selectedMarker, setSelectedMarker] = useState(null);
 
-  if (event_ids.length != 0) {
+  if (! event_ids || event_ids.length != 0) {
     useEffect(() => {
       const fetchEvents = async () => {
         const fetchedEvents = await Promise.all(
@@ -115,7 +115,7 @@ const Route = ({ route, event_ids }) => {
           />
         ) : null
       )}
-      
+
       {infoWindowShown && selectedMarker && (
         <InfoWindow
           anchor={selectedMarker}
