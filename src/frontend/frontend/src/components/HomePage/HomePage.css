@@ -1,9 +1,8 @@
 .homepage-vertical {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  height: 100vh - 100px;
   box-sizing: border-box;
-  padding-top: 50px;
 }
 
 .homepage-top {

@@ -126,9 +126,13 @@ export default function MapPlan() {
 
   return (
     <Layout>
-      <div className="map-plan-page">
-        <h1>Map Plan Page</h1>
-        <p>Step 1: Draw your area for events:</p>
+      <div className="map-plan-page max-w-5xl mx-auto mt-10 bg-[var(--card)] text-[var(--card-foreground)] rounded-xl shadow-lg border border-[var(--border)] p-8">
+        <h1 className="text-2xl font-bold mb-4 text-[var(--primary)]">
+          Map Plan Page
+        </h1>
+        <p className="mb-2 text-[var(--foreground)] font-medium">
+          Step 1: Draw your area for events:
+        </p>
         <APIProvider apiKey={MAPS_KEY}>
           <MapWithDrawing
             onEventsFound={setEventsInPoly}
@@ -138,7 +142,9 @@ export default function MapPlan() {
             <Route route={routeData} event_ids={selectedEventIds} />
           )}
         </APIProvider>
-        <p>Step 2: What period are you available for your events?</p>
+        <p className="mb-2 text-[var(--foreground)] font-medium">
+          Step 2: What period are you available for your events?
+        </p>
         <div className="flex gap-4 mb-4">
           <div>
             <Label htmlFor="filter-start">Start</Label>
@@ -159,19 +165,29 @@ export default function MapPlan() {
             />
           </div>
         </div>
-        <p>
+        <p className="mb-2 text-[var(--foreground)] font-medium">
           Step 3: Choose which events from your criteria you want to attend:
         </p>
-        <p>
+        <p className="mb-4 text-[var(--muted-foreground)]">
           When selected, calculate the optimal route from your location to your
           events:
         </p>
-        <Button onClick={getRoute}>Calculate</Button>
-        <Button onClick={saveAndShare} disabled={!routeData} className="ml-2">
+        <Button
+          onClick={getRoute}
+          className="bg-[var(--primary)] text-[var(--primary-foreground)] hover:bg-[var(--primary-foreground)] hover:text-[var(--primary)] transition"
+        >
+          Calculate
+        </Button>
+        <Button
+          onClick={saveAndShare}
+          disabled={!routeData}
+          className="ml-2 border-[var(--primary)] text-[var(--primary)] bg-transparent hover:bg-[var(--primary)] hover:text-[var(--primary-foreground)] transition"
+          variant="outline"
+        >
           Save and Share Plan
         </Button>
         <Dialog open={isInviteOpen} onOpenChange={setIsInviteOpen}>
-          <DialogContent className="sm:max-w-[425px]">
+          <DialogContent className="sm:max-w-[425px] bg-[var(--card)] text-[var(--card-foreground)] border border-[var(--border)] rounded-xl shadow">
             <DialogHeader>
               <div className="mb-4">
                 <Label htmlFor="plan-title">Plan Title</Label>
@@ -241,10 +257,10 @@ export default function MapPlan() {
           {filteredEvents.map((event) => (
             <div
               key={event.id}
-              className={`event-card border rounded p-4 flex flex-col justify-between cursor-pointer transition-all duration-150 ${
+              className={`event-card border rounded-xl p-4 flex flex-col justify-between cursor-pointer transition-all duration-150 shadow ${
                 selectedEventIds.includes(event.id)
-                  ? "border-blue-500 bg-blue-50"
-                  : "border-gray-200 bg-[#1a202c]"
+                  ? "border-[var(--primary)] bg-[var(--primary-foreground)]"
+                  : "border-[var(--border)] bg-[var(--background)]"
               }`}
               style={{
                 minHeight: "300px",
