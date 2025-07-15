@@ -15,7 +15,7 @@
 
 import Layout from "../Layout/Layout";
 import CreateEventButton from "../CreateEventPage/CreateEventButton";
-import VerticalEvents from "../VerticalEvents/VerticalEvents";
+import HorizontalEvents from "../VerticalEvents/HorizontalEvents";
 import LocationAutocomplete from "../LocationAutocomplete/LocationAutocomplete";
 import "./ProfilePage.css";
 import TagsSearch from "../Tags/TagsSearch";
@@ -142,48 +142,42 @@ export default function ProfilePage() {
 
   return (
     <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
-      <Layout>
-        <div className="profilepage-split">
-          <div className="profilepage-left">
-            <h2 className="events-title">Your Events</h2>
-            <VerticalEvents events={userEvents} />
-            <CreateEventButton />
-          </div>
-          <div className="profilepage-right">
-            {userData ? (
-              <div className="profile-card">
-                <div className="profile-avatar">
-                  {userData.avatar ? (
-                    <img
-                      src={userData.avatar}
-                      alt="Profile"
-                      style={{
-                        width: 80,
-                        height: 80,
-                        borderRadius: "50%",
-                        objectFit: "cover",
-                      }}
-                    />
-                  ) : userData.name ? (
-                    userData.name[0].toUpperCase()
-                  ) : (
-                    "?"
-                  )}
-                </div>
-                <div className="profile-info">
-                  <h2>{userData.name}</h2>
-                  <p>{userData.email}</p>
-                  <p>{userData.location.address}</p>
-                </div>
+    <Layout>
+      <div className="profilepage-vertical">
+        {/* Top Section: User Info */}
+        <div className="profilepage-top">
+          {userData ? (
+            <div className="profile-card-horizontal">
+              <div className="profile-avatar">
+                {userData.avatar ? (
+                  <img
+                    src={userData.avatar}
+                    alt="Profile"
+                    style={{
+                      width: 80,
+                      height: 80,
+                      borderRadius: "50%",
+                      objectFit: "cover",
+                    }}
+                  />
+                ) : userData.name ? (
+                  userData.name[0].toUpperCase()
+                ) : (
+                  "?"
+                )}
               </div>
-            ) : (
-              <div>No User Data Found.</div>
-            )}
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button variant="outline">Edit Profile</Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-[525px] max-h-[90vw] overflow-y-auto">
+              <div className="profile-info-horizontal">
+                <h1 className="profile-title">Your Profile</h1>
+                <h2>{userData.name}</h2>
+                <p>{userData.email}</p>
+                <p>{userData.location.address}</p>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" className="edit-profile-btn">
+                      Edit Profile
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[525px] max-h-[90vw] overflow-y-auto">
                 <DialogHeader>
                   <DialogTitle>Edit Profile</DialogTitle>
                   <DialogDescription>
@@ -262,11 +256,29 @@ export default function ProfilePage() {
                   </div>
                 </form>
               </DialogContent>
-            </Dialog>
-            <InvitesList />
-          </div>
+                </Dialog>
+              </div>
+            </div>
+          ) : (
+            <div>No User Data Found.</div>
+          )}
         </div>
-      </Layout>
-    </APIProvider>
+        {/* Bottom Section: Horizontal Events */}
+        <div className="profilepage-bottom">
+          <section className="events-section">
+            <h2 className="events-title">Your Events</h2>
+            <div className="events-carousel-container">
+              <HorizontalEvents events={userEvents} />
+            </div>
+            <CreateEventButton />
+          </section>
+          <section className="invites-section">
+            <h2 className="invites-title">Your Invites</h2>
+            <InvitesList />
+          </section>
+        </div>
+      </div>
+    </Layout>
+  </APIProvider>
   );
 }
