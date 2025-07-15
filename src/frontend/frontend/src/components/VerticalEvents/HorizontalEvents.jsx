@@ -29,9 +29,9 @@ export default function HorizontalEvents({ events = [] }) {
     <Carousel
       opts={{ align: "start", loop: true }}
       orientation="horizontal"
-      className="w-full h-full max-w-xs"
+      className="w-full h-full"
       plugins={[
-        Autoplay({ delay: 2000, stopOnInteraction: true }),
+        Autoplay({ delay: 3500, stopOnInteraction: true }),
       ]}
     >
       <CarouselContent className="-mt-1" style={{ height: "100%" }}>

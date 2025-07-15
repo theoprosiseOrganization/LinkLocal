@@ -35,23 +35,20 @@ export default function HomePage() {
   }, []);
 
   return (
-    <Layout>
-      <div className="homepage-vertical">
-        <div className="homepage-top">
-          <h1>Welcome to LinkLocal!</h1>
-          {/* Add any additional text or elements here */}
-        </div>
-        <div className="homepage-bottom">
-          <div className="homepage-left">
-            <MapComponent events={eventsToDisplay} />
-          </div>
-          <div className="homepage-right">
-            <div className="vertical-events-container">
-              <HorizontalEvents events={eventsToDisplay} />
-            </div>
+   <Layout>
+    <div className="homepage-vertical">
+      <div className="homepage-top">
+        <h1>Welcome to LinkLocal!</h1>
+      </div>
+      <div className="homepage-bottom-overlay">
+        <MapComponent events={eventsToDisplay} />
+        <div className="homepage-overlay">
+          <div className="vertical-events-container">
+            <HorizontalEvents events={eventsToDisplay} />
           </div>
         </div>
       </div>
-    </Layout>
+    </div>
+  </Layout>
   );
 }
