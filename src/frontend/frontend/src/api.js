@@ -408,7 +408,10 @@ export async function createPlan( {title, eventIds, routeData}){
   return response;
 }
 
-export async function inviteUsers(userId, planId, recipientIds) {
+export async function inviteUsers(planId, recipientIds) {
+  if (!Array.isArray(recipientIds) || recipientIds.length === 0) {
+    throw new Error("recipientIds must be a non-empty array");
+  }
   const url = await meUrl(`/plans/${planId}/invite`);
   const res = await fetch(url, {
     method: "POST",
@@ -425,7 +428,7 @@ export async function inviteUsers(userId, planId, recipientIds) {
   return response;
 }
 
-export async function getPlanById(userId, planId) {
+export async function getPlanById(planId) {
   const url = await meUrl(`/plans/${planId}`);
   const res = await fetch(url, {
     method: "GET",
