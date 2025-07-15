@@ -386,8 +386,14 @@ export async function getOptimalRoute(start, events) {
   return response;
 }
 
-export async function createPlan(userId, {title, eventIds, routeData}){
-  const res = await fetch(`${URL}/users/${userId}/plans`, {
+export async function meUrl(path){
+  const me = await getSessionUserId();
+  return `${URL}/users/${me}${path}`;
+}
+
+export async function createPlan( {title, eventIds, routeData}){
+  const url = await meUrl("/plans");
+  const res = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -403,7 +409,8 @@ export async function createPlan(userId, {title, eventIds, routeData}){
 }
 
 export async function inviteUsers(userId, planId, recipientIds) {
-  const res = await fetch(`${URL}/users/${userId}/plans/${planId}/invite`, {
+  const url = await meUrl(`/plans/${planId}/invite`);
+  const res = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -419,7 +426,8 @@ export async function inviteUsers(userId, planId, recipientIds) {
 }
 
 export async function getPlanById(userId, planId) {
-  const res = await fetch(`${URL}/users/${userId}/plans/${planId}`, {
+  const url = await meUrl(`/plans/${planId}`);
+  const res = await fetch(url, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -429,6 +437,22 @@ export async function getPlanById(userId, planId) {
   const response = await res.json();
   if (!res.ok) {
     throw new Error(response.error || "Failed to fetch plan");
+  }
+  return response;
+}
+
+export async function getMyInvitations() {
+  const url = await meUrl(`/invitations`);
+  const res = await fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+  });
+  const response = await res.json();
+  if (!res.ok) {
+    throw new Error(response.error || "Failed to fetch invitations");
   }
   return response;
 }

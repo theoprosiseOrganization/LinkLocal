@@ -504,12 +504,17 @@ exports.createPlan = async (req, res) => {
     const {data, error} = await supabase
       .from("plans")
       .insert([{ owner_id: ownerId, title, event_ids: events, route_data: routeData }])
+      .select()
       .single();
       if (error) {
+        console.error("Error plan:", error);
         return res.status(500).json({ error: `Failed to create plan: ${error.message}` });
       }
+      console.log("Plan created:", data);
       res.json(data);
+
   } catch (error) {
+    console.error("Error creating plan:", error);
     res.status(500).json({ error: `Failed to create plan: ${error.message}` });
 
   }
