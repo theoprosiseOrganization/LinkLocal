@@ -40,7 +40,7 @@ import {
   getOptimalRoute,
   createPlan,
   inviteUsers,
-  getUserFollowers
+  getUserFollowers,
 } from "../../api";
 import EventCard from "../EventCard/EventCard";
 import Route from "./Route";
@@ -114,12 +114,6 @@ export default function MapPlan() {
   };
 
   async function saveAndShare() {
-    const plan = await createPlan({
-      title: "My Event Plan",
-      eventIds: selectedEventIds,
-      routeData: routeData,
-    });
-    setPlanId(plan.id);
     setIsInviteOpen(true);
   }
 
@@ -186,7 +180,7 @@ export default function MapPlan() {
                   value={planTitle}
                   placeholder="Enter plan title"
                   onChange={(e) => setPlanTitle(e.target.value)}
-                  />
+                />
               </div>
               <DialogTitle>Invite Followers</DialogTitle>
               <DialogDescription>
@@ -216,27 +210,25 @@ export default function MapPlan() {
               ))}
               {followers.length === 0 && (
                 <div className="text-gray-500 text-sm">
-                  No followers found. Please follow some users to invite them.
+                  No followers found. Gain followers to send plan invites.
                 </div>
               )}
             </div>
             <DialogFooter>
-              <Button
-              variant="outline"
-                onClick={() => setIsInviteOpen(false)}
-              >
+              <Button variant="outline" onClick={() => setIsInviteOpen(false)}>
                 Cancel
               </Button>
               <Button
-              disabled={selectedFollowers.length === 0 || !planTitle.trim()}
+                disabled={selectedFollowers.length === 0 || !planTitle.trim()}
                 onClick={async () => {
+                  console.log("selectedEventIds", selectedEventIds);
                   const plan = await createPlan({
                     title: planTitle,
                     eventIds: selectedEventIds,
                     routeData: routeData,
                   });
                   setPlanId(plan.id);
-                  await inviteUsers(planId, selectedFollowers);
+                  await inviteUsers(plan.id, selectedFollowers);
                   setIsInviteOpen(false);
                   alert("Invitations sent successfully!");
                 }}
