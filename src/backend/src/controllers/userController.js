@@ -379,7 +379,7 @@ exports.followUser = async (req, res) => {
         followerId,
         followingId,
       }),
-    })
+    });
     res.json({ message: "User followed" });
   } catch (error) {
     if (error.code === "P2002") {
@@ -462,10 +462,14 @@ exports.getAllTags = async (req, res) => {
 exports.getSuggestedUsers = async (req, res) => {
   const userId = req.params.id;
   try {
-    const recRes = await fetch(`${RECOMMENDATION_SERVICE_URL}/recommendation/${userId}`);
+    const recRes = await fetch(
+      `${RECOMMENDATION_SERVICE_URL}/recommendation/${userId}`
+    );
     if (!recRes.ok) {
       const error = await recRes.text();
-      return res.status(502).json({ error: `Recommendation service error: ${error}` });
+      return res
+        .status(502)
+        .json({ error: `Recommendation service error: ${error}` });
     }
     const recommendations = await recRes.json();
     if (!recommendations || recommendations.length === 0) {
@@ -484,10 +488,67 @@ exports.getSuggestedUsers = async (req, res) => {
       })
     );
     const usersById = Object.fromEntries(users.map((u) => [u.id, u]));
-    const orderedUsers = suggestedIds.map((id) => usersById[id]).filter(Boolean);
+    const orderedUsers = suggestedIds
+      .map((id) => usersById[id])
+      .filter(Boolean);
     res.json(orderedUsers);
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }
-
 };
+
+export async function createPlan(ownerId, title, eventIds, routeData) {
+  const { data, error } = await supabase
+    .from("plans")
+    .insert([
+      {
+        owner_id: ownerId,
+        title,
+        event_ids: eventIds,
+        route_data: routeData,
+      },
+    ])
+    .single();
+  if (error) {
+    throw new Error(`Failed to create plan: ${error.message}`);
+  }
+  return data;
+}
+
+export async function inviteUsers(planId, recipients) {
+  const rows = recipients.map((recipient) => ({
+    plan_id: planId,
+    recipient_id: recipient,
+  }));
+  const { data, error } = await supabase
+    .from("invitations")
+    .insert(rows)
+    .select();
+  if (error) {
+    throw new Error(`Failed to invite users: ${error.message}`);
+  }
+  return data;
+}
+
+export async function listInvitations(userId) {
+  const { data, error } = await supabase
+    .from("invitations")
+    .select(`id, plan_id, plans(title)`)
+    .eq("recipient_id", userId);
+      if (error) {
+    throw new Error(`Failed to list invitations: ${error.message}`);
+  }
+  return data;
+}
+
+export async function getPlanById(planId) {
+  const { data, error } = await supabase
+    .from("plans")
+    .select(`*`)
+    .eq("id", planId)
+    .single();
+  if (error) {
+    throw new Error(`Failed to get plan: ${error.message}`);
+  }
+  return data;
+}
