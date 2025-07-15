@@ -1,6 +1,25 @@
-.homepage-split {
+.homepage-vertical {
   display: flex;
-  height: 100vh;
+  flex-direction: column;
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding-top: 50px;
+}
+
+.homepage-top {
+  width: 100%;
+  background: #f8fafc;
+  padding: 24px 0 16px 0;
+  text-align: center;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.homepage-bottom {
+  display: flex;
+  flex: 1;
+  height: 0; 
 }
 
 .homepage-left,
@@ -18,7 +37,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
   overflow: hidden;
 }
 
@@ -28,4 +46,5 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  overflow: hidden;
 }

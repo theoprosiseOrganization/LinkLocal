@@ -134,7 +134,9 @@ export default function MapPlan() {
             onEventsFound={setEventsInPoly}
             onPolygonDrawn={(poly) => (drawnPolygon.current = poly)}
           />
-          {routeData && <Route route={routeData} event_ids={selectedEventIds} />}
+          {routeData && (
+            <Route route={routeData} event_ids={selectedEventIds} />
+          )}
         </APIProvider>
         <p>Step 2: What period are you available for your events?</p>
         <div className="flex gap-4 mb-4">

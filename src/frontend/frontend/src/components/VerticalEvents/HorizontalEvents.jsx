@@ -1,16 +1,16 @@
 /**
- * VerticalEvents Component
+ * Horizontal Component
  *
- * This component displays a vertical carousel of events.
+ * This component displays a horizontal carousel of events.
  * Each event is represented by an EventCard component.
- * The carousel allows users to scroll through events vertically.
+ * The carousel allows users to scroll through events horizontally.
  * If there are no events, a message is displayed indicating that there are no events to show
  *
  * @component
  * @example
- * <VerticalEvents events={eventsArray} />
+ * <HorizontalEvents events={eventsArray} />
  * * @param {Array} events - An array of event objects to be displayed in the carousel.
- * * @returns {JSX.Element} The JSX element representing the vertical events carousel.
+ * * @returns {JSX.Element} The JSX element representing the horizontal events carousel.
  */
 
 import {
@@ -24,11 +24,11 @@ import EventCard from "../EventCard/EventCard";
 import Autoplay from "embla-carousel-autoplay"
 
 
-export default function VerticalEvents({ events = [] }) {
+export default function HorizontalEvents({ events = [] }) {
   return (
     <Carousel
       opts={{ align: "start", loop: true }}
-      orientation="vertical"
+      orientation="horizontal"
       className="w-full h-full max-w-xs"
       plugins={[
         Autoplay({ delay: 2000, stopOnInteraction: true }),

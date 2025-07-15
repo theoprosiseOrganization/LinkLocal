@@ -15,7 +15,7 @@
 import Layout from "../Layout/Layout";
 import MapComponent from "../MapComponent/MapComponent";
 import "./HomePage.css";
-import VerticalEvents from "../VerticalEvents/VerticalEvents";
+import HorizontalEvents from "../VerticalEvents/HorizontalEvents";
 import { getAllEvents } from "../../api";
 import React, { useEffect, useState } from "react";
 
@@ -36,13 +36,19 @@ export default function HomePage() {
 
   return (
     <Layout>
-      <div className="homepage-split">
-        <div className="homepage-left">
-          <MapComponent events={eventsToDisplay}/>
+      <div className="homepage-vertical">
+        <div className="homepage-top">
+          <h1>Welcome to LinkLocal!</h1>
+          {/* Add any additional text or elements here */}
         </div>
-        <div className="homepage-right">
-          <div className="vertical-events-container">
-          <VerticalEvents events={eventsToDisplay} />
+        <div className="homepage-bottom">
+          <div className="homepage-left">
+            <MapComponent events={eventsToDisplay} />
+          </div>
+          <div className="homepage-right">
+            <div className="vertical-events-container">
+              <HorizontalEvents events={eventsToDisplay} />
+            </div>
           </div>
         </div>
       </div>
