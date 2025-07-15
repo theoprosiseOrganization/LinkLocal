@@ -56,6 +56,7 @@ export default function MapPlan() {
   const [isInviteOpen, setIsInviteOpen] = useState(false);
   const [followers, setFollowers] = useState([]);
   const [selectedFollowers, setSelectedFollowers] = useState([]);
+  const [planTitle, setPlanTitle] = useState("My Event Plan");
 
   const filteredEvents = eventsInPoly.filter((event) => {
     if (!startDate && !endDate) return true;
@@ -172,12 +173,21 @@ export default function MapPlan() {
           events:
         </p>
         <Button onClick={getRoute}>Calculate</Button>
-        <Button onClick={saveAndShare} className="ml-2">
+        <Button onClick={saveAndShare} disabled={!routeData} className="ml-2">
           Save and Share Plan
         </Button>
         <Dialog open={isInviteOpen} onOpenChange={setIsInviteOpen}>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
+              <div className="mb-4">
+                <Label htmlFor="plan-title">Plan Title</Label>
+                <Input
+                  id="plan-title"
+                  value={planTitle}
+                  placeholder="Enter plan title"
+                  onChange={(e) => setPlanTitle(e.target.value)}
+                  />
+              </div>
               <DialogTitle>Invite Followers</DialogTitle>
               <DialogDescription>
                 Select followers to invite to your plan.
@@ -218,8 +228,14 @@ export default function MapPlan() {
                 Cancel
               </Button>
               <Button
-              disabled={selectedFollowers.length === 0}
+              disabled={selectedFollowers.length === 0 || !planTitle.trim()}
                 onClick={async () => {
+                  const plan = await createPlan({
+                    title: planTitle,
+                    eventIds: selectedEventIds,
+                    routeData: routeData,
+                  });
+                  setPlanId(plan.id);
                   await inviteUsers(planId, selectedFollowers);
                   setIsInviteOpen(false);
                   alert("Invitations sent successfully!");
