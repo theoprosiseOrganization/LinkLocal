@@ -356,7 +356,6 @@ export default function CreateEventPage() {
                   />
                 </div>
               </div>
-
               <div className="grid w-full max-w-sm items-center gap-3">
                 <Label htmlFor="picture" className="text-[var(--foreground)]">
                   Pictures (up to 5)
@@ -407,13 +406,6 @@ export default function CreateEventPage() {
                   className="w-full bg-[var(--primary)] text-[var(--primary-foreground)] hover:bg-[var(--primary-foreground)] hover:text-[var(--primary)] transition"
                 >
                   Create Event
-                </Button>
-                {/* Placeholder for share event functionality */}
-                <Button
-                  className="w-full border-[var(--primary)] text-[var(--primary)] bg-transparent hover:bg-[var(--primary)] hover:text-[var(--primary-foreground)] transition"
-                  variant="outline"
-                >
-                  Share Event
                 </Button>
               </div>
             </div>

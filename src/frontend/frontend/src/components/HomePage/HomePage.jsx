@@ -35,22 +35,22 @@ export default function HomePage() {
   }, []);
 
   return (
-   <Layout>
-    <div className="homepage-vertical">
-      <div className="homepage-top">
-        <h1>Welcome to LinkLocal!</h1>
-      </div>
-      <div className="homepage-bottom-overlay">
-        <MapComponent events={eventsToDisplay} />
-        <div className="homepage-overlay">
-          <div className="vertical-events-container">
-                <h2>View Some Nearby Events</h2>
+    <Layout>
+      <div className="homepage-vertical">
+        <div className="homepage-top">
+          <h1>Welcome to LinkLocal!</h1>
+        </div>
+        <div className="homepage-bottom-overlay">
+          <MapComponent events={eventsToDisplay} />
+          <div className="homepage-overlay">
+            <div className="vertical-events-container">
+              <h2>View Some Nearby Events</h2>
 
-            <HorizontalEvents events={eventsToDisplay} />
+              <HorizontalEvents events={eventsToDisplay} />
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </Layout>
+    </Layout>
   );
 }
