@@ -7,6 +7,8 @@
  * It includes functionality to filter events by date and select events to calculate an optimal route.
  * The component also allows users to select events and calculate a route from their location to the selected
  * events.
+ * It provides the feature to save and share the plan with followers.
+ * 
  *
  * @component
  * @example
