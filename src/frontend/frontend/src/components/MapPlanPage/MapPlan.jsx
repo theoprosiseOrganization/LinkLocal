@@ -7,6 +7,8 @@
  * It includes functionality to filter events by date and select events to calculate an optimal route.
  * The component also allows users to select events and calculate a route from their location to the selected
  * events.
+ * It provides the feature to save and share the plan with followers.
+ *
  *
  * @component
  * @example
@@ -24,12 +26,21 @@ import { Label } from "../../../components/ui/label";
 import { Input } from "../../../components/ui/input";
 import { Button } from "../../../components/ui/button";
 import {
-  getEventById,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "../../../components/ui/dialog";
+import {
   getSessionUserId,
   getUserById,
   getOptimalRoute,
+  createPlan,
+  inviteUsers,
+  getUserFollowers,
 } from "../../api";
-import EventCard from "../EventCard/EventCard";
 import Route from "./Route";
 
 export default function MapPlan() {
@@ -39,6 +50,11 @@ export default function MapPlan() {
   const [selectedEventIds, setSelectedEventIds] = useState([]);
   const [routeData, setRouteData] = useState(null);
   const drawnPolygon = useRef(null);
+  const [planId, setPlanId] = useState(null);
+  const [isInviteOpen, setIsInviteOpen] = useState(false);
+  const [followers, setFollowers] = useState([]);
+  const [selectedFollowers, setSelectedFollowers] = useState([]);
+  const [planTitle, setPlanTitle] = useState("My Event Plan");
 
   const filteredEvents = eventsInPoly.filter((event) => {
     if (!startDate && !endDate) return true;
@@ -95,6 +111,19 @@ export default function MapPlan() {
     }
   };
 
+  async function saveAndShare() {
+    setIsInviteOpen(true);
+  }
+
+  useEffect(() => {
+    if (!isInviteOpen) return;
+    (async () => {
+      const myId = await getSessionUserId();
+      const followers = await getUserFollowers(myId);
+      setFollowers(followers);
+    })();
+  }, [isInviteOpen]);
+
   return (
     <Layout>
       <div className="map-plan-page">
@@ -105,7 +134,7 @@ export default function MapPlan() {
             onEventsFound={setEventsInPoly}
             onPolygonDrawn={(poly) => (drawnPolygon.current = poly)}
           />
-          {routeData && <Route route={routeData} />}
+          {routeData && <Route route={routeData} event_ids={selectedEventIds} />}
         </APIProvider>
         <p>Step 2: What period are you available for your events?</p>
         <div className="flex gap-4 mb-4">
@@ -136,6 +165,76 @@ export default function MapPlan() {
           events:
         </p>
         <Button onClick={getRoute}>Calculate</Button>
+        <Button onClick={saveAndShare} disabled={!routeData} className="ml-2">
+          Save and Share Plan
+        </Button>
+        <Dialog open={isInviteOpen} onOpenChange={setIsInviteOpen}>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <div className="mb-4">
+                <Label htmlFor="plan-title">Plan Title</Label>
+                <Input
+                  id="plan-title"
+                  value={planTitle}
+                  placeholder="Enter plan title"
+                  onChange={(e) => setPlanTitle(e.target.value)}
+                />
+              </div>
+              <DialogTitle>Invite Followers</DialogTitle>
+              <DialogDescription>
+                Select followers to invite to your plan.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4">
+              {followers.map((follower) => (
+                <label
+                  key={follower.id}
+                  className="flex items-center gap-2 cursor-pointer"
+                >
+                  <input
+                    type="checkbox"
+                    className="accent-blue-600 w-5 h-5"
+                    checked={selectedFollowers.includes(follower.id)}
+                    onChange={() => {
+                      setSelectedFollowers((prev) =>
+                        prev.includes(follower.id)
+                          ? prev.filter((id) => id !== follower.id)
+                          : [...prev, follower.id]
+                      );
+                    }}
+                  />
+                  <span className="text-sm">{follower.name}</span>
+                </label>
+              ))}
+              {followers.length === 0 && (
+                <div className="text-gray-500 text-sm">
+                  No followers found. Gain followers to send plan invites.
+                </div>
+              )}
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setIsInviteOpen(false)}>
+                Cancel
+              </Button>
+              <Button
+                disabled={selectedFollowers.length === 0 || !planTitle.trim()}
+                onClick={async () => {
+                  const plan = await createPlan({
+                    title: planTitle,
+                    eventIds: selectedEventIds,
+                    routeData: routeData,
+                  });
+                  setPlanId(plan.id);
+                  await inviteUsers(plan.id, selectedFollowers);
+                  setIsInviteOpen(false);
+                  alert("Invitations sent successfully!");
+                }}
+              >
+                Invite
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {filteredEvents.map((event) => (
             <div

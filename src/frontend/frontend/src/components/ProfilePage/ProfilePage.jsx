@@ -43,6 +43,7 @@ import { Input } from "../../../components/ui/input";
 import { Label } from "../../../components/ui/label";
 import { APIProvider } from "@vis.gl/react-google-maps";
 import { Tag } from "lucide-react";
+import InvitesList from "./InvitesList";
 
 export default function ProfilePage() {
   const [userData, setUserData] = useState(null);
@@ -262,6 +263,7 @@ export default function ProfilePage() {
                 </form>
               </DialogContent>
             </Dialog>
+            <InvitesList />
           </div>
         </div>
       </Layout>

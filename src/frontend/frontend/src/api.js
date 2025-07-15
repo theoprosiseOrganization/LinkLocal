@@ -385,3 +385,77 @@ export async function getOptimalRoute(start, events) {
   }
   return response;
 }
+
+export async function meUrl(path){
+  const me = await getSessionUserId();
+  return `${URL}/users/${me}${path}`;
+}
+
+export async function createPlan( {title, eventIds, routeData}){
+  const url = await meUrl("/plans");
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ title, eventIds, routeData }),
+    credentials: "include",
+  });
+  const response = await res.json();
+  if (!res.ok) {
+    throw new Error(response.error || "Failed to create plan");
+  }
+  return response;
+}
+
+export async function inviteUsers(planId, recipientIds) {
+  if (!Array.isArray(recipientIds) || recipientIds.length === 0) {
+    throw new Error("recipientIds must be a non-empty array");
+  }
+  const url = await meUrl(`/plans/${planId}/invite`);
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ recipientIds }),
+    credentials: "include",
+  });
+  const response = await res.json();
+  if (!res.ok) {
+    throw new Error(response.error || "Failed to invite users");
+  }
+  return response;
+}
+
+export async function getPlanById(planId) {
+  const url = await meUrl(`/plans/${planId}`);
+  const res = await fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+  });
+  const response = await res.json();
+  if (!res.ok) {
+    throw new Error(response.error || "Failed to fetch plan");
+  }
+  return response;
+}
+
+export async function getMyInvitations() {
+  const url = await meUrl(`/invitations`);
+  const res = await fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+  });
+  const response = await res.json();
+  if (!res.ok) {
+    throw new Error(response.error || "Failed to fetch invitations");
+  }
+  return response;
+}
