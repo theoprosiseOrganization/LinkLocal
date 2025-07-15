@@ -24,12 +24,23 @@ import { Label } from "../../../components/ui/label";
 import { Input } from "../../../components/ui/input";
 import { Button } from "../../../components/ui/button";
 import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../../../components/ui/dialog";
+import {
   getEventById,
   getSessionUserId,
   getUserById,
   getOptimalRoute,
   createPlan,
   inviteUsers,
+  getUserFollowers
 } from "../../api";
 import EventCard from "../EventCard/EventCard";
 import Route from "./Route";
@@ -41,6 +52,10 @@ export default function MapPlan() {
   const [selectedEventIds, setSelectedEventIds] = useState([]);
   const [routeData, setRouteData] = useState(null);
   const drawnPolygon = useRef(null);
+  const [planId, setPlanId] = useState(null);
+  const [isInviteOpen, setIsInviteOpen] = useState(false);
+  const [followers, setFollowers] = useState([]);
+  const [selectedFollowers, setSelectedFollowers] = useState([]);
 
   const filteredEvents = eventsInPoly.filter((event) => {
     if (!startDate && !endDate) return true;
@@ -97,13 +112,24 @@ export default function MapPlan() {
     }
   };
 
-  async function saveAndShare(){
+  async function saveAndShare() {
     const plan = await createPlan({
       title: "My Event Plan",
       eventIds: selectedEventIds,
       routeData: routeData,
     });
+    setPlanId(plan.id);
+    setIsInviteOpen(true);
   }
+
+  useEffect(() => {
+    if (!isInviteOpen) return;
+    (async () => {
+      const myId = await getSessionUserId();
+      const followers = await getUserFollowers(myId);
+      setFollowers(followers);
+    })();
+  }, [isInviteOpen]);
 
   return (
     <Layout>
@@ -149,6 +175,61 @@ export default function MapPlan() {
         <Button onClick={saveAndShare} className="ml-2">
           Save and Share Plan
         </Button>
+        <Dialog open={isInviteOpen} onOpenChange={setIsInviteOpen}>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Invite Followers</DialogTitle>
+              <DialogDescription>
+                Select followers to invite to your plan.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4">
+              {followers.map((follower) => (
+                <label
+                  key={follower.id}
+                  className="flex items-center gap-2 cursor-pointer"
+                >
+                  <input
+                    type="checkbox"
+                    className="accent-blue-600 w-5 h-5"
+                    checked={selectedFollowers.includes(follower.id)}
+                    onChange={() => {
+                      setSelectedFollowers((prev) =>
+                        prev.includes(follower.id)
+                          ? prev.filter((id) => id !== follower.id)
+                          : [...prev, follower.id]
+                      );
+                    }}
+                  />
+                  <span className="text-sm">{follower.name}</span>
+                </label>
+              ))}
+              {followers.length === 0 && (
+                <div className="text-gray-500 text-sm">
+                  No followers found. Please follow some users to invite them.
+                </div>
+              )}
+            </div>
+            <DialogFooter>
+              <Button
+              variant="outline"
+                onClick={() => setIsInviteOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+              disabled={selectedFollowers.length === 0}
+                onClick={async () => {
+                  await inviteUsers(planId, selectedFollowers);
+                  setIsInviteOpen(false);
+                  alert("Invitations sent successfully!");
+                }}
+              >
+                Invite
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {filteredEvents.map((event) => (
             <div

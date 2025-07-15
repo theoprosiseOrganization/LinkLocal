@@ -9,7 +9,7 @@ export default function PlanViewer() {
   const [plan, setPlan] = useState(null);
 
   useEffect(() => {
-    getPlan(planId)
+    getPlanById(planId)
       .then(setPlan)
       .catch(() => alert("Failed to load plan"));
   }, [planId]);
