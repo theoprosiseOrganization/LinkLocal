@@ -21,6 +21,7 @@ import React, { useEffect, useState } from "react";
 
 export default function HomePage() {
   const [eventsToDisplay, setEventsToDisplay] = useState([]);
+  const [currentLocation, setCurrentLocation] = useState(null);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -34,6 +35,21 @@ export default function HomePage() {
     fetchEvents();
   }, []);
 
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          setCurrentLocation({
+            lat: pos.coords.latitude,
+            lng: pos.coords.longitude,
+          });
+        },
+        (err) => {
+          // Handle error or fallback
+        }
+      );
+    }
+  }, []);
   return (
     <Layout>
       <div className="homepage-vertical">
@@ -41,7 +57,7 @@ export default function HomePage() {
           <h1>Welcome to LinkLocal!</h1>
         </div>
         <div className="homepage-bottom-overlay">
-          <MapComponent events={eventsToDisplay} />
+          <MapComponent events={eventsToDisplay} currentLocation={currentLocation}/>
           <div className="homepage-overlay">
             <div className="vertical-events-container">
               <h2 className="text-xl font-bold mb-4 text-[var(--primary)] text-center">
