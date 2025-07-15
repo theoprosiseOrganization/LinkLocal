@@ -21,6 +21,10 @@ const {
   getUserFollowing,
   getAllTags,
   getSuggestedUsers,
+  createPlan,
+  inviteUsers,
+  listInvitations,
+  getPlanById
 } = require("../controllers/userController");
 
 const router = express.Router();
@@ -58,5 +62,11 @@ router.post("/:id/following", followUser); // follow user
 router.delete("/:id/following/:following_id", unfollowUser); // unfollow user
 router.get("/:id/followers", getUserFollowers); // get followers
 router.get("/:id/following", getUserFollowing); // get following users
+
+// Plan Endpoints
+router.post("/plans/createPlane", createPlan); // Create a new plan
+router.post("/plans/invite", inviteUsers); // Invite users to a plan
+router.get("/plans/invitations", listInvitations); // List invitations for the user
+router.get("/plans/:id", getPlanById); // Get a specific plan by ID
 
 module.exports = router;
