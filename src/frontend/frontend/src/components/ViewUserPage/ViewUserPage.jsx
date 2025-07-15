@@ -107,7 +107,7 @@ export default function ViewUserPage() {
             <p>{user.location && user.location.address}</p>
             {user.tags && user.tags.length > 0 && (
               <div>
-                <strong>Preferences:</strong>{" "}
+                <strong>Hobbies/Interests:</strong>{" "}
                 {user.tags.map((tag) => tag.name).join(", ")}
               </div>
             )}

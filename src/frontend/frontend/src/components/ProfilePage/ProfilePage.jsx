@@ -218,7 +218,7 @@ export default function ProfilePage() {
                       />
                     </div>
                     <div className="grid gap-3">
-                      <Label>Preferences</Label>
+                      <Label>Hobbies/Interests:</Label>
                       <TagsSearch
                         tags={allTags}
                         value={editTags}
