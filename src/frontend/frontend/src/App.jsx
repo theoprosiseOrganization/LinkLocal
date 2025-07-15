@@ -76,6 +76,14 @@ function App() {
             </WithAuth>
           }
         />
+        <Route
+          path="/plan/:planId"
+          element={
+            <WithAuth>
+              <PlanViewer />
+            </WithAuth>
+          }
+        />
       </Routes>
     </Router>
   );
