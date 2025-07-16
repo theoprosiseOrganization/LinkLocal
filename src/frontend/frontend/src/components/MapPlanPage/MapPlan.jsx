@@ -58,6 +58,7 @@ export default function MapPlan() {
   const [isEventSelectOpen, setIsEventSelectOpen] = useState(false);
   const [tempSelectedEventIds, setTempSelectedEventIds] = useState([]);
   const [transportType, setTransportType] = useState("DRIVE");
+  const [userData, setUserData] = useState(null);
 
   const filterStart = startDate ? new Date(startDate) : null;
   const filterEnd = endDate ? new Date(endDate) : null;
@@ -90,7 +91,7 @@ export default function MapPlan() {
       alert("You must be logged in to calculate a route.");
       return;
     }
-    const user = await getUserById(userId);
+    const user = userData || (await getUserById(userId));
     if (!user || !user.location) {
       alert("Your location is not set. Please update your profile.");
       return;
@@ -105,6 +106,10 @@ export default function MapPlan() {
         lat: e.location.latitude,
         lng: e.location.longitude,
       }));
+    if(waypoints.length >= 9) {
+      alert("You can only select up to 9 events for route calculation.");
+      return;
+    }
     const result = await getOptimalRoute(
       userLocation,
       waypoints,
@@ -135,6 +140,19 @@ export default function MapPlan() {
     })();
   }, [isInviteOpen]);
 
+  useEffect(() => {
+    (async () => {
+      const userId = await getSessionUserId();
+      if (!userId) return;
+      const user = await getUserById(userId);
+      if (user) {
+        setUserData(user);
+      } else {
+        alert("User not found. Please log in again.");
+      }
+    })();
+  }, []);
+
   const openEventSelectModal = () => {
     setTempSelectedEventIds(selectedEventIds);
     setIsEventSelectOpen(true);
@@ -146,11 +164,20 @@ export default function MapPlan() {
   };
 
   const generateEventPlan = () => {
-    if (filteredEvents.length === 0) {
-      alert("No events found in the selected area.");
+    const eventsToGenerate = filteredEvents;
+    if (eventsToGenerate.length === 0) {
+      alert("No events found in the selected area/time period.");
       return;
     }
-    generateSelectedEventPlan(tempSelectedEventIds);
+    const userTagNames = (userData?.tags || []).map((t) => t.name);
+    eventsToGenerate.forEach((e) => console.log("Event tags:", e.tags));
+
+    const eventsWithUserTags = eventsToGenerate.filter(
+      (e) =>
+        Array.isArray(e.tags) &&
+        e.tags.some((tag) => userTagNames.includes(tag.name))
+    );
+    setSelectedEventIds(eventsWithUserTags.map((e) => e.id));
   };
 
   const handleTempSelectEvent = (eventId) => {
