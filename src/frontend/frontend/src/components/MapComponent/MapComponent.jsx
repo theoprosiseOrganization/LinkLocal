@@ -23,9 +23,11 @@ import {
   AdvancedMarker,
   useAdvancedMarkerRef,
   InfoWindow,
+  Pin,
 } from "@vis.gl/react-google-maps";
 import ViewEventButton from "../ViewEventPage/ViewEventButton";
 import UserLocationMarker from "./UserLocationMarker";
+import { hi } from "date-fns/locale";
 
 const MAPS_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
@@ -59,7 +61,7 @@ export function AdvancedMarkerWithRef(props) {
     </AdvancedMarker>
   );
 }
-// Provides framework for adding user locations - not implemented yet
+
 export default function MapComponent({
   events = [],
   users = [],
@@ -98,6 +100,48 @@ export default function MapComponent({
     []
   );
 
+  const emojiMap = {
+    happy: "😊",
+    joy: "😊",
+    smile: "😊",
+    sad: "😢",
+    unhappy: "😢",
+    cry: "😢",
+    party: "🎉",
+    celebration: "🎉",
+    event: "🎉",
+    love: "❤️",
+    heart: "❤️",
+    angry: "😠",
+    mad: "😠",
+    food: "🍔",
+    eat: "🍔",
+    drink: "🥤",
+    beverage: "🥤",
+    music: "🎵",
+    concert: "🎵",
+    sports: "⚽",
+    game: "⚽",
+    run: "🏃",
+    walk: "🚶",
+    travel: "✈️",
+    flight: "✈️",
+    car: "🚗",
+    drive: "🚗",
+    book: "📚",
+    read: "📚",
+    water: "💧",
+    swim: "🏊",
+    beach: "🏖️",
+    mountain: "🏔️",
+    hike: "🥾",
+    nature: "🌳",
+  };
+
+  function getEmoji(word) {
+    return emojiMap[word.toLowerCase()] || "";
+  }
+
   return (
     <APIProvider apiKey={MAPS_KEY}>
       <div
@@ -130,6 +174,8 @@ export default function MapComponent({
 
           {events.map((event, idx) =>
             event.location &&
+            event.tags &&
+            event.tags.length > 0 &&
             typeof event.location.latitude === "number" &&
             typeof event.location.longitude === "number" ? (
               <AdvancedMarkerWithRef
@@ -140,7 +186,14 @@ export default function MapComponent({
                 }}
                 onMarkerClick={(marker) => onMarkerClick(event.id, marker)}
                 title={event.title}
-              />
+              >
+                <Pin
+                  glyph={`${emojiMap[event.tags[0].name.toLowerCase()] || "❓"}`}
+                  background={"white"}
+                  glyphColor={"white"}
+                  borderColor={"#000"}
+                />
+              </AdvancedMarkerWithRef>
             ) : null
           )}
 
