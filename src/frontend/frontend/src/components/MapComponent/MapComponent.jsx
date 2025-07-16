@@ -138,10 +138,6 @@ export default function MapComponent({
     nature: "🌳",
   };
 
-  function getEmoji(word) {
-    return emojiMap[word.toLowerCase()] || "";
-  }
-
   return (
     <APIProvider apiKey={MAPS_KEY}>
       <div
@@ -188,7 +184,9 @@ export default function MapComponent({
                 title={event.title}
               >
                 <Pin
-                  glyph={`${emojiMap[event.tags[0].name.toLowerCase()] || "❓"}`}
+                  glyph={`${
+                    emojiMap[event.tags[0].name.toLowerCase()] || "❓"
+                  }`}
                   background={"white"}
                   glyphColor={"white"}
                   borderColor={"#000"}
