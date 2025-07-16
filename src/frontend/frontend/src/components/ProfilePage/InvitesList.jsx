@@ -33,7 +33,7 @@ export default function InvitesList() {
         <Link to={`/plan/${invite.plans.id}`} key={invite.id}>
           <div
             key={invite.id}
-            className="flex items-center justify-between bg-[var(--card)] text-[var(--card-foreground)] border border-[var(--border)] rounded-xl shadow p-4"
+            className="flex items-center justify-between bg-[var(--card)] text-[var(--card-foreground)] border border-[var(--border)] rounded-xl shadow p-4 mb-4"
           >
             <span className="font-semibold text-[var(--primary)]">
               {invite.plans.title}

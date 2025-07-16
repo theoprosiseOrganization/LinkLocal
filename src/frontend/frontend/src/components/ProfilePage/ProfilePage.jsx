@@ -142,143 +142,142 @@ export default function ProfilePage() {
 
   return (
     <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
-    <Layout>
-      <div className="profilepage-vertical">
-        {/* Top Section: User Info */}
-        <div className="profilepage-top">
-          {userData ? (
-            <div className="profile-card-horizontal">
-              <div className="profile-avatar">
-                {userData.avatar ? (
-                  <img
-                    src={userData.avatar}
-                    alt="Profile"
-                    style={{
-                      width: 80,
-                      height: 80,
-                      borderRadius: "50%",
-                      objectFit: "cover",
-                    }}
-                  />
-                ) : userData.name ? (
-                  userData.name[0].toUpperCase()
-                ) : (
-                  "?"
-                )}
+      <Layout>
+        <div className="profilepage-vertical">
+          <div className="profilepage-top">
+            {userData ? (
+              <div className="profile-card-horizontal">
+                <div className="profile-avatar">
+                  {userData.avatar ? (
+                    <img
+                      src={userData.avatar}
+                      alt="Profile"
+                      style={{
+                        width: 80,
+                        height: 80,
+                        borderRadius: "50%",
+                        objectFit: "cover",
+                      }}
+                    />
+                  ) : userData.name ? (
+                    userData.name[0].toUpperCase()
+                  ) : (
+                    "?"
+                  )}
+                </div>
+                <div className="profile-info-horizontal">
+                  <h1 className="profile-title">Your Profile</h1>
+                  <h2>{userData.name}</h2>
+                  <p>{userData.email}</p>
+                  <p>{userData.location.address}</p>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" className="edit-profile-btn">
+                        Edit Profile
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[525px] max-h-[90vw] overflow-y-auto">
+                      <DialogHeader>
+                        <DialogTitle>Edit Profile</DialogTitle>
+                        <DialogDescription>
+                          Make changes to your profile here. Click save when
+                          you&apos;re done.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <form onSubmit={handleProfileUpdate}>
+                        <div className="grid gap-4">
+                          <div className="grid gap-3">
+                            <Label htmlFor="username-1">Username</Label>
+                            <Input
+                              id="username-1"
+                              name="username"
+                              value={editName}
+                              onChange={(e) => setEditName(e.target.value)}
+                            />
+                          </div>
+                          <div className="grid gap-3">
+                            <Label htmlFor="location-1">Profile Picture</Label>
+                            <Input
+                              id="picture"
+                              type="file"
+                              accept="image/*"
+                              ref={fileInputRef}
+                            />
+                          </div>
+                          <div className="grid gap-2">
+                            <Label htmlFor="location-1">Location</Label>
+                            <LocationAutocomplete
+                              onPlaceSelect={(place) => {
+                                setEditLocation({
+                                  address: place.Dg.formattedAddress,
+                                  latitude: place.Dg.location.lat,
+                                  longitude: place.Dg.location.lng,
+                                });
+                              }}
+                            />
+                          </div>
+                          <div className="grid gap-3">
+                            <Label>Hobbies/Interests:</Label>
+                            <TagsSearch
+                              tags={allTags}
+                              value={editTags}
+                              onTagSelect={(selectedTagIds) =>
+                                setEditTags(selectedTagIds)
+                              }
+                              onAddTag={(newTag) => {
+                                if (newTag && !editTags.includes(newTag)) {
+                                  setEditTags([...editTags, newTag]);
+                                }
+                                // Add the new tag to allTags if not already present
+                                if (
+                                  newTag &&
+                                  !allTags.some(
+                                    (tag) =>
+                                      tag.name.toLowerCase() ===
+                                      newTag.toLowerCase()
+                                  )
+                                ) {
+                                  setAllTags([
+                                    ...allTags,
+                                    { id: newTag, name: newTag }, // Use name as id for new tags (until backend assigns real id)
+                                  ]);
+                                }
+                              }}
+                            />
+                          </div>
+                        </div>
+                        <div className="mt-6 flex justify-end gap-2">
+                          <DialogClose asChild>
+                            <Button variant="outline">Cancel</Button>
+                          </DialogClose>
+                          <DialogClose asChild>
+                            <Button type="submit">Save changes</Button>
+                          </DialogClose>
+                        </div>
+                      </form>
+                    </DialogContent>
+                  </Dialog>
+                </div>
               </div>
-              <div className="profile-info-horizontal">
-                <h1 className="profile-title">Your Profile</h1>
-                <h2>{userData.name}</h2>
-                <p>{userData.email}</p>
-                <p>{userData.location.address}</p>
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button variant="outline" className="edit-profile-btn">
-                      Edit Profile
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="sm:max-w-[525px] max-h-[90vw] overflow-y-auto">
-                <DialogHeader>
-                  <DialogTitle>Edit Profile</DialogTitle>
-                  <DialogDescription>
-                    Make changes to your profile here. Click save when
-                    you&apos;re done.
-                  </DialogDescription>
-                </DialogHeader>
-                <form onSubmit={handleProfileUpdate}>
-                  <div className="grid gap-4">
-                    <div className="grid gap-3">
-                      <Label htmlFor="username-1">Username</Label>
-                      <Input
-                        id="username-1"
-                        name="username"
-                        value={editName}
-                        onChange={(e) => setEditName(e.target.value)}
-                      />
-                    </div>
-                    <div className="grid gap-3">
-                      <Label htmlFor="location-1">Profile Picture</Label>
-                      <Input
-                        id="picture"
-                        type="file"
-                        accept="image/*"
-                        ref={fileInputRef}
-                      />
-                    </div>
-                    <div className="grid gap-2">
-                      <Label htmlFor="location-1">Location</Label>
-                      <LocationAutocomplete
-                        onPlaceSelect={(place) => {
-                          setEditLocation({
-                            address: place.Dg.formattedAddress,
-                            latitude: place.Dg.location.lat,
-                            longitude: place.Dg.location.lng,
-                          });
-                        }}
-                      />
-                    </div>
-                    <div className="grid gap-3">
-                      <Label>Hobbies/Interests:</Label>
-                      <TagsSearch
-                        tags={allTags}
-                        value={editTags}
-                        onTagSelect={(selectedTagIds) =>
-                          setEditTags(selectedTagIds)
-                        }
-                        onAddTag={(newTag) => {
-                          if (newTag && !editTags.includes(newTag)) {
-                            setEditTags([...editTags, newTag]);
-                          }
-                          // Add the new tag to allTags if not already present
-                          if (
-                            newTag &&
-                            !allTags.some(
-                              (tag) =>
-                                tag.name.toLowerCase() === newTag.toLowerCase()
-                            )
-                          ) {
-                            setAllTags([
-                              ...allTags,
-                              { id: newTag, name: newTag }, // Use name as id for new tags (until backend assigns real id)
-                            ]);
-                          }
-                        }}
-                      />
-                    </div>
-                  </div>
-                  <div className="mt-6 flex justify-end gap-2">
-                    <DialogClose asChild>
-                      <Button variant="outline">Cancel</Button>
-                    </DialogClose>
-                    <DialogClose asChild>
-                      <Button type="submit">Save changes</Button>
-                    </DialogClose>
-                  </div>
-                </form>
-              </DialogContent>
-                </Dialog>
+            ) : (
+              <div>No User Data Found.</div>
+            )}
+          </div>
+          <div className="profilepage-bottom">
+            <section className="events-section">
+              <h2 className="events-title">Your Events</h2>
+              <div className="events-carousel-container">
+                <HorizontalEvents events={userEvents} />
               </div>
-            </div>
-          ) : (
-            <div>No User Data Found.</div>
-          )}
+              <CreateEventButton />
+            </section>
+            <section className="invites-section">
+              <h2 className="invites-title">Your Invites</h2>
+              <InvitesList />
+            </section>
+          </div>
         </div>
-        {/* Bottom Section: Horizontal Events */}
-        <div className="profilepage-bottom">
-          <section className="events-section">
-            <h2 className="events-title">Your Events</h2>
-            <div className="events-carousel-container">
-              <HorizontalEvents events={userEvents} />
-            </div>
-            <CreateEventButton />
-          </section>
-          <section className="invites-section">
-            <h2 className="invites-title">Your Invites</h2>
-            <InvitesList />
-          </section>
-        </div>
-      </div>
-    </Layout>
-  </APIProvider>
+      </Layout>
+    </APIProvider>
   );
 }

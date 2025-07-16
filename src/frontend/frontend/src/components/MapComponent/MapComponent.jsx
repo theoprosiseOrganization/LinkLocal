@@ -128,7 +128,6 @@ export default function MapComponent({
         >
           <UserLocationMarker />
 
-          {/* Event markers */}
           {events.map((event, idx) =>
             event.location &&
             typeof event.location.latitude === "number" &&

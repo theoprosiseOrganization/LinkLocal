@@ -166,7 +166,7 @@
 .events-carousel-container {
   width: 100%;
   border-radius: 16px;
-  padding: 24px 0;
+  padding: 24px;
   margin-bottom: 1.5rem;
   display: flex;
   flex-direction: column;
