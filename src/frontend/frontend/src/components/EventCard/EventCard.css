@@ -1,15 +1,33 @@
 .event-card {
-  background: #1a202c;
-  color: #f7fafc;
-  border: 1px solid #2d3748;
+  background: var(--card);
+  color: var(--card-foreground);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.2s, border-color 0.2s;
 }
 
-.event-card .card-title,
-.event-card .card-description,
-.event-card .card-content {
-  color: #f7fafc;
+.card-title,
+.card-description,
+.card-content {
+  color: var(--card-foreground);
 }
 
-.event-card-button{
-    color: white;
+.event-card:hover {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  border-color: var(--primary);
+}
+
+.event-card-button {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border: 1px solid var(--primary);
+  border-radius: 8px;
+  padding: 0.5rem 1.2rem;
+  transition: background 0.2s, color 0.2s;
+}
+
+.event-card-button:hover {
+  background: var(--primary-foreground);
+  color: var(--primary);
 }

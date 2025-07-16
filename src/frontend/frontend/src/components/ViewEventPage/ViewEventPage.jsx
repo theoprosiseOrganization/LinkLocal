@@ -116,111 +116,110 @@ export default function ViewEventPage() {
   }
   return (
     <Layout>
-      <div className="view-event-page max-w-2xl mx-auto p-4">
-        <h1 className="text-2xl font-bold mb-2">{event.title}</h1>
-        <div className="flex items-center gap-2 mb-4">
+      <div className="view-event-page max-w-3xl mx-auto mt-10 bg-[var(--card)] text-[var(--card-foreground)] rounded-xl shadow-lg border border-[var(--border)] p-8">
+        <h1 className="text-3xl font-bold mb-4 text-[var(--primary)]">
+          {event.title}
+        </h1>
+        <div className="flex items-center gap-3 mb-6">
           <Link
             to={`/view-user/${event.user.id}`}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              textDecoration: "none",
-              color: "inherit",
-              gap: "0.5rem",
-              cursor: "pointer",
-            }}
-            className="hover:underline focus:outline-none"
+            className="flex items-center gap-2 hover:underline focus:outline-none"
           >
             {event.user.avatar ? (
               <img
                 src={event.user.avatar}
                 alt="Profile"
-                style={{
-                  width: 32,
-                  height: 32,
-                  borderRadius: "50%",
-                  objectFit: "cover",
-                }}
+                className="w-10 h-10 rounded-full object-cover"
               />
             ) : event.user.name ? (
-              <span
-                style={{
-                  display: "inline-flex",
-                  width: 32,
-                  height: 32,
-                  borderRadius: "50%",
-                  background: "#ccc",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontWeight: "bold",
-                  fontSize: 16,
-                }}
-              >
+              <span className="w-10 h-10 rounded-full bg-[var(--muted)] flex items-center justify-center font-bold text-lg text-[var(--muted-foreground)]">
                 {event.user.name[0].toUpperCase()}
               </span>
             ) : (
               "?"
             )}
-            <span className="text-gray-400">{event.user.name}</span>
+            <span className="text-[var(--muted-foreground)] font-medium">
+              {event.user.name}
+            </span>
           </Link>
           <button
             onClick={handleLike}
             disabled={!sessionUserId || likeLoading}
-            className={`ml-4 px-3 py-1 rounded ${
-              hasLiked ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-700"
+            className={`ml-4 px-4 py-2 rounded-lg border transition ${
+              hasLiked
+                ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)]"
+                : "bg-[var(--background)] text-[var(--foreground)] border-[var(--border)] hover:bg-[var(--muted)]"
             }`}
           >
             {hasLiked ? "Unlike" : "Like"} ({likes.length})
           </button>
         </div>
         {event.images && event.images.length > 0 && (
-          <HorizontalScroll images={event.images} />
+          <div className="mb-6">
+            <HorizontalScroll images={event.images} />
+          </div>
         )}
-        <div className="mt-4">
-          <div>
-            <strong>Description:</strong>{" "}
-            {event.textDescription || "No description"}
+        <div className="bg-[var(--background)] rounded-lg border border-[var(--border)] p-6 shadow-sm">
+          <div className="mb-2">
+            <span className="font-semibold text-[var(--foreground)]">
+              Description:
+            </span>{" "}
+            <span className="text-[var(--muted-foreground)]">
+              {event.textDescription || "No description"}
+            </span>
+          </div>
+          <div className="mb-2">
+            <span className="font-semibold text-[var(--foreground)]">
+              Location:
+            </span>{" "}
+            <span className="text-[var(--muted-foreground)]">
+              {event.location?.address || "No location specified"}
+            </span>
+          </div>
+          <div className="mb-2">
+            <span className="font-semibold text-[var(--foreground)]">
+              Time:
+            </span>{" "}
+            <span className="text-[var(--muted-foreground)]">
+              {event.startTime && event.endTime ? (
+                <>
+                  {new Date(event.startTime).toLocaleString(undefined, {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}{" "}
+                  &ndash;{" "}
+                  {new Date(event.endTime).toLocaleString(undefined, {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </>
+              ) : (
+                "No time specified"
+              )}
+            </span>
           </div>
           <div>
-            <strong>Location:</strong>{" "}
-            {event.location?.address || "No location specified"}
-          </div>
-          <div>
-            <strong>Time:</strong>{" "}
-            {event.startTime && event.endTime ? (
-              <>
-                {new Date(event.startTime).toLocaleString(undefined, {
-                  year: "numeric",
-                  month: "short",
-                  day: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}{" "}
-                &ndash;{" "}
-                {new Date(event.endTime).toLocaleString(undefined, {
-                  year: "numeric",
-                  month: "short",
-                  day: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </>
+            <span className="font-semibold text-[var(--foreground)]">
+              Tags:
+            </span>{" "}
+            {event.tags && event.tags.length > 0 ? (
+              event.tags.map((tag) => (
+                <span
+                  key={tag.id}
+                  className="inline-block bg-[var(--primary)] text-[var(--primary-foreground)] text-xs font-semibold mr-2 px-2.5 py-0.5 rounded"
+                >
+                  {tag.name}
+                </span>
+              ))
             ) : (
-              "No time specified"
+              <span className="text-[var(--muted-foreground)]">No tags</span>
             )}
-          </div>
-          <div>
-            <strong>Tags:</strong>{" "}
-            {event.tags && event.tags.length > 0
-              ? event.tags.map((tag) => (
-                  <span
-                    key={tag.id}
-                    className="inline-block bg-blue-100 text-blue-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded"
-                  >
-                    {tag.name}
-                  </span>
-                ))
-              : "No tags"}
           </div>
         </div>
       </div>

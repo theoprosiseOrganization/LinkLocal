@@ -1,6 +1,28 @@
-.homepage-split {
+.homepage-vertical {
   display: flex;
-  height: 100vh;
+  flex-direction: column;
+  min-height: 100vh;
+  box-sizing: border-box;
+  background: var(--card);
+  color: var(--card-foreground);
+}
+
+.homepage-top {
+  width: 100%;
+  background: var(--background);
+  padding: 32px 0 20px 0;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary);
+  letter-spacing: 0.01em;
+}
+
+.homepage-bottom {
+  display: flex;
+  flex: 1;
+  height: 0;
 }
 
 .homepage-left,
@@ -18,14 +40,59 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
   overflow: hidden;
 }
 
-.vertical-events-container {
-  height: 80vh;
+.homepage-bottom-overlay {
+  position: relative;
   width: 100%;
+  height: calc(100vh - 90px);
+  min-height: 400px;
+  overflow: hidden;
+}
+
+.homepage-bottom-overlay > .MapComponent-root {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.homepage-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
+  pointer-events: none;
+}
+
+.vertical-events-container {
+  margin-top: 80px;
+  width: 80vw;
+  max-width: 900px;
+  pointer-events: auto;
+  background: var(--card);
+  color: var(--card-foreground);
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  padding: 32px 56px;
+  height: auto;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  align-items: stretch;
+  border: 1px solid var(--border);
+}
+
+.MapComponent-root {
+  background: transparent;
 }

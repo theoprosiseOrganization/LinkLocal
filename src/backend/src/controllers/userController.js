@@ -12,7 +12,6 @@ const prisma = new PrismaClient();
 const { createClient } = require("@supabase/supabase-js");
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
 const RECOMMENDATION_SERVICE_URL = process.env.RECOMMENDATION_SERVICE_URL;
 
 // User CRUD
@@ -498,6 +497,8 @@ exports.getSuggestedUsers = async (req, res) => {
 };
 
 exports.createPlan = async (req, res) => {
+  const supabase = createClient(supabaseUrl, supabaseKey);
+
   try {
     const ownerId = req.params.id;
     const { title, eventIds, routeData } = req.body;
@@ -525,6 +526,8 @@ exports.createPlan = async (req, res) => {
 };
 
 exports.inviteUsers = async (req, res) => {
+  const supabase = createClient(supabaseUrl, supabaseKey);
+
   try {
     const { planId } = req.params;
     const { recipientIds } = req.body;
@@ -550,6 +553,8 @@ exports.inviteUsers = async (req, res) => {
 };
 
 exports.listInvitations = async (req, res) => {
+  const supabase = createClient(supabaseUrl, supabaseKey);
+
   try {
     const recipientId = req.params.id;
     const { data, error } = await supabase
@@ -570,6 +575,8 @@ exports.listInvitations = async (req, res) => {
 };
 
 exports.getPlanById = async (req, res) => {
+  const supabase = createClient(supabaseUrl, supabaseKey);
+
   try {
     const planId = req.params.planId;
     const { data, error } = await supabase

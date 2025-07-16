@@ -4,8 +4,10 @@
  * This component serves as the main landing page of the application.
  * It displays a map on the left side and a list of events on the right side.
  * It currently displays all events fetched from the API.
- * The map is currently a placeholder and will be replaced with an actual map implementation.
- *
+ * The map shows the user's current location if available.
+ * The events are displayed in a horizontal list format.
+ * 
+ * 
  * @component
  * @example
  * <HomePage />
@@ -15,12 +17,13 @@
 import Layout from "../Layout/Layout";
 import MapComponent from "../MapComponent/MapComponent";
 import "./HomePage.css";
-import VerticalEvents from "../VerticalEvents/VerticalEvents";
+import HorizontalEvents from "../VerticalEvents/HorizontalEvents";
 import { getAllEvents } from "../../api";
 import React, { useEffect, useState } from "react";
 
 export default function HomePage() {
   const [eventsToDisplay, setEventsToDisplay] = useState([]);
+  const [currentLocation, setCurrentLocation] = useState(null);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -34,15 +37,36 @@ export default function HomePage() {
     fetchEvents();
   }, []);
 
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          setCurrentLocation({
+            lat: pos.coords.latitude,
+            lng: pos.coords.longitude,
+          });
+        },
+        (err) => {
+          // Handle error or fallback
+        }
+      );
+    }
+  }, []);
   return (
     <Layout>
-      <div className="homepage-split">
-        <div className="homepage-left">
-          <MapComponent events={eventsToDisplay}/>
+      <div className="homepage-vertical">
+        <div className="homepage-top">
+          <h1>Welcome to LinkLocal!</h1>
         </div>
-        <div className="homepage-right">
-          <div className="vertical-events-container">
-          <VerticalEvents events={eventsToDisplay} />
+        <div className="homepage-bottom-overlay">
+          <MapComponent events={eventsToDisplay} currentLocation={currentLocation}/>
+          <div className="homepage-overlay">
+            <div className="vertical-events-container">
+              <h2 className="text-xl font-bold mb-4 text-[var(--primary)] text-center">
+                View Some Nearby Events
+              </h2>
+              <HorizontalEvents events={eventsToDisplay} />
+            </div>
           </div>
         </div>
       </div>

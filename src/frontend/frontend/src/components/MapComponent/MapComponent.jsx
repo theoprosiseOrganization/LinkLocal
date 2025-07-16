@@ -23,8 +23,11 @@ import {
   AdvancedMarker,
   useAdvancedMarkerRef,
   InfoWindow,
+  Pin,
 } from "@vis.gl/react-google-maps";
 import ViewEventButton from "../ViewEventPage/ViewEventButton";
+import UserLocationMarker from "./UserLocationMarker";
+import { hi } from "date-fns/locale";
 
 const MAPS_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
@@ -58,7 +61,7 @@ export function AdvancedMarkerWithRef(props) {
     </AdvancedMarker>
   );
 }
-// Provides framework for adding user locations - not implemented yet
+
 export default function MapComponent({
   events = [],
   users = [],
@@ -97,9 +100,50 @@ export default function MapComponent({
     []
   );
 
+  const emojiMap = {
+    happy: "😊",
+    joy: "😊",
+    smile: "😊",
+    sad: "😢",
+    unhappy: "😢",
+    cry: "😢",
+    party: "🎉",
+    celebration: "🎉",
+    event: "🎉",
+    love: "❤️",
+    heart: "❤️",
+    angry: "😠",
+    mad: "😠",
+    food: "🍔",
+    eat: "🍔",
+    drink: "🥤",
+    beverage: "🥤",
+    music: "🎵",
+    concert: "🎵",
+    sports: "⚽",
+    game: "⚽",
+    run: "🏃",
+    walk: "🚶",
+    travel: "✈️",
+    flight: "✈️",
+    car: "🚗",
+    drive: "🚗",
+    book: "📚",
+    read: "📚",
+    water: "💧",
+    swim: "🏊",
+    beach: "🏖️",
+    mountain: "🏔️",
+    hike: "🥾",
+    nature: "🌳",
+  };
+
   return (
     <APIProvider apiKey={MAPS_KEY}>
-      <div style={{ width: "100%", height: "100%" }}>
+      <div
+        className="MapComponent-root"
+        style={{ width: "100%", height: "100%" }}
+      >
         <Map
           mapId="4f917a8c04fdd7367b6986a1"
           style={{ width: "100%", height: "100%" }}
@@ -122,20 +166,12 @@ export default function MapComponent({
             ],
           }}
         >
-          {/* Current location marker */}
-          {currentLocation && (
-            <AdvancedMarker
-              position={{
-                lat: currentLocation.lat,
-                lng: currentLocation.lng,
-              }}
-              title="Your Location"
-            />
-          )}
+          <UserLocationMarker />
 
-          {/* Event markers */}
           {events.map((event, idx) =>
             event.location &&
+            event.tags &&
+            event.tags.length > 0 &&
             typeof event.location.latitude === "number" &&
             typeof event.location.longitude === "number" ? (
               <AdvancedMarkerWithRef
@@ -146,7 +182,16 @@ export default function MapComponent({
                 }}
                 onMarkerClick={(marker) => onMarkerClick(event.id, marker)}
                 title={event.title}
-              />
+              >
+                <Pin
+                  glyph={`${
+                    emojiMap[event.tags[0].name.toLowerCase()] || "❓"
+                  }`}
+                  background={"white"}
+                  glyphColor={"white"}
+                  borderColor={"#000"}
+                />
+              </AdvancedMarkerWithRef>
             ) : null
           )}
 
