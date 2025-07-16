@@ -370,13 +370,13 @@ export async function eventsWithinPolygon(coords) {
   return response;
 }
 
-export async function getOptimalRoute(start, events) {
+export async function getOptimalRoute(start, events, transportType) {
   const res = await fetch(`${URL}/events/optimal-route`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ start, events }),
+    body: JSON.stringify({ start, events, transportType }),
     credentials: "include",
   });
   const response = await res.json();

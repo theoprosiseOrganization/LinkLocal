@@ -57,6 +57,7 @@ export default function MapPlan() {
   const [planTitle, setPlanTitle] = useState("My Event Plan");
   const [isEventSelectOpen, setIsEventSelectOpen] = useState(false);
   const [tempSelectedEventIds, setTempSelectedEventIds] = useState([]);
+  const [transportType, setTransportType] = useState("DRIVE");
 
   const filteredEvents = eventsInPoly.filter((event) => {
     if (!startDate && !endDate) return true;
@@ -105,7 +106,11 @@ export default function MapPlan() {
       lat: e.location.latitude,
       lng: e.location.longitude,
     }));
-    const result = await getOptimalRoute(userLocation, waypoints);
+    const result = await getOptimalRoute(
+      userLocation,
+      waypoints,
+      transportType
+    );
     setRouteData(result.routes?.[0] || null);
     if (drawnPolygon.current) {
       drawnPolygon.current.setMap(null); // Clear polygon to highlight the route
@@ -136,6 +141,14 @@ export default function MapPlan() {
     setIsEventSelectOpen(false);
   };
 
+  const generateEventPlan = () => {
+    if (filteredEvents.length === 0) {
+      alert("No events found in the selected area.");
+      return;
+    }
+    generateSelectedEventPlan(tempSelectedEventIds);
+  };
+
   const handleTempSelectEvent = (eventId) => {
     setTempSelectedEventIds((prev) =>
       prev.includes(eventId)
@@ -160,16 +173,13 @@ export default function MapPlan() {
               onPolygonDrawn={(poly) => (drawnPolygon.current = poly)}
             />
             {routeData && (
-              <Route
-                route={routeData}
-                event_ids={selectedEventIds}
-              />
+              <Route route={routeData} event_ids={selectedEventIds} />
             )}
-            <UserLocationMarker/>
+            <UserLocationMarker />
           </APIProvider>
         </div>
         <p className="mb-2 text-[var(--foreground)] font-medium">
-          Step 2: What period are you available for your events?
+          Step 2: Select your availability period for the events.
         </p>
         <div className="flex gap-4 mb-4">
           <div>
@@ -192,7 +202,8 @@ export default function MapPlan() {
           </div>
         </div>
         <p className="mb-2 text-[var(--foreground)] font-medium">
-          Step 3: Choose which events from your criteria you want to attend:
+          Step 3: Choose which events to attend from your selected criteria or
+          generate a plan that matches your criteria.
         </p>
         <Button
           onClick={openEventSelectModal}
@@ -200,6 +211,7 @@ export default function MapPlan() {
         >
           Choose Events
         </Button>
+        <Button onClick={generateEventPlan}>Generate Events</Button>
         <Dialog open={isEventSelectOpen} onOpenChange={setIsEventSelectOpen}>
           <DialogContent className="sm:max-w-[700px] bg-[var(--card)] text-[var(--card-foreground)] border border-[var(--border)] rounded-xl shadow">
             <DialogHeader>
@@ -304,10 +316,22 @@ export default function MapPlan() {
           events:
         </p>
         <Button
-          onClick={getRoute}
+          onClick={() => {
+            setTransportType("DRIVE");
+            getRoute();
+          }}
           className="bg-[var(--primary)] text-[var(--primary-foreground)] hover:bg-[var(--primary-foreground)] hover:text-[var(--primary)] transition"
         >
-          Calculate
+          Calculate Driving
+        </Button>
+        <Button
+          onClick={() => {
+            setTransportType("WALK");
+            getRoute();
+          }}
+          className="bg-[var(--primary)] text-[var(--primary-foreground)] hover:bg-[var(--primary-foreground)] hover:text-[var(--primary)] transition"
+        >
+          Calculate Walking
         </Button>
         <Button
           onClick={saveAndShare}
