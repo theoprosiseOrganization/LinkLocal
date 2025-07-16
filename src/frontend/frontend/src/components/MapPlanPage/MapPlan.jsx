@@ -25,6 +25,7 @@ import { APIProvider } from "@vis.gl/react-google-maps";
 import { Label } from "../../../components/ui/label";
 import { Input } from "../../../components/ui/input";
 import { Button } from "../../../components/ui/button";
+import { useUserLocation } from "../../Context/UserLocationContext";
 import {
   Dialog,
   DialogContent,
@@ -57,6 +58,7 @@ export default function MapPlan() {
   const [planTitle, setPlanTitle] = useState("My Event Plan");
   const [isEventSelectOpen, setIsEventSelectOpen] = useState(false);
   const [tempSelectedEventIds, setTempSelectedEventIds] = useState([]);
+  const { userLocation } = useUserLocation();
 
   const filteredEvents = eventsInPoly.filter((event) => {
     if (!startDate && !endDate) return true;
@@ -154,15 +156,19 @@ export default function MapPlan() {
           Step 1: Draw your area for events:
         </p>
         <div className="h-[55vh] mb-4 w-full rounded-lg overflow-hidden">
-        <APIProvider apiKey={MAPS_KEY}>
-          <MapWithDrawing
-            onEventsFound={setEventsInPoly}
-            onPolygonDrawn={(poly) => (drawnPolygon.current = poly)}
-          />
-          {routeData && (
-            <Route route={routeData} event_ids={selectedEventIds} />
-          )}
-        </APIProvider>
+          <APIProvider apiKey={MAPS_KEY}>
+            <MapWithDrawing
+              onEventsFound={setEventsInPoly}
+              onPolygonDrawn={(poly) => (drawnPolygon.current = poly)}
+            />
+            {routeData && (
+              <Route
+                route={routeData}
+                event_ids={selectedEventIds}
+                userLocation={userLocation}
+              />
+            )}
+          </APIProvider>
         </div>
         <p className="mb-2 text-[var(--foreground)] font-medium">
           Step 2: What period are you available for your events?
