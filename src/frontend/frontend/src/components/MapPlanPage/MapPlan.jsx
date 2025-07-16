@@ -153,6 +153,7 @@ export default function MapPlan() {
         <p className="mb-2 text-[var(--foreground)] font-medium">
           Step 1: Draw your area for events:
         </p>
+        <div className="h-[55vh] mb-4 w-full rounded-lg overflow-hidden">
         <APIProvider apiKey={MAPS_KEY}>
           <MapWithDrawing
             onEventsFound={setEventsInPoly}
@@ -162,6 +163,7 @@ export default function MapPlan() {
             <Route route={routeData} event_ids={selectedEventIds} />
           )}
         </APIProvider>
+        </div>
         <p className="mb-2 text-[var(--foreground)] font-medium">
           Step 2: What period are you available for your events?
         </p>
