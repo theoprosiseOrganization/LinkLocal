@@ -16,7 +16,7 @@ import { logoutUser } from "../../api";
 
 export default function NavHeader({ darkMode, setDarkMode }) {
   return (
-    <div className="nav-header" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+    <div className="nav-header" style={{ display: "flex", alignItems: "center" }}>
       <NavigationMenu>
         <NavigationMenuList>
           <NavigationMenuItem>

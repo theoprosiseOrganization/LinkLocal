@@ -1,19 +1,20 @@
 import NavHeader from "../NavHeader/NavHeader";
 import React, { useEffect, useState } from "react";
-import { Switch } from "../../../components/ui/switch";
-import { Label } from "../../../components/ui/label";
 
 export default function Layout({ children }) {
   const [darkMode, setDarkMode] = useState(() => {
-    if (typeof window !== "undefined") {
-      return (
-        localStorage.getItem("theme") === "dark" ||
-        (window.matchMedia &&
-          window.matchMedia("(prefers-color-scheme: dark)").matches)
-      );
+  if (typeof window !== "undefined") {
+    const storedTheme = localStorage.getItem("theme");
+    if (storedTheme) {
+      return storedTheme === "dark";
     }
-    return false;
-  });
+    return (
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches
+    );
+  }
+  return false;
+});
 
   useEffect(() => {
     if (darkMode) {
