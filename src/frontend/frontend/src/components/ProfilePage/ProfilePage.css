@@ -81,13 +81,11 @@
   justify-content: center;
 }
 
-/* ...existing code... */
-
 .profilepage-vertical {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background: linear-gradient(135deg, #f0f4f8 0%, #e0e7ef 100%);
+  background: var(--background);
 }
 
 .profilepage-top {
@@ -95,63 +93,28 @@
   justify-content: center;
   align-items: center;
   padding: 2rem 0 1rem 0;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--border);
+  background: var(--background);
 }
 
 .profile-card-horizontal {
   display: flex;
   align-items: center;
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.07);
-  padding: 2rem 2.5rem;
-  min-width: 320px;
-  gap: 2rem;
-}
-
-.profile-info-horizontal {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.5rem;
-}
-
-.profilepage-bottom {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 2rem 0;
-  gap: 2rem;
-}
-.events-carousel-container {
-  width: 100%;
-  max-width: 900px;
-  border-radius: 16px;
-  padding: 24px 32px;
-  margin-bottom: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  box-sizing: border-box;
-}
-
-.profile-card {
   background: var(--card);
   color: var(--card-foreground);
   border-radius: 16px;
   box-shadow: 0 2px 16px rgba(0, 0, 0, 0.07);
   border: 1px solid var(--border);
   padding: 2rem 2.5rem;
-  min-width: 240px;
-  text-align: center;
-  margin-bottom: 2rem;
+  min-width: 320px;
+  gap: 2rem;
   transition: box-shadow 0.2s;
 }
-.profile-card:hover {
+.profile-card-horizontal:hover {
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
   border-color: var(--primary);
 }
+
 .profile-avatar {
   width: 80px;
   height: 80px;
@@ -164,15 +127,107 @@
   justify-content: center;
   margin: 0 auto 1rem auto;
   font-weight: 700;
+  object-fit: cover;
+  overflow: hidden;
+  border: 2px solid var(--primary);
 }
-.profile-info h2 {
+
+.profile-info-horizontal {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.profile-title {
+  color: var(--primary);
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.profile-info-horizontal h2 {
   color: var(--primary);
   font-size: 1.2rem;
   font-weight: 600;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
 }
-.profile-info p {
+
+.profile-info-horizontal p {
   color: var(--muted-foreground);
   font-size: 0.95rem;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.15rem;
+}
+
+.edit-profile-btn {
+  margin-bottom: 1.5rem;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1.2rem;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+.edit-profile-btn:hover {
+  background: var(--secondary);
+  color: var(--secondary-foreground);
+}
+
+.profilepage-bottom {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 0;
+  gap: 2rem;
+  background: var(--background);
+}
+
+.events-section,
+.invites-section {
+  background: var(--card);
+  color: var(--card-foreground);
+  border-radius: 16px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.07);
+  border: 1px solid var(--border);
+  padding: 2rem 2.5rem;
+  width: 100%;
+  max-width: 900px;
+  margin-bottom: 1.5rem;
+}
+
+.events-title,
+.invites-title {
+  color: var(--primary);
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+.events-carousel-container {
+  width: 100%;
+  border-radius: 16px;
+  padding: 24px 0;
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  box-sizing: border-box;
+  background: none;
+  box-shadow: none;
+}
+
+@media (max-width: 700px) {
+  .profile-card-horizontal,
+  .events-section,
+  .invites-section {
+    flex-direction: column;
+    min-width: unset;
+    padding: 1rem;
+  }
+  .profilepage-top {
+    padding: 1rem 0 0.5rem 0;
+  }
 }
