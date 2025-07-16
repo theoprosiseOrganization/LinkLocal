@@ -70,7 +70,7 @@ export default function MapPlan() {
     if (filterEnd && eventStart > filterEnd) return false;
     return true;
   });
-  
+
   // Toggle event selection
   const handleSelectEvent = (eventId) => {
     setSelectedEventIds((prev) =>
@@ -99,13 +99,12 @@ export default function MapPlan() {
       lat: user.location.latitude,
       lng: user.location.longitude,
     };
-    const selectedEvents = filteredEvents.filter((e) =>
-      selectedEventIds.includes(e.id)
-    );
-    const waypoints = selectedEvents.map((e) => ({
-      lat: e.location.latitude,
-      lng: e.location.longitude,
-    }));
+    const waypoints = filteredEvents
+      .filter((e) => selectedEventIds.includes(e.id) && e.location)
+      .map((e) => ({
+        lat: e.location.latitude,
+        lng: e.location.longitude,
+      }));
     const result = await getOptimalRoute(
       userLocation,
       waypoints,
@@ -117,8 +116,8 @@ export default function MapPlan() {
     if (drawnPolygon.current) {
       console.log(drawnPolygon.current);
       drawnPolygon.current.setOptions({
-        fillOpacity: 0.05,
-        strokeOpacity: 0.2,
+        fillOpacity: 0.1,
+        strokeOpacity: 0.3,
       }); // Lower opacity to highlight the route
     }
   };
