@@ -115,9 +115,11 @@ export default function MapPlan() {
     console.log("Route data:", result);
 
     if (drawnPolygon.current) {
-      console.log(drawnPolygon.current)
-      drawnPolygon.current.setMap(null); // Clear polygon to highlight the route
-      drawnPolygon.current = null;
+      console.log(drawnPolygon.current);
+      drawnPolygon.current.setOptions({
+        fillOpacity: 0.05,
+        strokeOpacity: 0.2,
+      }); // Lower opacity to highlight the route
     }
   };
 
