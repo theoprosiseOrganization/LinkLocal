@@ -197,7 +197,7 @@ def compute_features_for_user(user_id: str, candidates: list[str], dist_map: dic
         # get location score
         loc1 = location_map.get(user_id)
         loc2 = location_map.get(candidate)
-        loc_score = location_score(loc1, loc2)
+        loc_score = location_score(loc1, loc2) if loc1 and loc2 else 0
 
         # get preference score
         tags1 = tag_map.get(user_id, [])
@@ -212,4 +212,7 @@ def compute_features_for_user(user_id: str, candidates: list[str], dist_map: dic
             "preference_score": pref_score
         }
     df = pd.DataFrame.from_dict(rows, orient='index')
+    for col in ["friend_score", "location_score", "preference_score"]:
+        if col not in df.columns:
+            df[col] = 0.0
     return df

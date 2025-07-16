@@ -20,7 +20,6 @@ import { AdvancedMarkerWithRef } from "../MapComponent/MapComponent";
 import Polyline from "./Polyline";
 import { getEventById } from "../../api";
 import ViewEventButton from "../ViewEventPage/ViewEventButton";
-import { Info } from "lucide-react";
 
 const Route = ({ route, event_ids }) => {
   const map = useMap();
