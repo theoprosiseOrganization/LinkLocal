@@ -4,12 +4,13 @@
   top: 0;
   left: 0;
   z-index: 100;
-  background: #1a202c;
-  border-bottom: 1px solid #2d3748;
+  background: var(--sidebar, var(--background));
+  border-bottom: 1px solid var(--sidebar-border, var(--border));
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 0.5rem 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
 
 .nav-header .navigation-menu {
@@ -21,19 +22,29 @@
 
 .navigation-menu__link,
 .nav-header a {
-  color: #f7fafc;
+  color: var(--sidebar-foreground, var(--primary-foreground));
   text-decoration: none;
   padding: 0.5rem 1rem;
-  transition: background 0.2s;
+  transition: background 0.2s, color 0.2s;
+  border-radius: 4px;
+  font-weight: 500;
 }
 
 .navigation-menu__link:hover,
 .nav-header a:hover {
-  background: #2d3748;
-  border-radius: 4px;
+  background: var(--sidebar-accent, var(--muted));
+  color: var(--sidebar-accent-foreground, var(--primary));
 }
 
 .trigger-link {
-  background: #2d3748;
+  background: var(--sidebar-accent, var(--muted));
+  color: var(--sidebar-accent-foreground, var(--primary));
   border-radius: 4px;
+  padding: 0.5rem 1rem;
+  transition: background 0.2s, color 0.2s;
+}
+
+.trigger-link:hover {
+  background: var(--primary);
+  color: var(--primary-foreground);
 }
