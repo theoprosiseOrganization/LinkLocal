@@ -25,7 +25,6 @@ import { APIProvider } from "@vis.gl/react-google-maps";
 import { Label } from "../../../components/ui/label";
 import { Input } from "../../../components/ui/input";
 import { Button } from "../../../components/ui/button";
-import { useUserLocation } from "../../Context/UserLocationContext";
 import {
   Dialog,
   DialogContent,
@@ -43,6 +42,7 @@ import {
   getUserFollowers,
 } from "../../api";
 import Route from "./Route";
+import UserLocationMarker from "../MapComponent/UserLocationMarker";
 
 export default function MapPlan() {
   const [eventsInPoly, setEventsInPoly] = useState([]);
@@ -58,7 +58,6 @@ export default function MapPlan() {
   const [planTitle, setPlanTitle] = useState("My Event Plan");
   const [isEventSelectOpen, setIsEventSelectOpen] = useState(false);
   const [tempSelectedEventIds, setTempSelectedEventIds] = useState([]);
-  const { userLocation } = useUserLocation();
 
   const filteredEvents = eventsInPoly.filter((event) => {
     if (!startDate && !endDate) return true;
@@ -165,9 +164,9 @@ export default function MapPlan() {
               <Route
                 route={routeData}
                 event_ids={selectedEventIds}
-                userLocation={userLocation}
               />
             )}
+            <UserLocationMarker/>
           </APIProvider>
         </div>
         <p className="mb-2 text-[var(--foreground)] font-medium">

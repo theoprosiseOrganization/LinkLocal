@@ -25,6 +25,7 @@ import {
   InfoWindow,
 } from "@vis.gl/react-google-maps";
 import ViewEventButton from "../ViewEventPage/ViewEventButton";
+import UserLocationMarker from "./UserLocationMarker";
 
 const MAPS_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
@@ -125,20 +126,7 @@ export default function MapComponent({
             ],
           }}
         >
-          {/* Current location marker */}
-          {currentLocation && (
-            <AdvancedMarker
-              position={{
-                lat: currentLocation.lat,
-                lng: currentLocation.lng,
-              }}
-              title="Your Location"
-              icon={{
-                url: "/humanWaving.png", 
-                scaledSize: { width: 40, height: 40 },
-              }}
-            />
-          )}
+          <UserLocationMarker />
 
           {/* Event markers */}
           {events.map((event, idx) =>
