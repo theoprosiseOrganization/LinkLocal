@@ -7,8 +7,9 @@
   background: var(--card);
   color: var(--card-foreground);
   border-radius: 18px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
 }
+
 .friendspage-left,
 .friendspage-right {
   flex: 1;
@@ -18,14 +19,16 @@
   overflow-y: auto;
   background: var(--background);
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   padding: 1.5rem;
   min-width: 320px;
   border: 1px solid var(--border);
 }
+
 .friendspage-left {
   border-right: 1px solid var(--border);
 }
+
 .friendspage-right {
   border-left: 1px solid var(--border);
 }
@@ -47,4 +50,3 @@
     background: var(--background);
   }
 }
-

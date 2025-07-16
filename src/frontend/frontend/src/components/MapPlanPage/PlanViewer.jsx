@@ -38,7 +38,7 @@ export default function PlanViewer() {
         >
           {plan.title || "Plan Title"}
         </div>
-        <div className="h-[55vh] w-full rounded-lg overflow-hidden">
+        <div className="h-[75vh] w-full rounded-lg overflow-hidden">
           <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
             <Map
               mapId="4f917a8c04fdd7367b6986a1"

@@ -1,3 +1,18 @@
+/**
+ * UserLocationContext.jsx
+ * This context provides the user's current location using the Geolocation API.
+ * It initializes the location state and updates it when the component mounts.
+ * The location is stored in a context that can be accessed by any component in the application.
+ * 
+ * @component
+ * @example
+ * <UserLocationProvider>
+ *  <YourComponent />
+ * </UserLocationProvider>
+ * @returns {JSX.Element} The rendered UserLocationProvider component.
+ * @returns {Object} The context value containing userLocation and setUserLocation.
+ * @returns {Function} useUserLocation - A custom hook to access the user location context
+ */
 import React, { createContext, useContext, useState, useEffect } from "react";
 
 const UserLocationContext = createContext();

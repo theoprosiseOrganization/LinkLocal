@@ -1,3 +1,13 @@
+/**
+ * Layout component for the application.
+ * It includes a navigation header and manages dark mode state.
+ * The dark mode preference is stored in local storage and applied to the body element.
+ * 
+ * @component
+ * @param {Object} props - The properties passed to the component.
+ * @param {React.ReactNode} props.children - The content to be rendered within the layout.
+ * @returns {JSX.Element} The rendered layout component with navigation header and main content area
+ */
 import NavHeader from "../NavHeader/NavHeader";
 import React, { useEffect, useState } from "react";
 

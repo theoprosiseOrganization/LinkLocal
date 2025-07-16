@@ -4,8 +4,10 @@
  * This component serves as the main landing page of the application.
  * It displays a map on the left side and a list of events on the right side.
  * It currently displays all events fetched from the API.
- * The map is currently a placeholder and will be replaced with an actual map implementation.
- *
+ * The map shows the user's current location if available.
+ * The events are displayed in a horizontal list format.
+ * 
+ * 
  * @component
  * @example
  * <HomePage />

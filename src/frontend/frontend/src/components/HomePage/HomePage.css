@@ -19,7 +19,6 @@
   letter-spacing: 0.01em;
 }
 
-
 .homepage-bottom {
   display: flex;
   flex: 1;
@@ -84,7 +83,7 @@
   background: var(--card);
   color: var(--card-foreground);
   border-radius: 18px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
   padding: 32px 56px;
   height: auto;
   display: flex;
@@ -97,5 +96,3 @@
 .MapComponent-root {
   background: transparent;
 }
-
-
