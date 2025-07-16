@@ -26,33 +26,9 @@ export default function Layout({ children }) {
   }, [darkMode]);
 
   return (
-  <>
-    <NavHeader />
-    <div
-      style={{
-        position: "fixed",
-        top: 10,
-        right: 20,
-        zIndex: 1000,
-        display: "flex",
-        alignItems: "center",
-        gap: "0.5rem",
-        background: "var(--color-primary)",
-        padding: "0.5rem 1rem",
-        borderRadius: "0.5rem",
-      }}
-    >
-      <Label htmlFor="dark-mode" style={{ color: "var(--color-primary-foreground)" }}>
-        {darkMode ? "Dark" : "Light"}
-      </Label>
-      <Switch
-        id="dark-mode"
-        checked={darkMode}
-        onCheckedChange={setDarkMode}
-        aria-label="Toggle dark mode"
-      />
-    </div>
-    <main style={{ paddingTop: "50px" }}>{children}</main>
-  </>
-);
+    <>
+      <NavHeader darkMode={darkMode} setDarkMode={setDarkMode} />
+      <main style={{ paddingTop: "50px" }}>{children}</main>
+    </>
+  );
 }

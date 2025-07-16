@@ -6,15 +6,17 @@ import {
   NavigationMenuTrigger,
   NavigationMenuContent,
 } from "../../../components/ui/navigation-menu";
+import { Switch } from "../../../components/ui/switch";
+import { Label } from "../../../components/ui/label";
 
 import "./NavHeader.css";
 
 import { Link } from "react-router-dom";
 import { logoutUser } from "../../api";
 
-export default function NavHeader() {
+export default function NavHeader({ darkMode, setDarkMode }) {
   return (
-    <div className="nav-header">
+    <div className="nav-header" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
       <NavigationMenu>
         <NavigationMenuList>
           <NavigationMenuItem>
@@ -64,6 +66,29 @@ export default function NavHeader() {
           </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "0.5rem",
+          background: "var(--color-primary)",
+          padding: "0.5rem 1rem",
+          borderRadius: "0.5rem",
+        }}
+      >
+        <Label
+          htmlFor="dark-mode"
+          style={{ color: "var(--color-primary-foreground)" }}
+        >
+          {darkMode ? "Dark" : "Light"}
+        </Label>
+        <Switch
+          id="dark-mode"
+          checked={darkMode}
+          onCheckedChange={setDarkMode}
+          aria-label="Toggle dark mode"
+        />
+      </div>
     </div>
   );
 }
