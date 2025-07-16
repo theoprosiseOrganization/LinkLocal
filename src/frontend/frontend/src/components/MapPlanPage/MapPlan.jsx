@@ -19,7 +19,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import Layout from "../Layout/Layout";
 import MapWithDrawing from "./MapWithDrawing";
-import "./MapPlan.css";
 const MAPS_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 import { APIProvider } from "@vis.gl/react-google-maps";
 import { Label } from "../../../components/ui/label";

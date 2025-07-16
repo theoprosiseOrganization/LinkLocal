@@ -1,12 +1,12 @@
 import { useUserLocation } from "../../Context/UserLocationContext";
-import { AdvancedMarkerWithRef } from "./MapComponent";
+import { AdvancedMarker } from "@vis.gl/react-google-maps";
 
 export default function UserLocationMarker() {
   const { userLocation } = useUserLocation();
 
   return (
     userLocation && (
-      <AdvancedMarkerWithRef
+      <AdvancedMarker
         position={userLocation}
         advancedMarkerProps={{
           title: "Your Location",
@@ -35,7 +35,7 @@ export default function UserLocationMarker() {
             }}
           />
         </div>
-      </AdvancedMarkerWithRef>
+      </AdvancedMarker>
     )
   );
 }
