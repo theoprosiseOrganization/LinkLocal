@@ -313,7 +313,7 @@ exports.getOptimalRoute = async (req, res) => {
       })),
       travelMode: transportType,
       optimizeWaypointOrder: "true",
-      computeAlternativeRoutes: false,
+      computeAlternativeRoutes: true,
       units: "METRIC",
     };
 

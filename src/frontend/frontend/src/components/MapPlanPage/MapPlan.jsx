@@ -115,6 +115,7 @@ export default function MapPlan() {
       waypoints,
       transportType
     );
+    console.log("Route calculation result:", result);
     setRouteData(result.routes?.[0] || null);
     console.log("Route data:", result);
 
@@ -170,7 +171,6 @@ export default function MapPlan() {
       return;
     }
     const userTagNames = (userData?.tags || []).map((t) => t.name);
-    eventsToGenerate.forEach((e) => console.log("Event tags:", e.tags));
 
     const eventsWithUserTags = eventsToGenerate.filter(
       (e) =>

@@ -386,22 +386,6 @@ export async function getOptimalRoute(start, events, transportType) {
   return response;
 }
 
-export async function getSubOptimalRoute(start, events, transportType){
-  const res = await fetch(`${URL}/events/suboptimal-route`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ start, events, transportType }),
-    credentials: "include",
-  });
-  const response = await res.json();
-  if (!res.ok) {
-    throw new Error(response.error || "Failed to get suboptimal route");
-  }
-  return response;
-}
-
 export async function meUrl(path){
   const me = await getSessionUserId();
   return `${URL}/users/${me}${path}`;
