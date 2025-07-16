@@ -59,18 +59,18 @@ export default function MapPlan() {
   const [tempSelectedEventIds, setTempSelectedEventIds] = useState([]);
   const [transportType, setTransportType] = useState("DRIVE");
 
+  const filterStart = startDate ? new Date(startDate) : null;
+  const filterEnd = endDate ? new Date(endDate) : null;
+
   const filteredEvents = eventsInPoly.filter((event) => {
-    if (!startDate && !endDate) return true;
+    if (!filterStart && !filterEnd) return true;
     const eventStart = new Date(event.startTime);
     const eventEnd = new Date(event.endTime);
-    const filterStart = startDate ? new Date(startDate) : null;
-    const filterEnd = endDate ? new Date(endDate) : null;
-    return (
-      (!filterStart || eventEnd >= filterStart) &&
-      (!filterEnd || eventStart <= filterEnd)
-    );
+    if (filterStart && eventEnd < filterStart) return false;
+    if (filterEnd && eventStart > filterEnd) return false;
+    return true;
   });
-
+  
   // Toggle event selection
   const handleSelectEvent = (eventId) => {
     setSelectedEventIds((prev) =>
