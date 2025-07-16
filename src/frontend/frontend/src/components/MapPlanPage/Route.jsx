@@ -15,7 +15,12 @@
  * <Route route={routeData} />
  */
 import React, { useEffect, useState, useCallback } from "react";
-import { useMap, AdvancedMarker, InfoWindow } from "@vis.gl/react-google-maps";
+import {
+  useMap,
+  AdvancedMarker,
+  InfoWindow,
+  Pin,
+} from "@vis.gl/react-google-maps";
 import { AdvancedMarkerWithRef } from "../MapComponent/MapComponent";
 import Polyline from "./Polyline";
 import { getEventById } from "../../api";
@@ -28,7 +33,7 @@ const Route = ({ route, event_ids }) => {
   const [selectedId, setSelectedId] = useState(null);
   const [selectedMarker, setSelectedMarker] = useState(null);
 
-  if (! event_ids || event_ids.length != 0) {
+  if (!event_ids || event_ids.length != 0) {
     useEffect(() => {
       const fetchEvents = async () => {
         const fetchedEvents = await Promise.all(
@@ -85,7 +90,12 @@ const Route = ({ route, event_ids }) => {
         lat: endLocation.endLocation.latLng.latitude,
         lng: endLocation.endLocation.latLng.longitude,
       }}
-    />
+    >
+      <Pin
+        glyph={"🏠"}
+        scale={1.75}
+      />
+    </AdvancedMarker>
   );
 
   return (
@@ -111,7 +121,14 @@ const Route = ({ route, event_ids }) => {
             }}
             onMarkerClick={(marker) => onMarkerClick(event.id, marker)}
             title={event.title}
-          />
+          >
+            <Pin
+              glyph={`${idx + 1}`}
+              background={"#111828"}
+              glyphColor={"white"}
+              borderColor={"#000"}
+            />
+          </AdvancedMarkerWithRef>
         ) : null
       )}
 
