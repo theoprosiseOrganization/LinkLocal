@@ -29,14 +29,13 @@ export default function PlanViewer() {
 
   return (
     <Layout>
-      <div className="map-plan-page relative w-full max-w-5xl mx-auto mt-10 bg-[var(--card)] text-[var(--card-foreground)] rounded-xl shadow-lg border border-[var(--border)] overflow-hidden p-6 h-auto">
+      <div className="map-plan-page relative w-full max-w-5xl mx-auto mt-10 bg-[var(--card)] text-[var(--card-foreground)] rounded-xl shadow-lg border border-[var(--border)] overflow-hidden h-auto">
         <div
           className="absolute top-0 left-0 w-full bg-[var(--primary)] bg-opacity-90 text-[var(--primary-foreground)] py-6 text-center z-10 text-2xl font-bold tracking-wide rounded-t-xl shadow"
           style={{ paddingTop: "4rem" }}
         >
           {plan.title || "Plan Title"}
         </div>
-        <div className="w-full relative z-0">
           <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
             <Map
               mapId="4f917a8c04fdd7367b6986a1"
@@ -54,7 +53,6 @@ export default function PlanViewer() {
               )}
             </Map>
           </APIProvider>
-        </div>
       </div>
     </Layout>
   );
