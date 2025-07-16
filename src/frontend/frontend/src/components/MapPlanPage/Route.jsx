@@ -32,6 +32,7 @@ const Route = ({ route, event_ids }) => {
   const [infoWindowShown, setInfoWindowShown] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [selectedMarker, setSelectedMarker] = useState(null);
+  const [optimizedOrder, setOptimizedOrder] = useState(null);
 
   if (!event_ids || event_ids.length != 0) {
     useEffect(() => {
@@ -82,6 +83,20 @@ const Route = ({ route, event_ids }) => {
 
   const routeSteps = route.legs.flatMap((leg) => leg.steps);
   const markers = [];
+  const eventsInOrder = [];
+
+  const orderRouteSteps = route.optimizedIntermediateWaypointIndex || [];
+  let reorderEvents = false;
+  if (orderRouteSteps[0] != -1) {
+    for (let i = 0; i < orderRouteSteps.length; i++) {
+      reorderEvents = true;
+      eventsInOrder[i] = routeSteps[orderRouteSteps[i]].endLocation.latLng;
+    }
+  }
+
+  console.log("Order:", route);
+  console.log("events", events)
+
   const endLocation = route.legs[route.legs.length - 1];
   markers.push(
     <AdvancedMarker
@@ -91,10 +106,7 @@ const Route = ({ route, event_ids }) => {
         lng: endLocation.endLocation.latLng.longitude,
       }}
     >
-      <Pin
-        glyph={"🏠"}
-        scale={1.75}
-      />
+      <Pin glyph={"🏠"} scale={1.75} />
     </AdvancedMarker>
   );
 

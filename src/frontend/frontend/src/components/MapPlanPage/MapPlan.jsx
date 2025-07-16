@@ -112,7 +112,10 @@ export default function MapPlan() {
       transportType
     );
     setRouteData(result.routes?.[0] || null);
+    console.log("Route data:", result);
+
     if (drawnPolygon.current) {
+      console.log(drawnPolygon.current)
       drawnPolygon.current.setMap(null); // Clear polygon to highlight the route
       drawnPolygon.current = null;
     }
