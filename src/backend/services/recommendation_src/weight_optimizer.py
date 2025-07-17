@@ -10,6 +10,7 @@ def load_edges(path):
     Load edges from a CSV file into a directed graph.
     """
     df = pd.read_csv(path)
+    df = df.dropna(subset=['followerId', 'followingId'])
     edges = list(zip(df['followerId'], df['followingId']))
     return edges
 
@@ -86,7 +87,15 @@ def evaluate_weights_fast(weights, features_by_user, held_out_by_user, k):
         scores = feats.dot(w)
 
         # get top k indices by score
-        top_k_indices = np.argpartition(scores, -k)[-k:]
+        n = len(scores)
+        if n <= k:
+            # if fewer than k candidates, use argsort
+            top_k_indices = np.argsort(scores)[-k:]
+        else:
+            # use argpartition for efficiency
+            # this is faster than argsort for large arrays
+            # it only partially sorts the array to find the top k elements
+            top_k_indices = np.argpartition(scores, -k)[-k:]
         top_k = set(df.index[top_k_indices])
 
         held = held_out_by_user[user]
