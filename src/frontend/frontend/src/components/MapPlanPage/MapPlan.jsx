@@ -163,19 +163,48 @@ export default function MapPlan() {
   };
 
   const generateEventPlan = () => {
-    const eventsToGenerate = filteredEvents;
+    const eventsToGenerate = filteredEvents
+      .slice() // copy array
+      .sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
+
     if (eventsToGenerate.length === 0) {
       alert("No events found in the selected area/time period.");
       return;
     }
+
     const userTagNames = (userData?.tags || []).map((t) => t.name);
 
-    const eventsWithUserTags = eventsToGenerate.filter(
+    // Only libc events matching user tags
+    const taggedEvents = eventsToGenerate.filter(
       (e) =>
         Array.isArray(e.tags) &&
         e.tags.some((tag) => userTagNames.includes(tag.name))
     );
-    setSelectedEventIds(eventsWithUserTags.map((e) => e.id));
+
+    const selected = [];
+    let currentTime = filterStart ? new Date(filterStart) : null;
+
+    for (const event of taggedEvents) {
+      const eventStart = new Date(event.startTime);
+      const eventEnd = new Date(event.endTime);
+
+      // If user has a start time, event must start after currentTime
+      if (currentTime && eventStart < currentTime) continue;
+
+      // Event must fit within user's end time
+      if (filterEnd && eventEnd > filterEnd) continue;
+
+      // Add event
+      selected.push(event.id);
+
+      // Update currentTime: event end + 30min travel
+      currentTime = new Date(
+        Math.max(eventEnd, eventStart.getTime() + 60 * 60 * 1000)
+      ); // at least 1hr at event
+      currentTime = new Date(currentTime.getTime() + 30 * 60 * 1000); // add 30min travel
+    }
+
+    setSelectedEventIds(selected);
   };
 
   const handleTempSelectEvent = (eventId) => {
