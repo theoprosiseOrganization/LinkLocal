@@ -57,17 +57,20 @@ export default function MapPlan() {
   const [planTitle, setPlanTitle] = useState("My Event Plan");
   const [isEventSelectOpen, setIsEventSelectOpen] = useState(false);
   const [tempSelectedEventIds, setTempSelectedEventIds] = useState([]);
+  const [transportType, setTransportType] = useState("DRIVE");
+  const [userData, setUserData] = useState(null);
+  const [userTagSet, setUserTagSet] = useState(new Set());
+
+  const filterStart = startDate ? new Date(startDate) : null;
+  const filterEnd = endDate ? new Date(endDate) : null;
 
   const filteredEvents = eventsInPoly.filter((event) => {
-    if (!startDate && !endDate) return true;
+    if (!filterStart && !filterEnd) return true;
     const eventStart = new Date(event.startTime);
     const eventEnd = new Date(event.endTime);
-    const filterStart = startDate ? new Date(startDate) : null;
-    const filterEnd = endDate ? new Date(endDate) : null;
-    return (
-      (!filterStart || eventEnd >= filterStart) &&
-      (!filterEnd || eventStart <= filterEnd)
-    );
+    if (filterStart && eventEnd < filterStart) return false;
+    if (filterEnd && eventStart > filterEnd) return false;
+    return true;
   });
 
   // Toggle event selection
@@ -76,6 +79,34 @@ export default function MapPlan() {
       prev.includes(eventId)
         ? prev.filter((id) => id !== eventId)
         : [...prev, eventId]
+    );
+  };
+
+  const computeDistanceKm = (locA, locB) => {
+    const R = 6371; // Radius of the Earth in km
+    const dLat = (locB.lat - locA.lat) * (Math.PI / 180);
+    const dLon = (locB.lng - locA.lng) * (Math.PI / 180);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(locA.lat * (Math.PI / 180)) *
+        Math.cos(locB.lat * (Math.PI / 180)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c; // Distance in km
+  };
+
+  const computeTravelTimeMs = (locA, locB) => {
+    const distanceKm = computeDistanceKm(locA, locB);
+    const factor = distanceKm / 50; // Assuming average speed of 50 km/h
+    return factor * 60 * 60 * 1000; // Convert to milliseconds
+  };
+
+  const tagScore = (event) => {
+    if (!userData || !userData.tags) return 0;
+    return (event.tags || []).reduce(
+      (score, { name }) => score + (userTagSet.has(name) ? 1 : 0),
+      0
     );
   };
 
@@ -89,7 +120,7 @@ export default function MapPlan() {
       alert("You must be logged in to calculate a route.");
       return;
     }
-    const user = await getUserById(userId);
+    const user = userData || (await getUserById(userId));
     if (!user || !user.location) {
       alert("Your location is not set. Please update your profile.");
       return;
@@ -98,18 +129,29 @@ export default function MapPlan() {
       lat: user.location.latitude,
       lng: user.location.longitude,
     };
-    const selectedEvents = filteredEvents.filter((e) =>
-      selectedEventIds.includes(e.id)
+    const waypoints = selectedEventIds
+      .map((id) => filteredEvents.find((e) => e.id === id && e.location))
+      .filter(Boolean)
+      .map((e) => ({
+        lat: e.location.latitude,
+        lng: e.location.longitude,
+      }));
+    if (waypoints.length >= 9) {
+      alert("You can only select up to 9 events for route calculation.");
+      return;
+    }
+    const result = await getOptimalRoute(
+      userLocation,
+      waypoints,
+      transportType
     );
-    const waypoints = selectedEvents.map((e) => ({
-      lat: e.location.latitude,
-      lng: e.location.longitude,
-    }));
-    const result = await getOptimalRoute(userLocation, waypoints);
     setRouteData(result.routes?.[0] || null);
+
     if (drawnPolygon.current) {
-      drawnPolygon.current.setMap(null); // Clear polygon to highlight the route
-      drawnPolygon.current = null;
+      drawnPolygon.current.setOptions({
+        fillOpacity: 0.1,
+        strokeOpacity: 0.3,
+      }); // Lower opacity to highlight the route
     }
   };
 
@@ -126,6 +168,20 @@ export default function MapPlan() {
     })();
   }, [isInviteOpen]);
 
+  useEffect(() => {
+    (async () => {
+      const userId = await getSessionUserId();
+      if (!userId) return;
+      const user = await getUserById(userId);
+      if (user) {
+        setUserData(user);
+        setUserTagSet(new Set((user.tags || []).map((t) => t.name)));
+      } else {
+        alert("User not found. Please log in again.");
+      }
+    })();
+  }, []);
+
   const openEventSelectModal = () => {
     setTempSelectedEventIds(selectedEventIds);
     setIsEventSelectOpen(true);
@@ -134,6 +190,92 @@ export default function MapPlan() {
   const confirmEventSelection = () => {
     setSelectedEventIds(tempSelectedEventIds);
     setIsEventSelectOpen(false);
+  };
+
+  /**
+   * This function generates an event plan based on the selected area and time period.
+   * It filters the events found within the drawn polygon based on the user's selected time period.
+   * It then selects events that can be attended for a full hour, considering travel time.
+   * The function prioritizes events based on the user's tags and the time they can be attended
+   * before they end.
+   * 
+   * @returns {void}
+   */
+  const generateEventPlan = () => {
+    if (!filterStart || !filterEnd) {
+      alert("Please select a time period for the events.");
+      return;
+    }
+
+    const eventsToGenerate = filteredEvents
+      .slice() // copy array
+      .sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
+
+    if (eventsToGenerate.length === 0) {
+      alert("No events found in the selected area/time period.");
+      return;
+    }
+
+    const usedIds = new Set();
+    const picks = [];
+    let curTime = filterStart.getTime();
+    let curLoc = {
+      lat: userData?.location?.latitude,
+      lng: userData?.location?.longitude,
+    };
+
+    while (true) {
+      const candidates = eventsToGenerate.filter((e) => !usedIds.has(e.id));
+      if (candidates.length === 0) {
+        break;
+      }
+
+      const possibleEvents = candidates
+        .map((e) => {
+          const eventStartMs = new Date(e.startTime).getTime();
+          const eventEndMs = new Date(e.endTime).getTime();
+          const travelTimeMs = computeTravelTimeMs(curLoc, {
+            lat: e.location?.latitude,
+            lng: e.location?.longitude,
+          });
+          const arriveAt = Math.max(eventStartMs, curTime + travelTimeMs);
+          return { ...e, arriveAt, eventEndMs };
+        })
+        // Only keep events that can be attended for a full hour before they end
+        .filter(
+          (e) =>
+            e.arriveAt + 60 * 60 * 1000 <=
+            Math.min(e.eventEndMs, filterEnd.getTime())
+        );
+
+        if(!possibleEvents || possibleEvents.length === 0) {
+          break;
+        }
+
+      possibleEvents.sort((a, b) => {
+        const diff = tagScore(b) - tagScore(a);
+        return diff !== 0 ? diff : a.arriveAt - b.arriveAt;
+      });
+
+      const pick = possibleEvents[0];
+      picks.push(pick.id);
+      usedIds.add(pick.id);
+
+      curTime = pick.arriveAt + 60 * 60 * 1000; // 1 hour at event
+      curLoc = {
+        lat: pick.location?.latitude,
+        lng: pick.location?.longitude,
+      }
+    }
+
+    setSelectedEventIds(picks);
+    if (picks.length === 0) {
+      alert("No events could be selected based on your criteria.");
+      return;
+    }
+    alert(
+      `Generated plan with ${picks.length} events based on your criteria. You can now calculate the route.`
+    );
   };
 
   const handleTempSelectEvent = (eventId) => {
@@ -160,16 +302,13 @@ export default function MapPlan() {
               onPolygonDrawn={(poly) => (drawnPolygon.current = poly)}
             />
             {routeData && (
-              <Route
-                route={routeData}
-                event_ids={selectedEventIds}
-              />
+              <Route route={routeData} event_ids={selectedEventIds} />
             )}
-            <UserLocationMarker/>
+            <UserLocationMarker />
           </APIProvider>
         </div>
         <p className="mb-2 text-[var(--foreground)] font-medium">
-          Step 2: What period are you available for your events?
+          Step 2: Select your availability period for the events.
         </p>
         <div className="flex gap-4 mb-4">
           <div>
@@ -192,14 +331,16 @@ export default function MapPlan() {
           </div>
         </div>
         <p className="mb-2 text-[var(--foreground)] font-medium">
-          Step 3: Choose which events from your criteria you want to attend:
+          Step 3: Choose which events to attend from your selected criteria or
+          generate a plan that matches your criteria.
         </p>
         <Button
           onClick={openEventSelectModal}
-          className="mb-4 bg-[var(--primary)] text-[var(--primary-foreground)] hover:bg-[var(--primary-foreground)] hover:text-[var(--primary)] transition"
+          className="mb-4 mr-2 bg-[var(--primary)] text-[var(--primary-foreground)] hover:bg-[var(--primary-foreground)] hover:text-[var(--primary)] transition"
         >
           Choose Events
         </Button>
+        <Button onClick={generateEventPlan}>Generate Events</Button>
         <Dialog open={isEventSelectOpen} onOpenChange={setIsEventSelectOpen}>
           <DialogContent className="sm:max-w-[700px] bg-[var(--card)] text-[var(--card-foreground)] border border-[var(--border)] rounded-xl shadow">
             <DialogHeader>
@@ -304,10 +445,22 @@ export default function MapPlan() {
           events:
         </p>
         <Button
-          onClick={getRoute}
+          onClick={() => {
+            setTransportType("DRIVE");
+            getRoute();
+          }}
           className="bg-[var(--primary)] text-[var(--primary-foreground)] hover:bg-[var(--primary-foreground)] hover:text-[var(--primary)] transition"
         >
-          Calculate
+          Calculate Driving
+        </Button>
+        <Button
+          onClick={() => {
+            setTransportType("WALK");
+            getRoute();
+          }}
+          className="ml-2 bg-[var(--primary)] text-[var(--primary-foreground)] hover:bg-[var(--primary-foreground)] hover:text-[var(--primary)] transition"
+        >
+          Calculate Walking
         </Button>
         <Button
           onClick={saveAndShare}

@@ -247,9 +247,11 @@ exports.getEventsWithinPolygon = async (req, res) => {
       where: { id: { in: eventsIds.map((e) => e.eventId) } },
       include: { tags: true },
     });
-    // Add location to each event
+    
+    const eventIdToLoc = new Map(eventsIds.map((e) => [e.eventId, e]));
+
     for (const event of events) {
-      const loc = eventsIds.find((e) => e.eventId === event.id);
+      const loc = eventIdToLoc.get(event.id);
       if (loc) {
         const match = parsePoint(loc.location);
         if (match) {
@@ -260,7 +262,7 @@ exports.getEventsWithinPolygon = async (req, res) => {
             longitude: parseFloat(longitude),
           };
         } else {
-          event.location = null; // No valid location found
+          event.location = null;
         }
       }
     }
@@ -275,7 +277,7 @@ exports.getEventsWithinPolygon = async (req, res) => {
 // visiting multiple events, and returning to the starting point.
 exports.getOptimalRoute = async (req, res) => {
   try {
-    const { start, events } = req.body;
+    const { start, events, transportType } = req.body;
     if (!start || !events || events.length === 0) {
       return res.status(400).json({ error: "Invalid input" });
     }
@@ -304,9 +306,9 @@ exports.getOptimalRoute = async (req, res) => {
           },
         },
       })),
-      travelMode: "DRIVE",
+      travelMode: transportType,
       optimizeWaypointOrder: "true",
-      computeAlternativeRoutes: false,
+      computeAlternativeRoutes: true,
       units: "METRIC",
     };
 
