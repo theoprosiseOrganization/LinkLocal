@@ -64,6 +64,22 @@ def main():
     print(f"Train graph:{G_train.number_of_nodes()} users, {G_train.number_of_edges()} edges")
     print(f"Test set: {len(test_edges)} edges held out for {len(test_by_user)} users")
 
+    all_loc, all_friend, all_pref = [], [], []
+    for user, held_out in test_by_user.items():
+        dist_map = nx.single_source_shortest_path_length(G_train, user, cutoff=4)
+        direct = {n for n, d in dist_map.items() if d == 1}
+        candidates = [n for n in G_train.nodes() if n != user and n not in direct]
+        df = weight_optimizer.compute_features_for_user(user, candidates, dist_map)
+
+        all_loc.extend(df['location_score'].tolist())
+        all_friend.extend(df['friend_score'].tolist())
+        all_pref.extend(df['preference_score'].tolist())
+
+    print("Feature statistics:")
+    print(f" location score:\n" , pd.Series(all_loc).describe())
+    print(f" friend score:\n" , pd.Series(all_friend).describe())
+    print(f" preference score:\n" , pd.Series(all_pref).describe())
+
     # 3.) Weight search
     best_weights, best_score = weight_optimizer.weight_search(
         G_train,
