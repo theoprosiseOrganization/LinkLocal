@@ -99,7 +99,7 @@ export default function MapPlan() {
   const computeTravelTimeMs = (locA, locB) => {
     const distanceKm = computeDistanceKm(locA, locB);
     const factor = distanceKm / 50; // Assuming average speed of 50 km/h
-    return factor * 30 * 60 * 1000; // Convert to milliseconds
+    return factor * 60 * 60 * 1000; // Convert to milliseconds
   };
 
   const tagScore = (event) => {
@@ -175,7 +175,7 @@ export default function MapPlan() {
       const user = await getUserById(userId);
       if (user) {
         setUserData(user);
-        setUserTagSet(new Set((userData?.tags || []).map((t) => t.name)));
+        setUserTagSet(new Set((user.tags || []).map((t) => t.name)));
       } else {
         alert("User not found. Please log in again.");
       }
@@ -193,7 +193,7 @@ export default function MapPlan() {
   };
 
   const generateEventPlan = () => {
-    if (!filterStart && !filterEnd) {
+    if (!filterStart || !filterEnd) {
       alert("Please select a time period for the events.");
       return;
     }
@@ -253,7 +253,10 @@ export default function MapPlan() {
       usedIds.add(pick.id);
 
       curTime = pick.arriveAt + 60 * 60 * 1000; // 1 hour at event
-      curLoc = pick.location;
+      curLoc = {
+        lat: pick.location?.latitude,
+        lng: pick.location?.longitude,
+      }
     }
 
     setSelectedEventIds(picks);
