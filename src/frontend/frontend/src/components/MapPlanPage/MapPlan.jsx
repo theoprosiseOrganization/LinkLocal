@@ -81,6 +81,33 @@ export default function MapPlan() {
     );
   };
 
+  const computeDistanceKm = (locA, locB) => {
+    const R = 6371; // Radius of the Earth in km
+    const dLat = (locB.lat - locA.lat) * (Math.PI / 180);
+    const dLon = (locB.lng - locA.lng) * (Math.PI / 180);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(locA.lat * (Math.PI / 180)) *
+        Math.cos(locB.lat * (Math.PI / 180)) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c; // Distance in km
+  };
+
+  const computeTravelTimeMs = (locA, locB) => {
+    const distanceKm = computeDistanceKm(locA, locB);
+    const factor = distanceKm /50; // Assuming average speed of 50 km/h
+    return factor * 30 * 60 * 1000; // Convert to milliseconds
+  };
+
+  const tagScore = (event) => {
+    if (!userData || !userData.tags) return 0;
+    return ( event.tags || []).reduce(
+      (score, {name}) => score + (userData.tags.has(name) ? 1 : 0),
+      0
+    );
+  };
+
   const getRoute = async () => {
     if (selectedEventIds.length === 0) {
       alert("Please select at least one event to calculate the route.");
@@ -163,6 +190,11 @@ export default function MapPlan() {
   };
 
   const generateEventPlan = () => {
+    if( !filterStart && !filterEnd ) {
+      alert("Please select a time period for the events.");
+      return;
+    }
+
     const eventsToGenerate = filteredEvents
       .slice() // copy array
       .sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
@@ -172,6 +204,52 @@ export default function MapPlan() {
       return;
     }
 
+    let curTime = filterStart.getTime();
+    let curLoc = {lat: userData?.location?.latitude, lng: userData?.location?.longitude};
+
+    for (let TIME_SLOT = 0; TIME_SLOT < eventsToGenerate.length; TIME_SLOT++) {
+      const candidates = eventsToGenerate.filter(e => !usedIds.has(e.id))
+
+      const possibleEvents = candidates.map((e) => {
+        const eventStartMs = new Date(e.startTime).getTime();
+        const eventEndMs = new Date(e.endTime).getTime();
+        const travelTimeMs = computeTravelTimeMs(curLoc, {
+          lat: e.location?.latitude,
+          lng: e.location?.longitude,
+        });
+        const arriveAt = Math.max(eventStartMs, curTime + travelTimeMs);
+        return {...e, arriveAt, eventEndMs};
+      })
+      // Only keep events that can be attended for a full hour before they end
+      .filter( e => e.arriveAt + 60 * 60 * 1000 <= Math.min(e.eventEndMs, filterEnd.getTime()) );
+
+      if (possibleEvents.length === 0) {
+        alert("No more events can be attended in the selected time period.");
+        break;
+      }
+
+      possibleEvents.sort((a,b) => {
+        const diff = tagScore(b) - tagScore(a);
+        return diff !== 0 ? diff : a.arriveAt - b.arriveAt;
+      });
+
+      const pick = possibleEvents[0];
+      picks.push(pick.id);
+      usedIds.add(pick.id);
+
+      currentTime = pick.arriveAt + 60 * 60 * 1000; // 1 hour at event
+      currentLoc = pick.location;
+    }
+
+    setSelectedEventIds(picks);
+    if (picks.length === 0) {
+      alert("No events could be selected based on your criteria.");
+      return;
+    }
+  }
+
+
+
     const userTagNames = (userData?.tags || []).map((t) => t.name);
 
     // Only libc events matching user tags
@@ -180,6 +258,10 @@ export default function MapPlan() {
         Array.isArray(e.tags) &&
         e.tags.some((tag) => userTagNames.includes(tag.name))
     );
+
+    if (taggedEvents.length === 0) {
+      taggedEvents = eventsToGenerate; // fallback to all events if no tags match
+    }
 
     const selected = [];
     let currentTime = filterStart ? new Date(filterStart) : null;
