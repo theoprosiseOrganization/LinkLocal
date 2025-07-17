@@ -110,18 +110,19 @@ def weight_search(G_train, test_by_user, k, step):
                 best = (weights, score)
     return best
 
-def weight_search_fast(test_by_user, features_by_user, held_out_by_user, k, step):
+def weight_search_fast(features_by_user, held_out_by_user, k, step):
     best = (None, -1.0)
 
     # generate weights that sum to 1.0
     vals= np.arange(0, 1.0 + step, step)
+
     for w_loc in vals:
         for w_friend in vals:
             w_pref = 1 - w_loc - w_friend
             if w_pref < 0.0:
                 continue
             weights = (w_loc, w_friend, w_pref)
-            score = evaluate_weights_fast(weights, G_train, test_by_user, k)
+            score = evaluate_weights_fast(weights, features_by_user, held_out_by_user, k)   
             if score > best[1]:
                 best = (weights, score)
     return best

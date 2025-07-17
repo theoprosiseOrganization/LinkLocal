@@ -89,6 +89,9 @@ def main():
         # keep only relevant columns
         features_by_user[user] = df[["friend_score", "location_score", "preference_score"]].copy()
         held_out_by_user[user] = held_out
+        all_loc.extend(df["location_score"].tolist())
+        all_friend.extend(df["friend_score"].tolist())
+        all_pref.extend(df["preference_score"].tolist())
 
     print("Feature statistics:")
     print(f" location score:\n" , pd.Series(all_loc).describe())
@@ -97,11 +100,10 @@ def main():
 
     # 3.) Weight search
     best_weights, best_score = weight_optimizer.weight_search_fast(
-        test_by_user=test_by_user,
-        features_by_user=features_by_user,
-        held_out_by_user=held_out_by_user,
-        k=args.k,
-        step=args.step,
+        features_by_user,
+        held_out_by_user,
+        args.k,
+        args.step,
     )
 
     w_loc, w_friend, w_pref = best_weights
