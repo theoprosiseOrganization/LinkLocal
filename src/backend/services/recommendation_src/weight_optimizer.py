@@ -53,7 +53,7 @@ def evaluate_weights(weights, G_train, test_by_user, k, max_distance=4):
             continue
         
         # bfs distances from user
-        dist_map = nx.single_source_shortest_path_length(G_train, user, cutoff=max_distance
+        dist_map = nx.single_source_shortest_path_length(G_train, user, cutoff=max_distance)
 
         # direct friends
         direct = {n for n, d in dist_map.items() if d == 1}
