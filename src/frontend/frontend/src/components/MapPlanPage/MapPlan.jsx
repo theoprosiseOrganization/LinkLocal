@@ -59,6 +59,7 @@ export default function MapPlan() {
   const [tempSelectedEventIds, setTempSelectedEventIds] = useState([]);
   const [transportType, setTransportType] = useState("DRIVE");
   const [userData, setUserData] = useState(null);
+  const [userTagSet, setUserTagSet] = useState(new Set());
 
   const filterStart = startDate ? new Date(startDate) : null;
   const filterEnd = endDate ? new Date(endDate) : null;
@@ -89,21 +90,22 @@ export default function MapPlan() {
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos(locA.lat * (Math.PI / 180)) *
         Math.cos(locB.lat * (Math.PI / 180)) *
-        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c; // Distance in km
   };
 
   const computeTravelTimeMs = (locA, locB) => {
     const distanceKm = computeDistanceKm(locA, locB);
-    const factor = distanceKm /50; // Assuming average speed of 50 km/h
+    const factor = distanceKm / 50; // Assuming average speed of 50 km/h
     return factor * 30 * 60 * 1000; // Convert to milliseconds
   };
 
   const tagScore = (event) => {
     if (!userData || !userData.tags) return 0;
-    return ( event.tags || []).reduce(
-      (score, {name}) => score + (userData.tags.has(name) ? 1 : 0),
+    return (event.tags || []).reduce(
+      (score, { name }) => score + (userTagSet.has(name) ? 1 : 0),
       0
     );
   };
@@ -173,6 +175,7 @@ export default function MapPlan() {
       const user = await getUserById(userId);
       if (user) {
         setUserData(user);
+        setUserTagSet(new Set((userData?.tags || []).map((t) => t.name)));
       } else {
         alert("User not found. Please log in again.");
       }
@@ -190,7 +193,7 @@ export default function MapPlan() {
   };
 
   const generateEventPlan = () => {
-    if( !filterStart && !filterEnd ) {
+    if (!filterStart && !filterEnd) {
       alert("Please select a time period for the events.");
       return;
     }
@@ -204,31 +207,43 @@ export default function MapPlan() {
       return;
     }
 
+    const usedIds = new Set();
+    const picks = [];
     let curTime = filterStart.getTime();
-    let curLoc = {lat: userData?.location?.latitude, lng: userData?.location?.longitude};
+    let curLoc = {
+      lat: userData?.location?.latitude,
+      lng: userData?.location?.longitude,
+    };
 
-    for (let TIME_SLOT = 0; TIME_SLOT < eventsToGenerate.length; TIME_SLOT++) {
-      const candidates = eventsToGenerate.filter(e => !usedIds.has(e.id))
-
-      const possibleEvents = candidates.map((e) => {
-        const eventStartMs = new Date(e.startTime).getTime();
-        const eventEndMs = new Date(e.endTime).getTime();
-        const travelTimeMs = computeTravelTimeMs(curLoc, {
-          lat: e.location?.latitude,
-          lng: e.location?.longitude,
-        });
-        const arriveAt = Math.max(eventStartMs, curTime + travelTimeMs);
-        return {...e, arriveAt, eventEndMs};
-      })
-      // Only keep events that can be attended for a full hour before they end
-      .filter( e => e.arriveAt + 60 * 60 * 1000 <= Math.min(e.eventEndMs, filterEnd.getTime()) );
-
-      if (possibleEvents.length === 0) {
-        alert("No more events can be attended in the selected time period.");
+    while (true) {
+      const candidates = eventsToGenerate.filter((e) => !usedIds.has(e.id));
+      if (candidates.length === 0) {
         break;
       }
 
-      possibleEvents.sort((a,b) => {
+      const possibleEvents = candidates
+        .map((e) => {
+          const eventStartMs = new Date(e.startTime).getTime();
+          const eventEndMs = new Date(e.endTime).getTime();
+          const travelTimeMs = computeTravelTimeMs(curLoc, {
+            lat: e.location?.latitude,
+            lng: e.location?.longitude,
+          });
+          const arriveAt = Math.max(eventStartMs, curTime + travelTimeMs);
+          return { ...e, arriveAt, eventEndMs };
+        })
+        // Only keep events that can be attended for a full hour before they end
+        .filter(
+          (e) =>
+            e.arriveAt + 60 * 60 * 1000 <=
+            Math.min(e.eventEndMs, filterEnd.getTime())
+        );
+
+        if(!possibleEvents || possibleEvents.length === 0) {
+          break;
+        }
+
+      possibleEvents.sort((a, b) => {
         const diff = tagScore(b) - tagScore(a);
         return diff !== 0 ? diff : a.arriveAt - b.arriveAt;
       });
@@ -237,8 +252,8 @@ export default function MapPlan() {
       picks.push(pick.id);
       usedIds.add(pick.id);
 
-      currentTime = pick.arriveAt + 60 * 60 * 1000; // 1 hour at event
-      currentLoc = pick.location;
+      curTime = pick.arriveAt + 60 * 60 * 1000; // 1 hour at event
+      curLoc = pick.location;
     }
 
     setSelectedEventIds(picks);
@@ -246,47 +261,6 @@ export default function MapPlan() {
       alert("No events could be selected based on your criteria.");
       return;
     }
-  }
-
-
-
-    const userTagNames = (userData?.tags || []).map((t) => t.name);
-
-    // Only libc events matching user tags
-    const taggedEvents = eventsToGenerate.filter(
-      (e) =>
-        Array.isArray(e.tags) &&
-        e.tags.some((tag) => userTagNames.includes(tag.name))
-    );
-
-    if (taggedEvents.length === 0) {
-      taggedEvents = eventsToGenerate; // fallback to all events if no tags match
-    }
-
-    const selected = [];
-    let currentTime = filterStart ? new Date(filterStart) : null;
-
-    for (const event of taggedEvents) {
-      const eventStart = new Date(event.startTime);
-      const eventEnd = new Date(event.endTime);
-
-      // If user has a start time, event must start after currentTime
-      if (currentTime && eventStart < currentTime) continue;
-
-      // Event must fit within user's end time
-      if (filterEnd && eventEnd > filterEnd) continue;
-
-      // Add event
-      selected.push(event.id);
-
-      // Update currentTime: event end + 30min travel
-      currentTime = new Date(
-        Math.max(eventEnd, eventStart.getTime() + 60 * 60 * 1000)
-      ); // at least 1hr at event
-      currentTime = new Date(currentTime.getTime() + 30 * 60 * 1000); // add 30min travel
-    }
-
-    setSelectedEventIds(selected);
   };
 
   const handleTempSelectEvent = (eventId) => {
