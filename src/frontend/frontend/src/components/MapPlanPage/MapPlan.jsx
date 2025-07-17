@@ -100,13 +100,14 @@ export default function MapPlan() {
       lat: user.location.latitude,
       lng: user.location.longitude,
     };
-    const waypoints = filteredEvents
-      .filter((e) => selectedEventIds.includes(e.id) && e.location)
+    const waypoints = selectedEventIds
+      .map((id) => filteredEvents.find((e) => e.id === id && e.location))
+      .filter(Boolean)
       .map((e) => ({
         lat: e.location.latitude,
         lng: e.location.longitude,
       }));
-    if(waypoints.length >= 9) {
+    if (waypoints.length >= 9) {
       alert("You can only select up to 9 events for route calculation.");
       return;
     }
@@ -115,12 +116,9 @@ export default function MapPlan() {
       waypoints,
       transportType
     );
-    console.log("Route calculation result:", result);
     setRouteData(result.routes?.[0] || null);
-    console.log("Route data:", result);
 
     if (drawnPolygon.current) {
-      console.log(drawnPolygon.current);
       drawnPolygon.current.setOptions({
         fillOpacity: 0.1,
         strokeOpacity: 0.3,

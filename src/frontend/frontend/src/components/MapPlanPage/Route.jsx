@@ -83,19 +83,8 @@ const Route = ({ route, event_ids }) => {
 
   const routeSteps = route.legs.flatMap((leg) => leg.steps);
   const markers = [];
-  const eventsInOrder = [];
 
   const orderRouteSteps = route.optimizedIntermediateWaypointIndex || [];
-  let reorderEvents = false;
-  if (orderRouteSteps[0] != -1) {
-    for (let i = 0; i < orderRouteSteps.length; i++) {
-      reorderEvents = true;
-      eventsInOrder[i] = routeSteps[orderRouteSteps[i]].endLocation.latLng;
-    }
-  }
-
-  console.log("Order:", route);
-  console.log("events", events)
 
   const endLocation = route.legs[route.legs.length - 1];
   markers.push(
@@ -121,28 +110,53 @@ const Route = ({ route, event_ids }) => {
           strokeColor="#0074D9"
         />
       ))}
-      {events.map((event, idx) =>
-        event.location &&
-        typeof event.location.latitude === "number" &&
-        typeof event.location.longitude === "number" ? (
-          <AdvancedMarkerWithRef
-            key={event.id || idx}
-            position={{
-              lat: event.location.latitude,
-              lng: event.location.longitude,
-            }}
-            onMarkerClick={(marker) => onMarkerClick(event.id, marker)}
-            title={event.title}
-          >
-            <Pin
-              glyph={`${idx + 1}`}
-              background={"#111828"}
-              glyphColor={"white"}
-              borderColor={"#000"}
-            />
-          </AdvancedMarkerWithRef>
-        ) : null
-      )}
+      {orderRouteSteps.length > 0
+        ? orderRouteSteps.map((eventIdx, idx) => {
+            const event = events[eventIdx];
+            return event &&
+              event.location &&
+              typeof event.location.latitude === "number" &&
+              typeof event.location.longitude === "number" ? (
+              <AdvancedMarkerWithRef
+                key={event.id || eventIdx}
+                position={{
+                  lat: event.location.latitude,
+                  lng: event.location.longitude,
+                }}
+                onMarkerClick={(marker) => onMarkerClick(event.id, marker)}
+                title={event.title}
+              >
+                <Pin
+                  glyph={`${idx + 1}`}
+                  background={"#111828"}
+                  glyphColor={"white"}
+                  borderColor={"#000"}
+                />
+              </AdvancedMarkerWithRef>
+            ) : null;
+          })
+        : events.map((event, idx) =>
+            event.location &&
+            typeof event.location.latitude === "number" &&
+            typeof event.location.longitude === "number" ? (
+              <AdvancedMarkerWithRef
+                key={event.id || idx}
+                position={{
+                  lat: event.location.latitude,
+                  lng: event.location.longitude,
+                }}
+                onMarkerClick={(marker) => onMarkerClick(event.id, marker)}
+                title={event.title}
+              >
+                <Pin
+                  glyph={`${idx + 1}`}
+                  background={"#111828"}
+                  glyphColor={"white"}
+                  borderColor={"#000"}
+                />
+              </AdvancedMarkerWithRef>
+            ) : null
+          )}
 
       {infoWindowShown && selectedMarker && (
         <InfoWindow

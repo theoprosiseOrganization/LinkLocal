@@ -278,11 +278,6 @@ exports.getEventsWithinPolygon = async (req, res) => {
 exports.getOptimalRoute = async (req, res) => {
   try {
     const { start, events, transportType } = req.body;
-    console.log("Received request for optimal route:", {
-      start,
-      events,
-      transportType,
-    });
     if (!start || !events || events.length === 0) {
       return res.status(400).json({ error: "Invalid input" });
     }
@@ -336,7 +331,6 @@ exports.getOptimalRoute = async (req, res) => {
         .json({ error: "Failed to fetch route" });
     }
     const data = await response.json();
-    console.log("Optimal route data:" + data);
     return res.json(data);
   } catch (error) {
     return res.status(500).json({ error: "Internal Server Error" });
