@@ -66,5 +66,33 @@ def main():
 
     # 3.) Weight search
     best_weights, best_score = weight_optimizer.weight_search(
+        G_train,
+        test_by_user,
+        k=args.k,
+        step=args.step,
+    )
+
+    w_loc, w_friend, w_pref = best_weights
+    print("/n Best weights found:")
+    print(f"location_score: {w_loc:.2f}")
+    print(f"friend_score: {w_friend:.2f}")
+    print(f"preference_score: {w_pref:.2f}")
+    print(f" recall@{args.k}: {best_score:.4f}")
+
+    # write to JSON
+    out = {
+        "location_score": w_loc,
+        "friend_score": w_friend,
+        "preference_score": w_pref,
+        "last_updated": pd.Timestamp.now().isoformat(),
+    }
+    with open("weights.json", "w") as f:
+        json.dump(out, f, indent=2)
+    print("Weights saved to weights.json")
+
+if __name__ == "__main__":
+    main()
+else:
+    print("This script is intended to be run as a standalone program.")
 
 
