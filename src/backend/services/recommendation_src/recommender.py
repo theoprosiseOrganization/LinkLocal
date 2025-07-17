@@ -4,12 +4,16 @@ This module uses a scoring system to rank users based on their features and retu
 '''
 
 from feature_extraction import compute_features_for_user
+import json
 
-WEIGHTS = {
-        "location_score": 0.5,
-        "friend_score": 0.3,
-        "preference_score": 0.2,
-    }
+with open("weights.json", "r") as f:
+    WEIGHTS = json.load(f)
+    if WEIGHTS is None:
+        WEIGHTS = {
+            "location_score": 0.5,
+            "preference_score": 0.3,
+            "friend_score": 0.2
+        }
 
 def score_features(features):
     loc_score, pref_score, friend_score = features

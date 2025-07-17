@@ -24,6 +24,9 @@ def fetch_user_locations():
         .select("userId, location")
         .execute()
     )
+    if not response.data:
+        print("No user locations found.")
+        return {}
     location_map = {}
     for row in response.data:
         geo = row["location"]
@@ -37,6 +40,9 @@ def fetch_user_tags():
         .select("A, B")
         .execute()
     )
+    if not response.data:
+        print("No user tags found.")
+        return {}
     tag_map = {}
     for row in response.data:
         tag_map.setdefault(row["B"], []).append(row["A"])
@@ -44,6 +50,9 @@ def fetch_user_tags():
 
 def fetch_follower_counts():
     resp = supabase.table("Follows").select("followingId").execute()
+    if not resp.data:
+        print("No follower data found.")
+        return {}
     counts = {}
     for row in resp.data:
         uid = row["followingId"]
@@ -52,6 +61,9 @@ def fetch_follower_counts():
 
 def fetch_event_counts():
     resp = supabase.table("Event").select("userId").execute()
+    if not resp.data:
+        print("No event data found.")
+        return {}
     counts = {}
     for row in resp.data:
         uid = row["userId"]
@@ -60,6 +72,9 @@ def fetch_event_counts():
 
 def fetch_liked_events_tags():
     respEvents = supabase.table("_LikedEvents").select("B, A").execute()
+    if not respEvents.data:
+        print("No liked events data found.")
+        return {}
     likes = {}
     for row in respEvents.data:
         likes.setdefault(row["B"], set()).add(row["A"])
@@ -177,6 +192,9 @@ def compute_features_for_user(user_id: str, candidates: list[str], dist_map: dic
     The function fetches user locations, tags, follower counts, event counts, and liked events tags from the database.
     It then calculates the scores for each candidate user and returns a DataFrame with the computed features.
     """
+    if user_id is None or not candidates:
+        candidates = [user_id] + candidates
+    
     location_map = fetch_user_locations()
     tag_map = fetch_user_tags()
     follower_counts = fetch_follower_counts()
