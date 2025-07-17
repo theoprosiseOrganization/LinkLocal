@@ -81,13 +81,12 @@ def weight_search(G_train, test_by_user, k, step):
     best = (None, -1.0)
 
     # generate weights that sum to 1.0
-    vals= np.arange(0, 1.0 + 1e9, step)
+    vals= np.arange(0, 1.0 + step, step)
     for w_loc in vals:
         for w_friend in vals:
             w_pref = 1 - w_loc - w_friend
-            if w_pref <  -1e9 :
+            if w_pref < 0.0:
                 continue
-            w_pref = max(0.0, w_pref)
             weights = (w_loc, w_friend, w_pref)
             score = evaluate_weights(weights, G_train, test_by_user, k)
             if score > best[1]:
