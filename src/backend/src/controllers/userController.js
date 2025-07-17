@@ -517,7 +517,7 @@ exports.createPlan = async (req, res) => {
     if (error) {
       return res
         .status(500)
-        .json({ error: `Failed to create plan: ${error.message}` });
+        .json({ error: `Failed to create plan in DB: ${error.message}` });
     }
     res.json(data);
   } catch (error) {
@@ -543,7 +543,7 @@ exports.inviteUsers = async (req, res) => {
       .insert(rows)
       .select();
     if (error)
-      throw new Error(`Failed to create invitations: ${error.message}`);
+      throw new Error(`Failed to create invitations in DB: ${error.message}`);
     res.json(data);
   } catch (error) {
     res
@@ -564,7 +564,7 @@ exports.listInvitations = async (req, res) => {
     if (error) {
       return res
         .status(500)
-        .json({ error: `Failed to list invitations: ${error.message}` });
+        .json({ error: `Failed to list invitations in DB: ${error.message}` });
     }
     res.json(data);
   } catch (error) {
@@ -587,7 +587,7 @@ exports.getPlanById = async (req, res) => {
     if (error) {
       return res
         .status(404)
-        .json({ error: `Plan not found: ${error.message}` });
+        .json({ error: `Plan not found in DB: ${error.message}` });
     }
     res.json(data);
   } catch (error) {
