@@ -21,6 +21,9 @@ def fetch_all_edges():
     Returns a list of tuples (followerId, followingId).
     """
     response = supabase.table("Follows").select("followerId, followingId").execute()
+    if not response.data:
+        print("No edges found in Follows table.")
+        return []
     return [(row["followerId"], row["followingId"]) for row in response.data]
 
 def dump_csv(edges, path="follows.csv"):
