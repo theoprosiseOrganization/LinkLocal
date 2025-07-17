@@ -192,6 +192,15 @@ export default function MapPlan() {
     setIsEventSelectOpen(false);
   };
 
+  /**
+   * This function generates an event plan based on the selected area and time period.
+   * It filters the events found within the drawn polygon based on the user's selected time period.
+   * It then selects events that can be attended for a full hour, considering travel time.
+   * The function prioritizes events based on the user's tags and the time they can be attended
+   * before they end.
+   * 
+   * @returns {void}
+   */
   const generateEventPlan = () => {
     if (!filterStart || !filterEnd) {
       alert("Please select a time period for the events.");
@@ -264,6 +273,9 @@ export default function MapPlan() {
       alert("No events could be selected based on your criteria.");
       return;
     }
+    alert(
+      `Generated plan with ${picks.length} events based on your criteria. You can now calculate the route.`
+    );
   };
 
   const handleTempSelectEvent = (eventId) => {
@@ -324,7 +336,7 @@ export default function MapPlan() {
         </p>
         <Button
           onClick={openEventSelectModal}
-          className="mb-4 bg-[var(--primary)] text-[var(--primary-foreground)] hover:bg-[var(--primary-foreground)] hover:text-[var(--primary)] transition"
+          className="mb-4 mr-2 bg-[var(--primary)] text-[var(--primary-foreground)] hover:bg-[var(--primary-foreground)] hover:text-[var(--primary)] transition"
         >
           Choose Events
         </Button>
@@ -446,7 +458,7 @@ export default function MapPlan() {
             setTransportType("WALK");
             getRoute();
           }}
-          className="bg-[var(--primary)] text-[var(--primary-foreground)] hover:bg-[var(--primary-foreground)] hover:text-[var(--primary)] transition"
+          className="ml-2 bg-[var(--primary)] text-[var(--primary-foreground)] hover:bg-[var(--primary-foreground)] hover:text-[var(--primary)] transition"
         >
           Calculate Walking
         </Button>
