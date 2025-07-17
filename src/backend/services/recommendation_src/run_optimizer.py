@@ -68,15 +68,27 @@ def main():
     print(f"Test set: {len(test_edges)} edges held out for {len(test_by_user)} users")
 
     all_loc, all_friend, all_pref = [], [], []
-    for user, held_out in test_by_user.items():
-        dist_map = nx.single_source_shortest_path_length(G_train, user, cutoff=4)
-        direct = {n for n, d in dist_map.items() if d == 1}
-        candidates = [n for n in G_train.nodes() if n != user and n not in direct]
-        df = weight_optimizer.compute_features_for_user(user, candidates, dist_map)
 
-        all_loc.extend(df['location_score'].tolist())
-        all_friend.extend(df['friend_score'].tolist())
-        all_pref.extend(df['preference_score'].tolist())
+    features_by_user = {}
+    held_out_by_user = {}
+
+    for user, held_out in test_by_user.items():
+        # skip is user not in training graph
+        if user not in G_train or not held_out:
+            continue
+        
+        dist_map = nx.single_source_shortest_path_length(G_train, user, cutoff=4)
+
+        # direct friends
+        direct = {n for n, d in dist_map.items() if d == 1}
+        # candidates = everyone except user and direct friends
+        candidates = [n for n in G_train.nodes() if n != user and n not in direct]
+
+        # compute and store features df
+        df = weight_optimizer.compute_features_for_user(user, candidates, dist_map)
+        # keep only relevant columns
+        features_by_user[user] = df[["friend_score", "location_score", "preference_score"]].copy()
+        held_out_by_user[user] = held_out
 
     print("Feature statistics:")
     print(f" location score:\n" , pd.Series(all_loc).describe())
@@ -84,9 +96,10 @@ def main():
     print(f" preference score:\n" , pd.Series(all_pref).describe())
 
     # 3.) Weight search
-    best_weights, best_score = weight_optimizer.weight_search(
-        G_train,
-        test_by_user,
+    best_weights, best_score = weight_optimizer.weight_search_fast(
+        test_by_user=test_by_user,
+        features_by_user=features_by_user,
+        held_out_by_user=held_out_by_user,
         k=args.k,
         step=args.step,
     )

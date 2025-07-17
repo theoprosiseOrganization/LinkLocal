@@ -77,6 +77,23 @@ def evaluate_weights(weights, G_train, test_by_user, k, max_distance=4):
     
     return float(np.mean(recalls)) if recalls else 0.0
 
+def evaluate_weights_fast(weights, features_by_user, held_out_by_user, k):
+    w = np.array(weights)
+    recalls = []
+
+    for user, df in features_by_user.items():
+        feats = df.values
+        scores = feats.dot(w)
+
+        # get top k indices by score
+        top_k_indices = np.argpartition(scores, -k)[-k:]
+        top_k = set(df.index[top_k_indices])
+
+        held = held_out_by_user[user]
+        recall = len(top_k & held) / len(held) if held else 0
+        recalls.append(recall)
+    return float(np.mean(recalls)) if recalls else 0.0
+
 def weight_search(G_train, test_by_user, k, step):
     best = (None, -1.0)
 
@@ -89,6 +106,22 @@ def weight_search(G_train, test_by_user, k, step):
                 continue
             weights = (w_loc, w_friend, w_pref)
             score = evaluate_weights(weights, G_train, test_by_user, k)
+            if score > best[1]:
+                best = (weights, score)
+    return best
+
+def weight_search_fast(test_by_user, features_by_user, held_out_by_user, k, step):
+    best = (None, -1.0)
+
+    # generate weights that sum to 1.0
+    vals= np.arange(0, 1.0 + step, step)
+    for w_loc in vals:
+        for w_friend in vals:
+            w_pref = 1 - w_loc - w_friend
+            if w_pref < 0.0:
+                continue
+            weights = (w_loc, w_friend, w_pref)
+            score = evaluate_weights_fast(weights, G_train, test_by_user, k)
             if score > best[1]:
                 best = (weights, score)
     return best
