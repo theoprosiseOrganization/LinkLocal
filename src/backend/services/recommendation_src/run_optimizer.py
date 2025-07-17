@@ -44,7 +44,7 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument("--test-ratio", type=float, default=0.2, help="Ratio of edges to hold out for testing")
     p.add_argument("--min-follows", type=int, default=3, help="Minimum number of follows to include a user in training")
-    p.add_argument("--k", type=int, default=5, help="Number of recommendations to generate")
+    p.add_argument("--k", type=int, default=2, help="Number of recommendations to generate")
     p.add_argument("--step", type=float, default=0.1, help="Step size for optimization")
     args = p.parse_args()
 

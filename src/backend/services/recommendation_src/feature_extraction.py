@@ -177,6 +177,9 @@ def compute_features_for_user(user_id: str, candidates: list[str], dist_map: dic
     The function fetches user locations, tags, follower counts, event counts, and liked events tags from the database.
     It then calculates the scores for each candidate user and returns a DataFrame with the computed features.
     """
+    if user_id is None or not candidates:
+        candidates = [user_id] + candidates
+    
     location_map = fetch_user_locations()
     tag_map = fetch_user_tags()
     follower_counts = fetch_follower_counts()
