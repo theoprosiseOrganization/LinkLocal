@@ -76,3 +76,21 @@ def evaluate_weights(weights, G_train, test_by_user, k, max_distance=4):
         recalls.append(recall)
     
     return float(np.mean(recalls)) if recalls else 0.0
+
+def weight_search(G_train, test_by_user, k, step):
+    best = (None, -1.0)
+
+    # generate weights that sum to 1.0
+    vals= np.arange(0, 1.0 + 1e9, step)
+    for w_loc in vals:
+        for w_friend in vals:
+            w_pref = 1 - w_loc - w_friend
+            if w_pref <  -1e9 :
+                continue
+            w_pref = max(0.0, w_pref)
+            weights = (w_loc, w_friend, w_pref)
+            score = evaluate_weights(weights, G_train, test_by_user, k)
+            if score > best[1]:
+                best = (weights, score)
+    return best
+
