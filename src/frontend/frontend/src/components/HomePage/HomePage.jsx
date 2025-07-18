@@ -100,6 +100,7 @@ export default function HomePage() {
           <MapComponent
             events={eventsToDisplay}
             currentLocation={currentLocation}
+            users={usersToDisplay}
           />
           {showOverlay && (
             <div className="homepage-overlay">
