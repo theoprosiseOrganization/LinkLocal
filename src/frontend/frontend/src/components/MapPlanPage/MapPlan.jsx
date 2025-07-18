@@ -16,7 +16,7 @@
  * @returns {JSX.Element} The rendered MapPlan component.
  */
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import Layout from "../Layout/Layout";
 import MapWithDrawing from "./MapWithDrawing";
 const MAPS_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
@@ -60,6 +60,9 @@ export default function MapPlan() {
   const [transportType, setTransportType] = useState("DRIVE");
   const [userData, setUserData] = useState(null);
   const [userTagSet, setUserTagSet] = useState(new Set());
+  const [isTagDialogOpen, setIsTagDialogOpen] = useState(false);
+  const [preferredTag, setPreferredTag] = useState("");
+  const [eventDurations, setEventDurations] = useState({});
 
   const filterStart = startDate ? new Date(startDate) : null;
   const filterEnd = endDate ? new Date(endDate) : null;
@@ -72,6 +75,14 @@ export default function MapPlan() {
     if (filterEnd && eventStart > filterEnd) return false;
     return true;
   });
+
+  const availableTags = useMemo(() => {
+    const tags = new Set();
+    filteredEvents.forEach((event) =>
+      (event.tags || []).forEach((tag) => tags.add(tag.name))
+    );
+    return Array.from(tags);
+  }, [filteredEvents]);
 
   // Toggle event selection
   const handleSelectEvent = (eventId) => {
@@ -104,10 +115,18 @@ export default function MapPlan() {
 
   const tagScore = (event) => {
     if (!userData || !userData.tags) return 0;
-    return (event.tags || []).reduce(
+    const regularScore = (event.tags || []).reduce(
       (score, { name }) => score + (userTagSet.has(name) ? 1 : 0),
       0
     );
+    if (preferredTag) {
+      // If event has preferredTag, give it a big boost
+      const hasPreferred = (event.tags || []).some(
+        (t) => t.name === preferredTag
+      );
+      return hasPreferred ? 1000 + regularScore : regularScore;
+    }
+    return regularScore;
   };
 
   const getRoute = async () => {
@@ -198,7 +217,7 @@ export default function MapPlan() {
    * It then selects events that can be attended for a full hour, considering travel time.
    * The function prioritizes events based on the user's tags and the time they can be attended
    * before they end.
-   * 
+   *
    * @returns {void}
    */
   const generateEventPlan = () => {
@@ -206,6 +225,7 @@ export default function MapPlan() {
       alert("Please select a time period for the events.");
       return;
     }
+    let durations = {};
 
     const eventsToGenerate = filteredEvents
       .slice() // copy array
@@ -248,9 +268,9 @@ export default function MapPlan() {
             Math.min(e.eventEndMs, filterEnd.getTime())
         );
 
-        if(!possibleEvents || possibleEvents.length === 0) {
-          break;
-        }
+      if (!possibleEvents || possibleEvents.length === 0) {
+        break;
+      }
 
       possibleEvents.sort((a, b) => {
         const diff = tagScore(b) - tagScore(a);
@@ -258,14 +278,17 @@ export default function MapPlan() {
       });
 
       const pick = possibleEvents[0];
+      const isPreferred = preferredTag && (pick.tags || []).some(t=> t.name === preferredTag);
+      const durationMs = (isPreferred ? 90 : 60) * 60 * 1000; // 90 mins if preferred tag, else 60 mins
       picks.push(pick.id);
+      durations[pick.id] = durationMs;
       usedIds.add(pick.id);
 
       curTime = pick.arriveAt + 60 * 60 * 1000; // 1 hour at event
       curLoc = {
         lat: pick.location?.latitude,
         lng: pick.location?.longitude,
-      }
+      };
     }
 
     setSelectedEventIds(picks);
@@ -276,6 +299,7 @@ export default function MapPlan() {
     alert(
       `Generated plan with ${picks.length} events based on your criteria. You can now calculate the route.`
     );
+    setEventDurations(durations);
   };
 
   const handleTempSelectEvent = (eventId) => {
@@ -335,12 +359,70 @@ export default function MapPlan() {
           generate a plan that matches your criteria.
         </p>
         <Button
-          onClick={openEventSelectModal}
+          onClick={() => openEventSelectModal() && setIsTagDialogOpen(true)}
           className="mb-4 mr-2 bg-[var(--primary)] text-[var(--primary-foreground)] hover:bg-[var(--primary-foreground)] hover:text-[var(--primary)] transition"
         >
           Choose Events
         </Button>
-        <Button onClick={generateEventPlan}>Generate Events</Button>
+        <Button onClick={() => setIsTagDialogOpen(true)}>
+          Generate Events
+        </Button>
+        <Dialog open={isTagDialogOpen} onOpenChange={setIsTagDialogOpen}>
+          <DialogContent className="sm:max-w-[400px] bg-[var(--card)] text-[var(--card-foreground)] border border-[var(--border)] rounded-xl shadow">
+            <DialogHeader>
+              <DialogTitle>Choose a Tag to Prioritize</DialogTitle>
+            </DialogHeader>
+            <div className="grid gap-2 mb-4">
+              {availableTags.length === 0 && (
+                <div className="text-gray-500 text-sm">
+                  No tags found in these events.
+                </div>
+              )}
+              {availableTags.map((tag) => (
+                <label
+                  key={tag}
+                  className="flex items-center gap-2 cursor-pointer"
+                >
+                  <input
+                    type="radio"
+                    name="preferredTag"
+                    value={tag}
+                    checked={preferredTag === tag}
+                    onChange={() => setPreferredTag(tag)}
+                  />
+                  <span className="text-sm">{tag}</span>
+                </label>
+              ))}
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="preferredTag"
+                  value=""
+                  checked={preferredTag === ""}
+                  onChange={() => setPreferredTag("")}
+                />
+                <span className="text-sm">No Preference</span>
+              </label>
+            </div>
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => setIsTagDialogOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={() => {
+                  setIsTagDialogOpen(false);
+                  generateEventPlan(preferredTag);
+                }}
+                disabled={availableTags.length === 0}
+              >
+                Generate
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
         <Dialog open={isEventSelectOpen} onOpenChange={setIsEventSelectOpen}>
           <DialogContent className="sm:max-w-[700px] bg-[var(--card)] text-[var(--card-foreground)] border border-[var(--border)] rounded-xl shadow">
             <DialogHeader>
@@ -525,6 +607,7 @@ export default function MapPlan() {
                     title: planTitle,
                     eventIds: selectedEventIds,
                     routeData: routeData,
+                    durations: eventDurations,
                   });
                   setPlanId(plan.id);
                   await inviteUsers(plan.id, selectedFollowers);
