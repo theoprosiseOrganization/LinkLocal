@@ -36,6 +36,14 @@ export default function PlanViewer() {
     }
   }, [plan]);
 
+  const orderedEvents = React.useMemo(() => {
+    const idx = plan?.route_data?.optimizedIntermediateWaypointIndex;
+    if (idx && idx.length == events.length) {
+      return idx.map((i) => events[i]).filter(Boolean);
+    }
+    return events;
+  }, [plan,events]);
+
   if (!plan) return <div>Loading...</div>;
 
   return (
@@ -72,11 +80,9 @@ export default function PlanViewer() {
       <div className="event-list bg-white rounded-b-xl shadow-inner p-6">
         <h2 className="text-xl font-semibold mb-4">Stops on This Plan</h2>
         <ol className="list-decimal ml-6">
-          {(events || []).map((event, idx) => (
+          {(orderedEvents || []).map((event, idx) => (
             <li key={event.id || idx} className="mb-2">
               <div className="font-bold">{event.title}</div>
-              <div className="text-sm text-gray-600">{event.address}</div>
-              {/* Add more event details as needed */}
             </li>
           ))}
         </ol>

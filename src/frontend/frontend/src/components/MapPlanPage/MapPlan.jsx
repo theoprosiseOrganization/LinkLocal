@@ -62,6 +62,7 @@ export default function MapPlan() {
   const [userTagSet, setUserTagSet] = useState(new Set());
   const [isTagDialogOpen, setIsTagDialogOpen] = useState(false);
   const [preferredTag, setPreferredTag] = useState("");
+  const [eventDurations, setEventDurations] = useState({});
 
   const filterStart = startDate ? new Date(startDate) : null;
   const filterEnd = endDate ? new Date(endDate) : null;
@@ -224,6 +225,7 @@ export default function MapPlan() {
       alert("Please select a time period for the events.");
       return;
     }
+    durations = {};
 
     const eventsToGenerate = filteredEvents
       .slice() // copy array
@@ -276,7 +278,10 @@ export default function MapPlan() {
       });
 
       const pick = possibleEvents[0];
+      const isPreferred = preferredTag && (pick.tags || []).some(t=> t.name === preferredTag);
+      const durationMs = (isPreferred ? 90 : 60) * 60 * 1000; // 90 mins if preferred tag, else 60 mins
       picks.push(pick.id);
+      durations[pick.id] = durationMs;
       usedIds.add(pick.id);
 
       curTime = pick.arriveAt + 60 * 60 * 1000; // 1 hour at event
@@ -294,6 +299,7 @@ export default function MapPlan() {
     alert(
       `Generated plan with ${picks.length} events based on your criteria. You can now calculate the route.`
     );
+    setEventDurations(durations);
   };
 
   const handleTempSelectEvent = (eventId) => {
@@ -358,7 +364,9 @@ export default function MapPlan() {
         >
           Choose Events
         </Button>
-        <Button onClick={() => setIsTagDialogOpen(true)}>Generate Events</Button>
+        <Button onClick={() => setIsTagDialogOpen(true)}>
+          Generate Events
+        </Button>
         <Dialog open={isTagDialogOpen} onOpenChange={setIsTagDialogOpen}>
           <DialogContent className="sm:max-w-[400px] bg-[var(--card)] text-[var(--card-foreground)] border border-[var(--border)] rounded-xl shadow">
             <DialogHeader>
@@ -599,6 +607,7 @@ export default function MapPlan() {
                     title: planTitle,
                     eventIds: selectedEventIds,
                     routeData: routeData,
+                    eventDurations: eventDurations,
                   });
                   setPlanId(plan.id);
                   await inviteUsers(plan.id, selectedFollowers);
