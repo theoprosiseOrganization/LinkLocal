@@ -607,7 +607,7 @@ export default function MapPlan() {
                     title: planTitle,
                     eventIds: selectedEventIds,
                     routeData: routeData,
-                    eventDurations: eventDurations,
+                    durations: eventDurations,
                   });
                   setPlanId(plan.id);
                   await inviteUsers(plan.id, selectedFollowers);

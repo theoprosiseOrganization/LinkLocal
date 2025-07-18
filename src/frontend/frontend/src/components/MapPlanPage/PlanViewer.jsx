@@ -44,21 +44,37 @@ export default function PlanViewer() {
       return idx.map((i) => events[i]).filter(Boolean);
     }
     return events;
-  }, [plan,events]);
+  }, [plan, events]);
 
   if (!plan) return <div>Loading...</div>;
 
   return (
     <Layout>
       <div className="map-plan-page relative w-full max-w-5xl mx-auto mt-10 bg-[var(--card)] text-[var(--card-foreground)] rounded-xl shadow-lg border border-[var(--border)] overflow-hidden h-auto">
-        {" "}
-        <div
-          className="absolute top-0 left-0 w-full bg-[var(--primary)] bg-opacity-90 text-[var(--primary-foreground)] py-6 text-center z-10 text-2xl font-bold tracking-wide rounded-t-xl shadow"
-          style={{ paddingTop: "4rem" }}
-        >
-          {plan.title || "Plan Title"}
+        <div className="flex w-full bg-[var(--primary)] bg-opacity-90 text-[var(--primary-foreground)] py-6 px-8 z-10 rounded-t-xl shadow items-center justify-between">
+          <div className="text-2xl font-bold tracking-wide flex-1 text-left">
+            {plan.title || "Plan Title"}
+          </div>
+          <div className="flex-1 text-right">
+            <h2 className="text-xl font-semibold mb-2">Stops on This Plan</h2>
+            <ul className="inline-block text-left max-h-48 overflow-y-auto pr-2">
+              {(orderedEvents || []).map((event, idx) => {
+                const mins =
+                  durations && durations[event.id]
+                    ? Math.round(durations[event.id] / 60000)
+                    : 60;
+                return (
+                  <li key={event.id || idx} className="mb-1 flex items-center">
+                    <span className="font-bold mr-2">{idx + 1}.</span>
+                    <span className="font-bold">{event.title}</span>
+                    <span className="ml-2 text-sm">{mins} min</span>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
         </div>
-        <div className="h-[75vh] w-full rounded-lg overflow-hidden">
+        <div className="h-[75vh] w-full rounded-b-xl overflow-hidden">
           <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
             <Map
               mapId="4f917a8c04fdd7367b6986a1"
@@ -78,22 +94,6 @@ export default function PlanViewer() {
             </Map>
           </APIProvider>
         </div>
-      </div>
-      <div className="event-list bg-white rounded-b-xl shadow-inner p-6">
-        <h2 className="text-xl font-semibold mb-4">Stops on This Plan</h2>
-         <ol className="list-decimal ml-6">
-          {(orderedEvents || []).map((event, idx) => {
-            const mins = durations && durations[event.id] ? durations[event.id] : 60;
-            return (
-              <li key={event.id || idx} className="mb-2">
-                <div className="font-bold">{event.title}</div>
-                <div className="text-sm text-gray-600">
-                  {mins} minutes
-                </div>
-              </li>
-            );
-          })}
-        </ol>
       </div>
     </Layout>
   );
