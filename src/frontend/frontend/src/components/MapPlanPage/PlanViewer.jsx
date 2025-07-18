@@ -33,7 +33,6 @@ export default function PlanViewer() {
       Promise.all(plan.event_ids.map((id) => getEventById(id)))
         .then(setEvents)
         .catch(() => alert("Failed to load events"));
-        console.log("Events fetched:", events);
     }
   }, [plan]);
 
@@ -73,9 +72,9 @@ export default function PlanViewer() {
       <div className="event-list bg-white rounded-b-xl shadow-inner p-6">
         <h2 className="text-xl font-semibold mb-4">Stops on This Plan</h2>
         <ol className="list-decimal ml-6">
-          {(plan.events || []).map((event, idx) => (
+          {(events || []).map((event, idx) => (
             <li key={event.id || idx} className="mb-2">
-              <div className="font-bold">{event.name}</div>
+              <div className="font-bold">{event.title}</div>
               <div className="text-sm text-gray-600">{event.address}</div>
               {/* Add more event details as needed */}
             </li>
