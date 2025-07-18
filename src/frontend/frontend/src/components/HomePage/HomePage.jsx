@@ -67,31 +67,30 @@ export default function HomePage() {
   }, []);
 
   useEffect(() => {
-      const fetchUserData = async () => {
-        setLoading(true); // Start loading
-        try {
-          const userId = await getSessionUserId();
-          let people = [];
-          if (userFilter === "followers") {
-            people = await getUserFollowers(userId);
-          }
-          if (userFilter === "following") {
-            people = await getUserFollowing(userId);
-          }
-          if (userFilter === "all") {
-            people = await getUserFollowers(userId);
-            people = people.concat(await getUserFollowing(userId));
-          }
-          setUsersToDisplay(people);
-        } catch (err) {
-          setUsersToDisplay([]);
-        } finally {
-          setLoading(false); // End loading
+    const fetchUserData = async () => {
+      setLoading(true); // Start loading
+      try {
+        const userId = await getSessionUserId();
+        let people = [];
+        if (userFilter === "followers") {
+          people = await getUserFollowers(userId);
         }
-      };
-      fetchUserData();
-    }, [userFilter]);
-
+        if (userFilter === "following") {
+          people = await getUserFollowing(userId);
+        }
+        if (userFilter === "all") {
+          people = await getUserFollowers(userId);
+          people = people.concat(await getUserFollowing(userId));
+        }
+        setUsersToDisplay(people);
+      } catch (err) {
+        setUsersToDisplay([]);
+      } finally {
+        setLoading(false); // End loading
+      }
+    };
+    fetchUserData();
+  }, [userFilter]);
 
   return (
     <Layout>
@@ -103,7 +102,9 @@ export default function HomePage() {
             users={usersToDisplay}
           />
           {showOverlay && (
-            <div className="homepage-overlay">
+            <div
+              className={`homepage-overlay${!showOverlay ? " slide-out" : ""}`}
+            >
               <div className="vertical-events-container">
                 <Button
                   variant="secondary"
@@ -136,12 +137,12 @@ export default function HomePage() {
                   setShowOverlay(true);
                 }}
               >
-               <ChevronLeftIcon />
+                <ChevronLeftIcon />
               </Button>
               <div>
                 <h3>Filter Map</h3>
                 <div
-                  style={{ display: "flex", gap: "1rem", marginBottom: "1rem" }}
+                  style={{ display: "flex", flexDirection: "column", gap: "1rem", marginBottom: "1rem" }}
                 >
                   <Button
                     variant={
