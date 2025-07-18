@@ -59,6 +59,18 @@ export default function PlanViewer() {
           </APIProvider>
         </div>
       </div>
+      <div className="event-list bg-white rounded-b-xl shadow-inner p-6">
+        <h2 className="text-xl font-semibold mb-4">Stops on This Plan</h2>
+        <ol className="list-decimal ml-6">
+          {(plan.events || []).map((event, idx) => (
+            <li key={event.id || idx} className="mb-2">
+              <div className="font-bold">{event.name}</div>
+              <div className="text-sm text-gray-600">{event.address}</div>
+              {/* Add more event details as needed */}
+            </li>
+          ))}
+        </ol>
+      </div>
     </Layout>
   );
 }
