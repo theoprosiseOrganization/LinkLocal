@@ -27,6 +27,8 @@ export default function PlanViewer() {
       .catch(() => alert("Failed to load plan"));
   }, [planId]);
 
+  const durations = plan?.durations || {};
+
   // Fetch events when plan is loaded
   useEffect(() => {
     if (plan && plan.event_ids && plan.event_ids.length > 0) {

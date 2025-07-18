@@ -501,7 +501,7 @@ exports.createPlan = async (req, res) => {
 
   try {
     const ownerId = req.params.id;
-    const { title, eventIds, routeData } = req.body;
+    const { title, eventIds, routeData, durations } = req.body;
     const { data, error } = await supabase
       .from("plans")
       .insert([
@@ -510,6 +510,7 @@ exports.createPlan = async (req, res) => {
           title,
           event_ids: eventIds,
           route_data: routeData,
+          durations: durations
         },
       ])
       .select()
