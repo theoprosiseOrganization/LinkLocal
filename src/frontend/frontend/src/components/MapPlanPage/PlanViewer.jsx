@@ -81,12 +81,18 @@ export default function PlanViewer() {
       </div>
       <div className="event-list bg-white rounded-b-xl shadow-inner p-6">
         <h2 className="text-xl font-semibold mb-4">Stops on This Plan</h2>
-        <ol className="list-decimal ml-6">
-          {(orderedEvents || []).map((event, idx) => (
-            <li key={event.id || idx} className="mb-2">
-              <div className="font-bold">{event.title}</div>
-            </li>
-          ))}
+         <ol className="list-decimal ml-6">
+          {(orderedEvents || []).map((event, idx) => {
+            const mins = durations && durations[event.id] ? durations[event.id] : 60;
+            return (
+              <li key={event.id || idx} className="mb-2">
+                <div className="font-bold">{event.title}</div>
+                <div className="text-sm text-gray-600">
+                  {mins} minutes
+                </div>
+              </li>
+            );
+          })}
         </ol>
       </div>
     </Layout>

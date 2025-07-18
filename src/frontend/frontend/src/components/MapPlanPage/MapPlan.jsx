@@ -225,7 +225,7 @@ export default function MapPlan() {
       alert("Please select a time period for the events.");
       return;
     }
-    durations = {};
+    let durations = {};
 
     const eventsToGenerate = filteredEvents
       .slice() // copy array
