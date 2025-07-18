@@ -358,7 +358,7 @@ export default function MapPlan() {
         >
           Choose Events
         </Button>
-        <Button onClick={generateEventPlan}>Generate Events</Button>
+        <Button onClick={() => setIsTagDialogOpen(true)}>Generate Events</Button>
         <Dialog open={isTagDialogOpen} onOpenChange={setIsTagDialogOpen}>
           <DialogContent className="sm:max-w-[400px] bg-[var(--card)] text-[var(--card-foreground)] border border-[var(--border)] rounded-xl shadow">
             <DialogHeader>
@@ -406,7 +406,7 @@ export default function MapPlan() {
               <Button
                 onClick={() => {
                   setIsTagDialogOpen(false);
-                  generateEventPlanWithTag(preferredTag);
+                  generateEventPlan(preferredTag);
                 }}
                 disabled={availableTags.length === 0}
               >
