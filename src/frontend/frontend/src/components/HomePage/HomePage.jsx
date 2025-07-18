@@ -20,10 +20,15 @@ import "./HomePage.css";
 import HorizontalEvents from "../VerticalEvents/HorizontalEvents";
 import { getAllEvents } from "../../api";
 import React, { useEffect, useState } from "react";
+import { Button } from "../../../components/ui/Button";
+import { ChevronRightIcon } from "lucide-react";
+import { set } from "date-fns";
 
 export default function HomePage() {
   const [eventsToDisplay, setEventsToDisplay] = useState([]);
   const [currentLocation, setCurrentLocation] = useState(null);
+  const [showOverlay, setShowOverlay] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -34,6 +39,7 @@ export default function HomePage() {
         setEventsToDisplay([]); // If there's an error, set to empty array
       }
     };
+
     fetchEvents();
   }, []);
 
@@ -60,14 +66,43 @@ export default function HomePage() {
             events={eventsToDisplay}
             currentLocation={currentLocation}
           />
-          <div className="homepage-overlay">
-            <div className="vertical-events-container">
-              <h2 className="text-xl font-bold mb-4 text-[var(--primary)] text-center">
-                View Some Nearby Events
-              </h2>
-              <HorizontalEvents events={eventsToDisplay} />
+          {showOverlay && (
+            <div className="homepage-overlay">
+              <div className="vertical-events-container">
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  className="size-8"
+                  onClick={() => setSidebarOpen(true) && setShowOverlay(false)}
+                >
+                  <ChevronRightIcon />
+                </Button>
+
+                <h2 className="text-xl font-bold mb-4 text-[var(--primary)] text-center">
+                  View Some Nearby Events
+                </h2>
+
+                <HorizontalEvents events={eventsToDisplay} />
+              </div>
             </div>
-          </div>
+          )}
+          {sidebarOpen && (
+            <div className="sidebar-overlay">
+              <Button
+                variant="secondary"
+                size="icon"
+                className="close-sidebar"
+                onClick={() => setSidebarOpen(false) && setShowOverlay(true)}
+              >
+                <ChevronRightIcon />
+              </Button>
+              Side
+              <div>
+                <h3>Sidebar Content</h3>
+                Content
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </Layout>
