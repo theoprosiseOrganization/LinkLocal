@@ -6,8 +6,8 @@
  * It currently displays all events fetched from the API.
  * The map shows the user's current location if available.
  * The events are displayed in a horizontal list format.
- * 
- * 
+ *
+ *
  * @component
  * @example
  * <HomePage />
@@ -56,7 +56,10 @@ export default function HomePage() {
     <Layout>
       <div className="homepage-vertical">
         <div className="homepage-bottom-overlay">
-          <MapComponent events={eventsToDisplay} currentLocation={currentLocation}/>
+          <MapComponent
+            events={eventsToDisplay}
+            currentLocation={currentLocation}
+          />
           <div className="homepage-overlay">
             <div className="vertical-events-container">
               <h2 className="text-xl font-bold mb-4 text-[var(--primary)] text-center">

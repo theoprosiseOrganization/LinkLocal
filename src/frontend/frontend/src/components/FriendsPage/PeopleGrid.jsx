@@ -77,7 +77,22 @@ export default function PeopleGrid(props) {
               style={{ minWidth: 240 }}
             >
               <div className="profile-avatar">
-                {person.name ? person.name[0].toUpperCase() : "?"}
+               {person.avatar ? (
+                    <img
+                      src={person.avatar}
+                      alt="Profile"
+                      style={{
+                        width: 80,
+                        height: 80,
+                        borderRadius: "50%",
+                        objectFit: "cover",
+                      }}
+                    />
+                  ) : person.name ? (
+                    person.name[0].toUpperCase()
+                  ) : (
+                    "?"
+                  )}
               </div>
               <div className="profile-info">
                 <h2>{person.name}</h2>

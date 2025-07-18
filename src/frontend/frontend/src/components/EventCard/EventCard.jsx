@@ -28,7 +28,9 @@ export default function EventCard({ event }) {
   return (
     <Card className="event-card w-full max-w-xl min-w-[250px] mx-auto">
       <CardHeader className="event-card-header">
-        <CardTitle className="event-card-title">{event.title || "Untitled Event"}</CardTitle>
+        <CardTitle className="event-card-title">
+          {event.title || "Untitled Event"}
+        </CardTitle>
         <CardAction className="event-card-action">
           <ViewEventButton eventId={event.id} />
         </CardAction>

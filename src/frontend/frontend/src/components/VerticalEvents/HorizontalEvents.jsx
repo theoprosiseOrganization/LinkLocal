@@ -21,8 +21,7 @@ import {
   CarouselPrevious,
 } from "../../../components/ui/carousel";
 import EventCard from "../EventCard/EventCard";
-import Autoplay from "embla-carousel-autoplay"
-
+import Autoplay from "embla-carousel-autoplay";
 
 export default function HorizontalEvents({ events = [] }) {
   return (
@@ -30,11 +29,12 @@ export default function HorizontalEvents({ events = [] }) {
       opts={{ align: "start", loop: true }}
       orientation="horizontal"
       className="w-full h-full"
-      plugins={[
-        Autoplay({ delay: 3500, stopOnInteraction: true }),
-      ]}
+      plugins={[Autoplay({ delay: 3500, stopOnInteraction: true })]}
     >
-      <CarouselContent className="-mt-1 background-var(--card)" style={{ height: "100%" }}>
+      <CarouselContent
+        className="-mt-1 background-var(--card)"
+        style={{ height: "100%" }}
+      >
         {events.length === 0 ? (
           <div className="p-4 text-center text-gray-400">
             No events to display
