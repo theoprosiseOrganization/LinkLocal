@@ -46,7 +46,7 @@
 .homepage-bottom-overlay {
   position: relative;
   width: 100%;
-  height: calc(100vh - 90px);
+  height: 100vh;
   min-height: 400px;
   overflow: hidden;
 }

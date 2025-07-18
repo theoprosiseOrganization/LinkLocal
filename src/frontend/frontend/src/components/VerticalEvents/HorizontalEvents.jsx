@@ -34,7 +34,7 @@ export default function HorizontalEvents({ events = [] }) {
         Autoplay({ delay: 3500, stopOnInteraction: true }),
       ]}
     >
-      <CarouselContent className="-mt-1" style={{ height: "100%" }}>
+      <CarouselContent className="-mt-1 background-var(--card)" style={{ height: "100%" }}>
         {events.length === 0 ? (
           <div className="p-4 text-center text-gray-400">
             No events to display

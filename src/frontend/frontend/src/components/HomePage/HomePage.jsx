@@ -55,9 +55,6 @@ export default function HomePage() {
   return (
     <Layout>
       <div className="homepage-vertical">
-        <div className="homepage-top">
-          <h1>Welcome to LinkLocal!</h1>
-        </div>
         <div className="homepage-bottom-overlay">
           <MapComponent events={eventsToDisplay} currentLocation={currentLocation}/>
           <div className="homepage-overlay">

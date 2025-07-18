@@ -16,56 +16,62 @@ import { logoutUser } from "../../api";
 
 export default function NavHeader({ darkMode, setDarkMode }) {
   return (
-    <div className="nav-header" style={{ display: "flex", alignItems: "center" }}>
+    <div
+      className="nav-header"
+    >
       <NavigationMenu>
         <NavigationMenuList>
-          <NavigationMenuItem>
-            <NavigationMenuTrigger className="navigation-menu__trigger">
-              Sign In/Up
-            </NavigationMenuTrigger>
-            <NavigationMenuContent>
-              <ul className="grid w-[200px] gap-4">
-                <NavigationMenuItem>
-                  <NavigationMenuLink asChild className="trigger-link">
-                    <Link to="/signin">Sign In</Link>
-                  </NavigationMenuLink>
-                </NavigationMenuItem>
-                <NavigationMenuLink asChild className="trigger-link">
-                  <Link to="/signup">Sign Up</Link>
-                </NavigationMenuLink>
-                <NavigationMenuLink asChild className="trigger-link">
-                  <Link onClick={logoutUser}>Logout</Link>
-                </NavigationMenuLink>
-              </ul>
-            </NavigationMenuContent>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuLink asChild>
-              <Link to="/">Home</Link>
+  <div className="flex items-center w-full">
+    {/* Left: LinkLocal */}
+    <div className="flex items-center flex-1">
+      <NavigationMenuItem>
+        <NavigationMenuLink asChild>
+          <Link to="/">LinkLocal</Link>
+        </NavigationMenuLink>
+      </NavigationMenuItem>
+    </div>
+    {/* Right: Other links */}
+    <div className="flex items-center gap-2 justify-end">
+      <NavigationMenuItem>
+        <NavigationMenuTrigger className="navigation-menu__trigger">
+          Sign In/Up
+        </NavigationMenuTrigger>
+        <NavigationMenuContent>
+          <ul className="grid w-[200px] gap-4">
+            <NavigationMenuItem>
+              <NavigationMenuLink asChild className="trigger-link">
+                <Link to="/signin">Sign In</Link>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+            <NavigationMenuLink asChild className="trigger-link">
+              <Link to="/signup">Sign Up</Link>
             </NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuLink asChild>
-              <Link to="/friends">Friends</Link>
+            <NavigationMenuLink asChild className="trigger-link">
+              <Link onClick={logoutUser}>Logout</Link>
             </NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuLink asChild>
-              <Link to="/suggested">Suggested</Link>
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuLink asChild>
-              <Link to="/plan">Plan</Link>
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuLink asChild>
-              <Link to="/profile">Profile</Link>
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-        </NavigationMenuList>
-      </NavigationMenu>
+          </ul>
+        </NavigationMenuContent>
+      </NavigationMenuItem>
+      <NavigationMenuItem>
+        <NavigationMenuLink asChild>
+          <Link to="/friends">Friends</Link>
+        </NavigationMenuLink>
+      </NavigationMenuItem>
+      <NavigationMenuItem>
+        <NavigationMenuLink asChild>
+          <Link to="/suggested">Suggested</Link>
+        </NavigationMenuLink>
+      </NavigationMenuItem>
+      <NavigationMenuItem>
+        <NavigationMenuLink asChild>
+          <Link to="/plan">Plan</Link>
+        </NavigationMenuLink>
+      </NavigationMenuItem>
+      <NavigationMenuItem>
+        <NavigationMenuLink asChild>
+          <Link to="/profile">Profile</Link>
+        </NavigationMenuLink>
+      </NavigationMenuItem>
       <div
         style={{
           display: "flex",
@@ -89,6 +95,12 @@ export default function NavHeader({ darkMode, setDarkMode }) {
           aria-label="Toggle dark mode"
         />
       </div>
+    </div>
+  </div>
+</NavigationMenuList>
+
+      </NavigationMenu>
+      
     </div>
   );
 }

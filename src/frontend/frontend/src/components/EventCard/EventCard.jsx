@@ -27,17 +27,22 @@ export default function EventCard({ event }) {
 
   return (
     <Card className="event-card w-full max-w-xl min-w-[250px] mx-auto">
-      <CardHeader>
-        <CardTitle>{event.title || "Untitled Event"}</CardTitle>
+      <CardHeader className="event-card-header">
+        <CardTitle className="event-card-title">{event.title || "Untitled Event"}</CardTitle>
+        <CardAction className="event-card-action">
+          <ViewEventButton eventId={event.id} />
+        </CardAction>
         {event.startTime && event.endTime && (
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="event-card-time text-xs text-gray-500 mt-1">
             {new Date(event.startTime).toLocaleString(undefined, {
               year: "numeric",
               month: "short",
               day: "numeric",
               hour: "2-digit",
               minute: "2-digit",
-            })} &ndash; {new Date(event.endTime).toLocaleString(undefined, {
+            })}{" "}
+            &ndash;{" "}
+            {new Date(event.endTime).toLocaleString(undefined, {
               year: "numeric",
               month: "short",
               day: "numeric",
@@ -46,20 +51,23 @@ export default function EventCard({ event }) {
             })}
           </p>
         )}
-        <CardAction>
-          <ViewEventButton eventId={event.id} />
-        </CardAction>
       </CardHeader>
       <CardContent>
-        {event.images && event.images.length > 0 ? (
-          <HorizontalScroll images={event.images} />
-        ) : (
-          <p>No images available</p>
-        )}
-        <p>{event.location.address || "No location"}</p>
-        
+        <div className="event-card-image-area">
+          {event.images && event.images.length > 0 ? (
+            <HorizontalScroll images={event.images} />
+          ) : (
+            <img
+              src="/placeholder-image.png"
+              alt="No images available"
+              className="event-card-placeholder-img"
+            />
+          )}
+        </div>
+        <p className="event-card-location">
+          {event.location.address || "No location"}
+        </p>
       </CardContent>
     </Card>
   );
 }
-
