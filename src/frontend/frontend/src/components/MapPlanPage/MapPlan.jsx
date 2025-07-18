@@ -16,7 +16,7 @@
  * @returns {JSX.Element} The rendered MapPlan component.
  */
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import Layout from "../Layout/Layout";
 import MapWithDrawing from "./MapWithDrawing";
 const MAPS_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
@@ -62,7 +62,6 @@ export default function MapPlan() {
   const [userTagSet, setUserTagSet] = useState(new Set());
   const [isTagDialogOpen, setIsTagDialogOpen] = useState(false);
   const [preferredTag, setPreferredTag] = useState("");
-  const [availableTags, setAvailableTags] = useState([]);
 
   const filterStart = startDate ? new Date(startDate) : null;
   const filterEnd = endDate ? new Date(endDate) : null;
@@ -76,10 +75,12 @@ export default function MapPlan() {
     return true;
   });
 
-   useEffect(() => {
+  const availableTags = useMemo(() => {
     const tags = new Set();
-    filteredEvents.forEach(ev => (ev.tags || []).forEach(t => tags.add(t.name)));
-    setAvailableTags(Array.from(tags));
+    filteredEvents.forEach((event) =>
+      (event.tags || []).forEach((tag) => tags.add(tag.name))
+    );
+    return Array.from(tags);
   }, [filteredEvents]);
 
   // Toggle event selection
@@ -113,10 +114,18 @@ export default function MapPlan() {
 
   const tagScore = (event) => {
     if (!userData || !userData.tags) return 0;
-    return (event.tags || []).reduce(
+    const regularScore = (event.tags || []).reduce(
       (score, { name }) => score + (userTagSet.has(name) ? 1 : 0),
       0
     );
+    if (preferredTag) {
+      // If event has preferredTag, give it a big boost
+      const hasPreferred = (event.tags || []).some(
+        (t) => t.name === preferredTag
+      );
+      return hasPreferred ? 1000 + regularScore : regularScore;
+    }
+    return regularScore;
   };
 
   const getRoute = async () => {
@@ -357,10 +366,15 @@ export default function MapPlan() {
             </DialogHeader>
             <div className="grid gap-2 mb-4">
               {availableTags.length === 0 && (
-                <div className="text-gray-500 text-sm">No tags found in these events.</div>
+                <div className="text-gray-500 text-sm">
+                  No tags found in these events.
+                </div>
               )}
-              {availableTags.map(tag => (
-                <label key={tag} className="flex items-center gap-2 cursor-pointer">
+              {availableTags.map((tag) => (
+                <label
+                  key={tag}
+                  className="flex items-center gap-2 cursor-pointer"
+                >
                   <input
                     type="radio"
                     name="preferredTag"
@@ -383,7 +397,10 @@ export default function MapPlan() {
               </label>
             </div>
             <DialogFooter>
-              <Button variant="outline" onClick={() => setIsTagDialogOpen(false)}>
+              <Button
+                variant="outline"
+                onClick={() => setIsTagDialogOpen(false)}
+              >
                 Cancel
               </Button>
               <Button
