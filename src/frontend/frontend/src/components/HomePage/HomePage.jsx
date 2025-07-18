@@ -19,16 +19,23 @@ import MapComponent from "../MapComponent/MapComponent";
 import "./HomePage.css";
 import HorizontalEvents from "../VerticalEvents/HorizontalEvents";
 import { getAllEvents } from "../../api";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { Button } from "../../../components/ui/Button";
-import { ChevronRightIcon } from "lucide-react";
-import { set } from "date-fns";
+import { ChevronRightIcon, ChevronLeftIcon } from "lucide-react";
+import {
+  getUserFollowers,
+  getUserFollowing,
+  getSessionUserId,
+} from "../../api";
 
 export default function HomePage() {
   const [eventsToDisplay, setEventsToDisplay] = useState([]);
   const [currentLocation, setCurrentLocation] = useState(null);
   const [showOverlay, setShowOverlay] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [userFilter, setUserFilter] = useState("none"); // Default to no users - can be "followers", "following", "all" or "none"
+  const [loading, setLoading] = useState(false); // Loading state for events
+  const [usersToDisplay, setUsersToDisplay] = useState([]); // State to hold users based on filter
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -58,6 +65,34 @@ export default function HomePage() {
       );
     }
   }, []);
+
+  useEffect(() => {
+      const fetchUserData = async () => {
+        setLoading(true); // Start loading
+        try {
+          const userId = await getSessionUserId();
+          let people = [];
+          if (userFilter === "followers") {
+            people = await getUserFollowers(userId);
+          }
+          if (userFilter === "following") {
+            people = await getUserFollowing(userId);
+          }
+          if (userFilter === "all") {
+            people = await getUserFollowers(userId);
+            people = people.concat(await getUserFollowing(userId));
+          }
+          setUsersToDisplay(people);
+        } catch (err) {
+          setUsersToDisplay([]);
+        } finally {
+          setLoading(false); // End loading
+        }
+      };
+      fetchUserData();
+    }, [userFilter]);
+
+
   return (
     <Layout>
       <div className="homepage-vertical">
@@ -73,7 +108,10 @@ export default function HomePage() {
                   variant="secondary"
                   size="icon"
                   className="size-8"
-                  onClick={() => setSidebarOpen(true) && setShowOverlay(false)}
+                  onClick={() => {
+                    setSidebarOpen(true);
+                    setShowOverlay(false);
+                  }}
                 >
                   <ChevronRightIcon />
                 </Button>
@@ -92,14 +130,41 @@ export default function HomePage() {
                 variant="secondary"
                 size="icon"
                 className="close-sidebar"
-                onClick={() => setSidebarOpen(false) && setShowOverlay(true)}
+                onClick={() => {
+                  setSidebarOpen(false);
+                  setShowOverlay(true);
+                }}
               >
-                <ChevronRightIcon />
+               <ChevronLeftIcon />
               </Button>
-              Side
               <div>
-                <h3>Sidebar Content</h3>
-                Content
+                <h3>Filter Map</h3>
+                <div
+                  style={{ display: "flex", gap: "1rem", marginBottom: "1rem" }}
+                >
+                  <Button
+                    variant={
+                      userFilter === "followers" ? "primary" : "secondary"
+                    }
+                    onClick={() => setUserFilter("followers")}
+                  >
+                    Show Followers
+                  </Button>
+                  <Button
+                    variant={
+                      userFilter === "following" ? "primary" : "secondary"
+                    }
+                    onClick={() => setUserFilter("following")}
+                  >
+                    Show Following
+                  </Button>
+                  <Button
+                    variant={userFilter === "all" ? "primary" : "secondary"}
+                    onClick={() => setUserFilter("all")}
+                  >
+                    Show All
+                  </Button>
+                </div>
               </div>
             </div>
           )}
