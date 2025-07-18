@@ -10,7 +10,7 @@
  */
 import { useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import { getPlanById } from "../../api";
+import { getPlanById, getEventById } from "../../api";
 import { APIProvider, Map } from "@vis.gl/react-google-maps";
 import Route from "./Route";
 import Layout from "../Layout/Layout";
@@ -19,12 +19,23 @@ import UserLocationMarker from "../MapComponent/UserLocationMarker";
 export default function PlanViewer() {
   const { planId } = useParams();
   const [plan, setPlan] = useState(null);
+  const [events, setEvents] = useState([]);
 
   useEffect(() => {
     getPlanById(planId)
       .then(setPlan)
       .catch(() => alert("Failed to load plan"));
   }, [planId]);
+
+  // Fetch events when plan is loaded
+  useEffect(() => {
+    if (plan && plan.event_ids && plan.event_ids.length > 0) {
+      Promise.all(plan.event_ids.map((id) => getEventById(id)))
+        .then(setEvents)
+        .catch(() => alert("Failed to load events"));
+        console.log("Events fetched:", events);
+    }
+  }, [plan]);
 
   if (!plan) return <div>Loading...</div>;
 
