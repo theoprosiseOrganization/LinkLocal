@@ -60,6 +60,9 @@ export default function MapPlan() {
   const [transportType, setTransportType] = useState("DRIVE");
   const [userData, setUserData] = useState(null);
   const [userTagSet, setUserTagSet] = useState(new Set());
+  const [isTagDialogOpen, setIsTagDialogOpen] = useState(false);
+  const [preferredTag, setPreferredTag] = useState("");
+  const [availableTags, setAvailableTags] = useState([]);
 
   const filterStart = startDate ? new Date(startDate) : null;
   const filterEnd = endDate ? new Date(endDate) : null;
@@ -72,6 +75,12 @@ export default function MapPlan() {
     if (filterEnd && eventStart > filterEnd) return false;
     return true;
   });
+
+   useEffect(() => {
+    const tags = new Set();
+    filteredEvents.forEach(ev => (ev.tags || []).forEach(t => tags.add(t.name)));
+    setAvailableTags(Array.from(tags));
+  }, [filteredEvents]);
 
   // Toggle event selection
   const handleSelectEvent = (eventId) => {
@@ -198,7 +207,7 @@ export default function MapPlan() {
    * It then selects events that can be attended for a full hour, considering travel time.
    * The function prioritizes events based on the user's tags and the time they can be attended
    * before they end.
-   * 
+   *
    * @returns {void}
    */
   const generateEventPlan = () => {
@@ -248,9 +257,9 @@ export default function MapPlan() {
             Math.min(e.eventEndMs, filterEnd.getTime())
         );
 
-        if(!possibleEvents || possibleEvents.length === 0) {
-          break;
-        }
+      if (!possibleEvents || possibleEvents.length === 0) {
+        break;
+      }
 
       possibleEvents.sort((a, b) => {
         const diff = tagScore(b) - tagScore(a);
@@ -265,7 +274,7 @@ export default function MapPlan() {
       curLoc = {
         lat: pick.location?.latitude,
         lng: pick.location?.longitude,
-      }
+      };
     }
 
     setSelectedEventIds(picks);
@@ -335,12 +344,60 @@ export default function MapPlan() {
           generate a plan that matches your criteria.
         </p>
         <Button
-          onClick={openEventSelectModal}
+          onClick={() => openEventSelectModal() && setIsTagDialogOpen(true)}
           className="mb-4 mr-2 bg-[var(--primary)] text-[var(--primary-foreground)] hover:bg-[var(--primary-foreground)] hover:text-[var(--primary)] transition"
         >
           Choose Events
         </Button>
         <Button onClick={generateEventPlan}>Generate Events</Button>
+        <Dialog open={isTagDialogOpen} onOpenChange={setIsTagDialogOpen}>
+          <DialogContent className="sm:max-w-[400px] bg-[var(--card)] text-[var(--card-foreground)] border border-[var(--border)] rounded-xl shadow">
+            <DialogHeader>
+              <DialogTitle>Choose a Tag to Prioritize</DialogTitle>
+            </DialogHeader>
+            <div className="grid gap-2 mb-4">
+              {availableTags.length === 0 && (
+                <div className="text-gray-500 text-sm">No tags found in these events.</div>
+              )}
+              {availableTags.map(tag => (
+                <label key={tag} className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="preferredTag"
+                    value={tag}
+                    checked={preferredTag === tag}
+                    onChange={() => setPreferredTag(tag)}
+                  />
+                  <span className="text-sm">{tag}</span>
+                </label>
+              ))}
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="preferredTag"
+                  value=""
+                  checked={preferredTag === ""}
+                  onChange={() => setPreferredTag("")}
+                />
+                <span className="text-sm">No Preference</span>
+              </label>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setIsTagDialogOpen(false)}>
+                Cancel
+              </Button>
+              <Button
+                onClick={() => {
+                  setIsTagDialogOpen(false);
+                  generateEventPlanWithTag(preferredTag);
+                }}
+                disabled={availableTags.length === 0}
+              >
+                Generate
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
         <Dialog open={isEventSelectOpen} onOpenChange={setIsEventSelectOpen}>
           <DialogContent className="sm:max-w-[700px] bg-[var(--card)] text-[var(--card-foreground)] border border-[var(--border)] rounded-xl shadow">
             <DialogHeader>
