@@ -80,18 +80,26 @@ export default function MapPlan() {
 
   useEffect(() => {
     if (!isTagDialogOpen) return;
+    if (!userData?.location) return;
 
     getWeatherData(
       userData.location.latitude,
       userData.location.longitude
     ).then((data) => {
-      if (data && data.weather) {
-        console.log("Weather data:", data.weather);
+      if (data && data.list) {
+        // Check if plan start is in range
+        if (isPlanStartInWeatherRange(startDate, data.list)) {
+          const closest = getClosestWeatherEntry(startDate, data.list);
+          setIsWeatherBad(isWeatherBadEntry(closest));
+        } else {
+          setIsWeatherBad(false);
+        }
       } else {
+        setIsWeatherBad(false);
         console.error("Failed to fetch weather data");
       }
     });
-  }, [isTagDialogOpen]);
+  }, [isTagDialogOpen, userData, startDate]);
 
   const filterStart = startDate ? new Date(startDate) : null;
   const filterEnd = endDate ? new Date(endDate) : null;
@@ -122,15 +130,38 @@ export default function MapPlan() {
     );
   };
 
+  // Utility: Check if plan start is in weather range
+  function isPlanStartInWeatherRange(planStartDate, weatherList) {
+    if (!planStartDate || !weatherList?.length) return false;
+    const planStartUnix = Math.floor(new Date(planStartDate).getTime() / 1000);
+    const firstDt = weatherList[0].dt;
+    const lastDt = weatherList[weatherList.length - 1].dt;
+    return planStartUnix >= firstDt && planStartUnix <= lastDt;
+  }
+
+  // Utility: Find closest weather entry
   function getClosestWeatherEntry(planStartDate, weatherList) {
-  if (!planStartDate || !weatherList?.length) return null;
-  const planStartUnix = Math.floor(new Date(planStartDate).getTime() / 1000);
-  return weatherList.reduce((closest, entry) => {
-    return Math.abs(entry.dt - planStartUnix) < Math.abs(closest.dt - planStartUnix)
-      ? entry
-      : closest;
-  }, weatherList[0]);
-}
+    if (!planStartDate || !weatherList?.length) return null;
+    const planStartUnix = Math.floor(new Date(planStartDate).getTime() / 1000);
+    return weatherList.reduce((closest, entry) => {
+      return Math.abs(entry.dt - planStartUnix) <
+        Math.abs(closest.dt - planStartUnix)
+        ? entry
+        : closest;
+    }, weatherList[0]);
+  }
+
+  // Utility: Define what is "bad" weather
+  function isWeatherBadEntry(weatherEntry) {
+    if (!weatherEntry) return false;
+    // Example: bad if rain, snow, or thunderstorm in weather[0].main
+    const main = weatherEntry.weather?.[0]?.main?.toLowerCase() || "";
+    return (
+      main.includes("rain") ||
+      main.includes("snow") ||
+      main.includes("thunderstorm")
+    );
+  }
 
   const computeDistanceKm = (locA, locB) => {
     const R = 6371; // Radius of the Earth in km
