@@ -502,7 +502,7 @@ exports.createPlan = async (req, res) => {
 
   try {
     const ownerId = req.params.id;
-    const { title, eventIds, routeData, durations } = req.body;
+    const { title, eventIds, routeData, durations, start, end, polygon } = req.body;
     const { data, error } = await supabase
       .from("plans")
       .insert([
@@ -527,7 +527,6 @@ exports.createPlan = async (req, res) => {
     }
     res.json(data);
   } catch (error) {
-    console.error("Error creating plan:", error);
     res.status(500).json({ error: `Failed to create plan: ${error.message}` });
   }
 };
