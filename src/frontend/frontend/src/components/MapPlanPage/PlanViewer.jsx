@@ -62,7 +62,32 @@ export default function PlanViewer() {
       <div className="map-plan-page relative w-full max-w-5xl mx-auto mt-10 bg-[var(--card)] text-[var(--card-foreground)] rounded-xl shadow-lg border border-[var(--border)] overflow-hidden h-auto">
         <div className="flex w-full bg-[var(--primary)] bg-opacity-90 text-[var(--primary-foreground)] py-6 px-8 z-10 rounded-t-xl shadow items-center justify-between">
           <div className="text-2xl font-bold tracking-wide flex-1 text-left">
-            {plan.title || "Plan Title"}
+            <h1>{plan.title || "Plan Title"}</h1>
+            {!hasJoined ? (
+              <button
+                className="btn-primary ml-4"
+                onClick={async () => {
+                  await joinPlan(planId);
+                  setHasJoined(true);
+                  const updated = await getPlanById(planId);
+                  setPlan(updated);
+                  alert("You have joined the plan!");
+                }}
+              >
+                Accept Invite
+              </button>
+            ) : (
+              <button
+                className="btn-secondary ml-4"
+                onClick={async () => {
+                  const reshuffled = await shufflePlan(planId);
+                  setPlan(reshuffled);
+                  alert("Plan has been reshuffled!");
+                }}
+              >
+                Reshuffle Plan
+              </button>
+            )}
           </div>
           <div className="flex-1 text-right">
             <h2 className="text-xl font-semibold mb-2">Stops on This Plan</h2>
