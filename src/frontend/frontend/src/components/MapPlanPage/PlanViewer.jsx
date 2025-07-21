@@ -21,6 +21,8 @@ import { APIProvider, Map } from "@vis.gl/react-google-maps";
 import Route from "./Route";
 import Layout from "../Layout/Layout";
 import UserLocationMarker from "../MapComponent/UserLocationMarker";
+import { Button } from "../../../components/ui/button";
+
 
 export default function PlanViewer() {
   const { planId } = useParams();
@@ -78,8 +80,7 @@ export default function PlanViewer() {
                 Accept Invite
               </button>
             ) : (
-              <button
-                className="btn-secondary ml-4"
+              <Button variant="secondary"
                 onClick={async () => {
                   const reshuffled = await shufflePlan(planId);
                   setPlan(reshuffled);
@@ -87,8 +88,8 @@ export default function PlanViewer() {
                   window.location.reload(); // Reload to reflect changes
                 }}
               >
-                Reshuffle Plan
-              </button>
+                Shuffle Plan
+              </Button>
             )}
           </div>
           <div className="flex-1 text-right">
