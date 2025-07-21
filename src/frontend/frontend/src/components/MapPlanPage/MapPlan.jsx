@@ -603,11 +603,19 @@ export default function MapPlan() {
               <Button
                 disabled={selectedFollowers.length === 0 || !planTitle.trim()}
                 onClick={async () => {
+                  
+                  const coords = drawnPolygon.current.getPath().getArray().map(pt => ({
+                    lat: pt.lat(),
+                    lng: pt.lng(),
+                  }));
                   const plan = await createPlan({
                     title: planTitle,
                     eventIds: selectedEventIds,
                     routeData: routeData,
                     durations: eventDurations,
+                    start: startDate,
+                    end: endDate,
+                    polygon: coords,
                   });
                   setPlanId(plan.id);
                   await inviteUsers(plan.id, selectedFollowers);

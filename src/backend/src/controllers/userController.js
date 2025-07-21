@@ -13,6 +13,10 @@ const { createClient } = require("@supabase/supabase-js");
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_KEY;
 const RECOMMENDATION_SERVICE_URL = process.env.RECOMMENDATION_SERVICE_URL;
+const {
+  fetchEventsWithinPolygon,
+  fetchOptimalRoute,
+} = require("./eventController");
 
 // User CRUD
 exports.getUsers = async (req, res) => {
@@ -501,7 +505,8 @@ exports.createPlan = async (req, res) => {
 
   try {
     const ownerId = req.params.id;
-    const { title, eventIds, routeData, durations } = req.body;
+    const { title, eventIds, routeData, durations, start, end, polygon } =
+      req.body;
     const { data, error } = await supabase
       .from("plans")
       .insert([
@@ -510,7 +515,11 @@ exports.createPlan = async (req, res) => {
           title,
           event_ids: eventIds,
           route_data: routeData,
-          durations: durations
+          durations: durations,
+          participants: [ownerId], // Start with the owner as participant
+          start_time: start,
+          end_time: end,
+          polygon: polygon,
         },
       ])
       .select()
@@ -593,5 +602,255 @@ exports.getPlanById = async (req, res) => {
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: `Failed to get plan: ${error.message}` });
+  }
+};
+
+exports.joinPlan = async (req, res) => {
+  const supabase = createClient(supabaseUrl, supabaseKey);
+
+  try {
+    const { planId } = req.params;
+    const userId = req.params.id;
+    const { data: plan, error } = await supabase
+      .from("plans")
+      .select("participants")
+      .eq("id", planId)
+      .single();
+    if (error) {
+      return res
+        .status(500)
+        .json({ error: `Failed to join plan in DB: ${error.message}` });
+    }
+    const alreadyJoined = plan.participants?.includes(userId);
+    const newParts = alreadyJoined
+      ? plan.participants
+      : [...(plan.participants || []), userId];
+    let { data, error: updateError } = await supabase
+      .from("plans")
+      .update({ participants: newParts })
+      .eq("id", planId)
+      .single();
+    if (updateError) {
+      return res.status(500).json({
+        error: `Failed to update plan participants: ${updateError.message}`,
+      });
+    }
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: `Failed to join plan: ${error.message}` });
+  }
+};
+
+const computeDistanceKm = (locA, locB) => {
+  const R = 6371; // Radius of the Earth in km
+  const dLat = (locB.lat - locA.lat) * (Math.PI / 180);
+  const dLon = (locB.lng - locA.lng) * (Math.PI / 180);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(locA.lat * (Math.PI / 180)) *
+      Math.cos(locB.lat * (Math.PI / 180)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c; // Distance in km
+};
+
+const computeTravelTimeMs = (locA, locB) => {
+  const distanceKm = computeDistanceKm(locA, locB);
+  const factor = distanceKm / 50; // Assuming average speed of 50 km/h
+  return factor * 60 * 60 * 1000; // Convert to milliseconds
+};
+
+const tagScore = (event, tagSetsByUser, creatorId) => {
+  let total = 0;
+  for (const [userId, tagSet] of Object.entries(tagSetsByUser)) {
+    if (userId === "__originLoc") continue;
+    const matches = event.tagNames.reduce(
+      (sum, tag) => sum + (tagSet.has(tag) ? 1 : 0),
+      0
+    );
+    const weight = userId == creatorId ? 2 : 1;
+    total += matches * weight;
+  }
+  return total;
+};
+
+function generateEventPlan(events, tagSetsByUser, startMs, endMs, creatorId) {
+  const used = new Set();
+  const picks = [];
+  const durations = {};
+  let curTime = startMs;
+  let curLoc = tagSetsByUser.__originLoc;
+
+  const toLatLng = (loc) => ({
+    lat: loc.latitude,
+    lng: loc.longitude,
+  });
+
+  events.forEach((e) => {
+    e.tagNames = (e.tags || []).map((t) => t.name);
+  });
+
+  while (true) {
+    if (curTime >= endMs) break;
+    const candidates = events.filter((e) => !used.has(e.id));
+    if (candidates.length === 0) {
+      break;
+    }
+
+    const possibleEvents = candidates
+      .map((e) => {
+        const travel = computeTravelTimeMs(
+          toLatLng(curLoc),
+          toLatLng(e.location)
+        );
+        const arrive = Math.max(
+          new Date(e.startTime).getTime(),
+          curTime + travel
+        );
+        return {
+          ...e,
+          arriveAt: arrive,
+          eventEndMs: new Date(e.endTime).getTime(),
+        };
+      })
+      // Only keep events that can be attended for a full hour before they end
+      .filter(
+        (e) => e.arriveAt + 60 * 60 * 1000 <= Math.min(e.eventEndMs, endMs)
+      );
+
+    if (possibleEvents.length === 0) {
+      break;
+    }
+
+    possibleEvents.sort((a, b) => {
+      const scoreA = tagScore(a, tagSetsByUser, creatorId);
+      const scoreB = tagScore(b, tagSetsByUser, creatorId);
+      if (scoreA !== scoreB) {
+        return scoreB - scoreA; // Higher score first
+      }
+      return a.arriveAt - b.arriveAt; // Earlier arrival first
+    });
+
+    const pick = possibleEvents[0];
+    picks.push(pick.id);
+    used.add(pick.id);
+
+    durations[pick.id] = 60 * 60 * 1000; // Default duration of 1 hour
+
+    curTime = pick.arriveAt + 60 * 60 * 1000; // 1 hour at event
+    curLoc = pick.location;
+  }
+
+  return { selectedIds: picks, durations };
+}
+
+exports.shufflePlan = async (req, res) => {
+  const supabase = createClient(supabaseUrl, supabaseKey);
+
+  try {
+    const planId = req.params.planId;
+    const userId = req.params.id;
+
+    let { data: plan, error: planError } = await supabase
+      .from("plans")
+      .select("owner_id, participants, start_time, end_time, polygon")
+      .eq("id", planId)
+      .single();
+    if (planError) {
+      return res
+        .status(404)
+        .json({ error: `Plan not found: ${planError.message}` });
+    }
+    const geojson = {
+      type: "Polygon",
+      coordinates: [plan.polygon.map((coord) => [coord.lng, coord.lat])],
+    };
+    let events = await fetchEventsWithinPolygon(geojson);
+
+    const startMs = new Date(plan.start_time).getTime();
+    const endMs = new Date(plan.end_time).getTime();
+
+    const allIds = [plan.owner_id, ...(plan.participants || [])];
+    const users = await prisma.user.findMany({
+      where: { id: { in: allIds } },
+      include: { tags: true },
+    });
+
+    // build tag sets by user
+    const tagSetsByUser = {};
+    for (const user of users) {
+      tagSetsByUser[user.id] = new Set((user.tags || []).map((t) => t.name));
+      if (user.id === plan.owner_id) {
+        const loc = await getUserLocation(user.id);
+        if (!loc) {
+          return res.status(404).json({ error: "Owner location not found" });
+        }
+        tagSetsByUser.__originLoc = {
+          latitude: loc.latitude,
+          longitude: loc.longitude,
+        };
+      }
+    }
+
+    events = events.filter((e) => {
+      const start = new Date(e.startTime).getTime();
+      const end = new Date(e.endTime).getTime();
+      // Include events that overlap with plan window
+      return (
+        end > startMs &&
+        start < endMs &&
+        computeDistanceKm(
+          { lat: e.location.latitude, lng: e.location.longitude },
+          {
+            lat: tagSetsByUser.__originLoc.latitude,
+            lng: tagSetsByUser.__originLoc.longitude,
+          }
+        ) <= 50
+      );
+    });
+
+    const { selectedIds, durations } = generateEventPlan(
+      events,
+      tagSetsByUser,
+      startMs,
+      endMs,
+      plan.owner_id
+    );
+  
+    const origin = tagSetsByUser.__originLoc;
+    const waypoints = selectedIds
+      .map((id) => {
+        const e = events.find((ev) => ev.id === id);
+        if (!e) return null;
+        return {
+          lat: e.location.latitude,
+          lng: e.location.longitude,
+        };
+      })
+      .filter(Boolean);
+
+    const routeDataResp = await fetchOptimalRoute(origin, waypoints, "DRIVE");
+    const routeData = await routeDataResp.routes?.[0];
+
+
+    let { data: updatedPlan, error: updateError } = await supabase
+      .from("plans")
+      .update({
+        event_ids: selectedIds,
+        durations: durations,
+        route_data: routeData,
+      })
+      .eq("id", planId)
+      .single();
+    if (updateError) {
+      return res
+        .status(500)
+        .json({ error: `Failed to update plan: ${updateError.message}` });
+    }
+
+    res.json(updatedPlan);
+  } catch (error) {
+    res.status(500).json({ error: `Failed to shuffle plan: ${error.message}` });
   }
 };

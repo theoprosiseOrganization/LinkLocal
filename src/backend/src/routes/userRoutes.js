@@ -24,7 +24,9 @@ const {
   createPlan,
   inviteUsers,
   listInvitations,
-  getPlanById
+  getPlanById,
+  joinPlan,
+  shufflePlan
 } = require("../controllers/userController");
 
 const router = express.Router();
@@ -68,5 +70,7 @@ router.post("/:id/plans", createPlan); // Create a new plan
 router.post("/:id/plans/:planId/invite", inviteUsers); // Invite users to a plan
 router.get("/:id/invitations", listInvitations); // List invitations for the user
 router.get("/:id/plans/:planId", getPlanById); // Get a specific plan by ID
+router.post("/:id/plans/:planId/join", joinPlan); // Join a plan
+router.post("/:id/plans/:planId/shuffle", shufflePlan); // Shuffle a plan
 
 module.exports = router;

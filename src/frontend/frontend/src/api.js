@@ -391,14 +391,14 @@ export async function meUrl(path) {
   return `${URL}/users/${me}${path}`;
 }
 
-export async function createPlan({ title, eventIds, routeData, durations }) {
+export async function createPlan({ title, eventIds, routeData, durations, start, end, polygon }) {
   const url = await meUrl("/plans");
   const res = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ title, eventIds, routeData, durations }),
+    body: JSON.stringify({ title, eventIds, routeData, durations, start, end, polygon }),
     credentials: "include",
   });
   const response = await res.json();
@@ -474,4 +474,36 @@ export async function getEventsWithinRadius({ lat, lng }, radius) {
     throw new Error(data.error || "Failed to fetch events within radius");
   }
   return data;
+}
+
+export async function joinPlan(planId) {
+  const url = await meUrl(`/plans/${planId}/join`);
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+  });
+  const response = await res.json();
+  if (!res.ok) {
+    throw new Error(response.error || "Failed to join plan");
+  }
+  return response;
+}
+
+export async function shufflePlan(planId) {
+  const url = await meUrl(`/plans/${planId}/shuffle`);
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+  });
+  const response = await res.json();
+  if (!res.ok) {
+    throw new Error(response.error || "Failed to shuffle plan");
+  }
+  return response;
 }
