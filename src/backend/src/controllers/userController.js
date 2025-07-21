@@ -684,6 +684,9 @@ function generateEventPlan(
   creatorId,
   friendsInPlan
 ) {
+  // Parameters for duration scaling
+  const MIN_DURATION = 30 * 60 * 1000; // 30 min
+  const MAX_DURATION = 2 * 60 * 60 * 1000; // 2 hours
   const used = new Set();
   const picks = [];
   const durations = {};
@@ -698,10 +701,6 @@ function generateEventPlan(
   events.forEach((e) => {
     e.tagNames = (e.tags || []).map((t) => t.name);
   });
-
-  // Parameters for duration scaling
-  const MIN_DURATION = 30 * 60 * 1000; // 30 min
-  const MAX_DURATION = 2 * 60 * 60 * 1000; // 2 hours
 
   while (true) {
     if (curTime >= endMs) break;
@@ -778,6 +777,8 @@ function generateEventPlan(
 }
 
 exports.shufflePlan = async (req, res) => {
+  const MAX_EVENT_DISTANCE_KM = 75;
+
   const supabase = createClient(supabaseUrl, supabaseKey);
 
   try {
@@ -832,20 +833,20 @@ exports.shufflePlan = async (req, res) => {
 
     // build tag sets by user
     const tagSetsByUser = {};
-    for (const user of users) {
-      tagSetsByUser[user.id] = new Set((user.tags || []).map((t) => t.name));
-      if (user.id === plan.owner_id) {
-        const loc = await getUserLocation(user.id);
-        if (!loc) {
-          return res.status(404).json({ error: "Owner location not found" });
+    await Promise.all(
+      users.map(async (user) => {
+        tagSetsByUser[user.id] = new Set((user.tags || []).map((t) => t.name));
+        if (user.id === plan.owner_id) {
+          const loc = await getUserLocation(user.id);
+          if (!loc) throw new Error("Owner location not found");
+          tagSetsByUser.__originLoc = {
+            latitude: loc.latitude,
+            longitude: loc.longitude,
+          };
         }
-        tagSetsByUser.__originLoc = {
-          latitude: loc.latitude,
-          longitude: loc.longitude,
-        };
-      }
-    }
-
+      })
+    );
+    
     events = events.filter((e) => {
       const start = new Date(e.startTime).getTime();
       const end = new Date(e.endTime).getTime();
@@ -859,7 +860,7 @@ exports.shufflePlan = async (req, res) => {
             lat: tagSetsByUser.__originLoc.latitude,
             lng: tagSetsByUser.__originLoc.longitude,
           }
-        ) <= 75 // Only include events within 75 km of origin
+        ) <= MAX_EVENT_DISTANCE_KM // Only include events within 75 km of origin
       );
     });
 
