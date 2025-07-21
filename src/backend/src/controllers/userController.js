@@ -728,6 +728,8 @@ function generateEventPlan(events, tagSetsByUser, startMs, endMs, creatorId) {
 }
 
 exports.shufflePlan = async (req, res) => {
+  const supabase = createClient(supabaseUrl, supabaseKey);
+
   try {
     const planId = req.params.planId;
     const userId = req.params.id;

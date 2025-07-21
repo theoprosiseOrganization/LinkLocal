@@ -15,6 +15,7 @@ import {
   getEventById,
   getSessionUserId,
   joinPlan,
+  shufflePlan,
 } from "../../api";
 import { APIProvider, Map } from "@vis.gl/react-google-maps";
 import Route from "./Route";
