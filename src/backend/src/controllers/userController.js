@@ -510,7 +510,7 @@ exports.createPlan = async (req, res) => {
           title,
           event_ids: eventIds,
           route_data: routeData,
-          durations: durations
+          durations: durations,
         },
       ])
       .select()
@@ -602,7 +602,7 @@ exports.joinPlan = async (req, res) => {
   try {
     const { planId } = req.params;
     const userId = req.params.id;
-    const { data:plan, error } = await supabase
+    const { data: plan, error } = await supabase
       .from("plans")
       .select("participants")
       .eq("id", planId)
@@ -616,15 +616,15 @@ exports.joinPlan = async (req, res) => {
     const newParts = alreadyJoined
       ? plan.participants
       : [...(plan.participants || []), userId];
-    let {data, error: updateError} = await supabase
+    let { data, error: updateError } = await supabase
       .from("plans")
       .update({ participants: newParts })
       .eq("id", planId)
       .single();
     if (updateError) {
-      return res
-        .status(500)
-        .json({ error: `Failed to update plan participants: ${updateError.message}` });
+      return res.status(500).json({
+        error: `Failed to update plan participants: ${updateError.message}`,
+      });
     }
     res.json(data);
   } catch (error) {
@@ -632,27 +632,112 @@ exports.joinPlan = async (req, res) => {
   }
 };
 
- const computeDistanceKm = (locA, locB) => {
-    const R = 6371; // Radius of the Earth in km
-    const dLat = (locB.lat - locA.lat) * (Math.PI / 180);
-    const dLon = (locB.lng - locA.lng) * (Math.PI / 180);
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(locA.lat * (Math.PI / 180)) *
-        Math.cos(locB.lat * (Math.PI / 180)) *
-        Math.sin(dLon / 2) *
-        Math.sin(dLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c; // Distance in km
-  };
+const computeDistanceKm = (locA, locB) => {
+  const R = 6371; // Radius of the Earth in km
+  const dLat = (locB.lat - locA.lat) * (Math.PI / 180);
+  const dLon = (locB.lng - locA.lng) * (Math.PI / 180);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(locA.lat * (Math.PI / 180)) *
+      Math.cos(locB.lat * (Math.PI / 180)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c; // Distance in km
+};
 
 const computeTravelTimeMs = (locA, locB) => {
-    const distanceKm = computeDistanceKm(locA, locB);
-    const factor = distanceKm / 50; // Assuming average speed of 50 km/h
-    return factor * 60 * 60 * 1000; // Convert to milliseconds
-  };
+  const distanceKm = computeDistanceKm(locA, locB);
+  const factor = distanceKm / 50; // Assuming average speed of 50 km/h
+  return factor * 60 * 60 * 1000; // Convert to milliseconds
+};
+
+const tagScore = (event) => {
+  if (!userData || !userData.tags) return 0;
+  const regularScore = (event.tags || []).reduce(
+    (score, { name }) => score + (userTagSet.has(name) ? 1 : 0),
+    0
+  );
+  if (preferredTag) {
+    // If event has preferredTag, give it a big boost
+    const hasPreferred = (event.tags || []).some(
+      (t) => t.name === preferredTag
+    );
+    return hasPreferred ? 1000 + regularScore : regularScore;
+  }
+  return regularScore;
+};
+
+function generateEventPlan(events, tagSetsByUser, startMs, endMs, creatorId) {
+  const used = new Set();
+  const picks = [];
+  const durations = {};
+  let curTime = startMs;
+  let curLoc = tagSetsByUser.__originLoc;
+
+  events.forEach((e) => {
+    e.tagNames = (e.tags || []).map((t) => t.name);
+  });
+
+  while (true) {
+    const candidates = events.filter((e) => !used.has(e.id));
+    if (candidates.length === 0) {
+      break;
+    }
+
+    const possibleEvents = candidates
+      .map((e) => {
+        const travel = computeTravelTimeMs(curLoc, e.location);
+        const arrive = Math.max(
+          new Date(e.startTime).getTime(),
+          curTime + travel
+        );
+        return {
+          ...e,
+          arriveAt: arrive,
+          eventEndMs: new Date(e.endTime).getTime(),
+        };
+      })
+      // Only keep events that can be attended for a full hour before they end
+      .filter(
+        (e) => e.arriveAt + 60 * 60 * 1000 <= Math.min(e.eventEnd, endMs)
+      );
+
+    if (possibleEvents.length === 0) {
+      break;
+    }
+
+    possibleEvents.sort((a, b) => {
+      const diff = tagScore(b) - tagScore(a);
+      return diff !== 0 ? diff : a.arriveAt - b.arriveAt;
+    });
+
+    const pick = possibleEvents[0];
+    const isPreferred =
+      preferredTag && (pick.tags || []).some((t) => t.name === preferredTag);
+    const durationMs = (isPreferred ? 90 : 60) * 60 * 1000; // 90 mins if preferred tag, else 60 mins
+    picks.push(pick.id);
+    durations[pick.id] = durationMs;
+    usedIds.add(pick.id);
+
+    curTime = pick.arriveAt + 60 * 60 * 1000; // 1 hour at event
+    curLoc = {
+      lat: pick.location?.latitude,
+      lng: pick.location?.longitude,
+    };
+  }
+
+  setSelectedEventIds(picks);
+  if (picks.length === 0) {
+    alert("No events could be selected based on your criteria.");
+    return;
+  }
+  alert(
+    `Generated plan with ${picks.length} events based on your criteria. You can now calculate the route.`
+  );
+  setEventDurations(durations);
+}
 
 exports.shufflePlan = async (req, res) => {
   const supabase = createClient(supabaseUrl, supabaseKey);
-  
-} 
+};
