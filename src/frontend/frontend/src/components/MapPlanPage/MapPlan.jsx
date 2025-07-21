@@ -122,6 +122,16 @@ export default function MapPlan() {
     );
   };
 
+  function getClosestWeatherEntry(planStartDate, weatherList) {
+  if (!planStartDate || !weatherList?.length) return null;
+  const planStartUnix = Math.floor(new Date(planStartDate).getTime() / 1000);
+  return weatherList.reduce((closest, entry) => {
+    return Math.abs(entry.dt - planStartUnix) < Math.abs(closest.dt - planStartUnix)
+      ? entry
+      : closest;
+  }, weatherList[0]);
+}
+
   const computeDistanceKm = (locA, locB) => {
     const R = 6371; // Radius of the Earth in km
     const dLat = (locB.lat - locA.lat) * (Math.PI / 180);
