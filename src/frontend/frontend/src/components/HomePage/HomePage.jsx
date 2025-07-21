@@ -18,7 +18,7 @@ import Layout from "../Layout/Layout";
 import MapComponent from "../MapComponent/MapComponent";
 import "./HomePage.css";
 import HorizontalEvents from "../VerticalEvents/HorizontalEvents";
-import { getAllEvents } from "../../api";
+import { getAllEvents, getEventsWithinRadius } from "../../api";
 import React, { use, useEffect, useState } from "react";
 import { Button } from "../../../components/ui/Button";
 import { ChevronRightIcon, ChevronLeftIcon } from "lucide-react";
@@ -27,29 +27,46 @@ import {
   getUserFollowing,
   getSessionUserId,
 } from "../../api";
-import { userLocation } from "../../Context/UserLocationContext";
+import { useUserLocation } from "../../Context/UserLocationContext";
 
 export default function HomePage() {
   const [eventsToDisplay, setEventsToDisplay] = useState([]);
-  const [currentLocation, setCurrentLocation] = useState(null);
   const [showOverlay, setShowOverlay] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [userFilter, setUserFilter] = useState("none"); // Default to no users - can be "followers", "following", "all" or "none"
   const [loading, setLoading] = useState(false); // Loading state for events
   const [usersToDisplay, setUsersToDisplay] = useState([]); // State to hold users based on filter
+  const { userLocation: currentLocation } = useUserLocation(); // Get user location from context
+  const [radiusKM, setRadiusKM] = useState(5); // Default radius for events
+  const [radiusFilter, setRadiusFilter] = useState(false);
 
   useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const events = await getAllEvents();
-        setEventsToDisplay(events);
-      } catch (error) {
-        setEventsToDisplay([]); // If there's an error, set to empty array
+    const fetch = async () => {
+      if (radiusFilter && currentLocation) {
+        setLoading(true); // Start loading
+        try{
+          const events = await getEventsWithinRadius(currentLocation, radiusKM * 1000);
+          setEventsToDisplay(events);
+        }
+        catch {
+          setEventsToDisplay([]);
+        }
+        finally {
+          setLoading(false); // End loading
+        }
       }
-    };
-
-    fetchEvents();
-  }, []);
+      else{
+        try {
+          const events = await getAllEvents();
+          setEventsToDisplay(events);
+        }
+        catch (err) {
+          setEventsToDisplay([]);
+        }
+      }
+    }
+    fetch();
+  }, [currentLocation, radiusFilter, radiusKM]);
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -141,9 +158,17 @@ export default function HomePage() {
                 <ChevronLeftIcon />
               </Button>
               <div>
+                <div classname="mb-4">
+                  
+                  </div>
                 <h3>Filter Map</h3>
                 <div
-                  style={{ display: "flex", flexDirection: "column", gap: "1rem", marginBottom: "1rem" }}
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "1rem",
+                    marginBottom: "1rem",
+                  }}
                 >
                   <Button
                     variant={
