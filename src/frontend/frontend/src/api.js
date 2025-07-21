@@ -391,14 +391,30 @@ export async function meUrl(path) {
   return `${URL}/users/${me}${path}`;
 }
 
-export async function createPlan({ title, eventIds, routeData, durations, start, end, polygon }) {
+export async function createPlan({
+  title,
+  eventIds,
+  routeData,
+  durations,
+  start,
+  end,
+  polygon,
+}) {
   const url = await meUrl("/plans");
   const res = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ title, eventIds, routeData, durations, start, end, polygon }),
+    body: JSON.stringify({
+      title,
+      eventIds,
+      routeData,
+      durations,
+      start,
+      end,
+      polygon,
+    }),
     credentials: "include",
   });
   const response = await res.json();
@@ -506,4 +522,17 @@ export async function shufflePlan(planId) {
     throw new Error(response.error || "Failed to shuffle plan");
   }
   return response;
+}
+
+export async function getWeatherData(lat, lng) {
+  const apiKey = import.meta.env.VITE_WEATHER_API_KEY;
+  const response = await fetch(
+    `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}`
+  );
+  const data = await response.json();
+  console.log(data);
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to fetch weather data");
+  }
+  return data;
 }
