@@ -702,6 +702,17 @@ function generateEventPlan(
     e.tagNames = (e.tags || []).map((t) => t.name);
   });
 
+  const scoreCache = new Map();
+  const getTagScore = (event) => {
+    if (!scoreCache.has(event.id)) {
+      scoreCache.set(
+        event.id,
+        tagScore(event, tagSetsByUser, creatorId, friendsInPlan)
+      );
+    }
+    return scoreCache.get(event.id);
+  };
+
   while (true) {
     if (curTime >= endMs) break;
     const candidates = events.filter((e) => !used.has(e.id));
@@ -736,13 +747,13 @@ function generateEventPlan(
 
     // Compute tag scores for scaling
     const scores = possibleEvents.map((e) =>
-      tagScore(e, tagSetsByUser, creatorId, friendsInPlan)
+      getTagScore(e, tagSetsByUser, creatorId, friendsInPlan)
     );
     const maxScore = Math.max(...scores, 1); // avoid division by zero
 
     possibleEvents.sort((a, b) => {
-      const scoreA = tagScore(a, tagSetsByUser, creatorId, friendsInPlan);
-      const scoreB = tagScore(b, tagSetsByUser, creatorId, friendsInPlan);
+      const scoreA = getTagScore(a, tagSetsByUser, creatorId, friendsInPlan);
+      const scoreB = getTagScore(b, tagSetsByUser, creatorId, friendsInPlan);
       if (scoreA !== scoreB) {
         return scoreB - scoreA; // Higher score first
       }
@@ -754,7 +765,7 @@ function generateEventPlan(
     picks.push(pick.id);
 
     // Dynamically set duration
-    const score = tagScore(pick, tagSetsByUser, creatorId, friendsInPlan);
+    const score = getTagScore(pick, tagSetsByUser, creatorId, friendsInPlan);
     // Scale duration between MIN and MAX based on score
     let duration =
       MIN_DURATION + ((MAX_DURATION - MIN_DURATION) * score) / maxScore;
@@ -846,7 +857,7 @@ exports.shufflePlan = async (req, res) => {
         }
       })
     );
-    
+
     events = events.filter((e) => {
       const start = new Date(e.startTime).getTime();
       const end = new Date(e.endTime).getTime();
