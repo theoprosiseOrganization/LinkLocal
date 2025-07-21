@@ -475,3 +475,35 @@ export async function getEventsWithinRadius({ lat, lng }, radius) {
   }
   return data;
 }
+
+export async function joinPlan(planId) {
+  const url = await meUrl(`/plans/${planId}/join`);
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+  });
+  const response = await res.json();
+  if (!res.ok) {
+    throw new Error(response.error || "Failed to join plan");
+  }
+  return response;
+}
+
+export async function shufflePlan(planId) {
+  const url = await meUrl(`/plans/${planId}/shuffle`);
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+  });
+  const response = await res.json();
+  if (!res.ok) {
+    throw new Error(response.error || "Failed to shuffle plan");
+  }
+  return response;
+}
