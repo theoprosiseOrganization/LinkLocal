@@ -632,4 +632,27 @@ exports.joinPlan = async (req, res) => {
   }
 };
 
-// exports.shufflePlan = async (req, res) => {
+ const computeDistanceKm = (locA, locB) => {
+    const R = 6371; // Radius of the Earth in km
+    const dLat = (locB.lat - locA.lat) * (Math.PI / 180);
+    const dLon = (locB.lng - locA.lng) * (Math.PI / 180);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(locA.lat * (Math.PI / 180)) *
+        Math.cos(locB.lat * (Math.PI / 180)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c; // Distance in km
+  };
+
+const computeTravelTimeMs = (locA, locB) => {
+    const distanceKm = computeDistanceKm(locA, locB);
+    const factor = distanceKm / 50; // Assuming average speed of 50 km/h
+    return factor * 60 * 60 * 1000; // Convert to milliseconds
+  };
+
+exports.shufflePlan = async (req, res) => {
+  const supabase = createClient(supabaseUrl, supabaseKey);
+  
+} 
