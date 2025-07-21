@@ -42,6 +42,7 @@ import {
 } from "../../api";
 import Route from "./Route";
 import UserLocationMarker from "../MapComponent/UserLocationMarker";
+import { pt } from "date-fns/locale";
 
 export default function MapPlan() {
   const [eventsInPoly, setEventsInPoly] = useState([]);
@@ -603,11 +604,19 @@ export default function MapPlan() {
               <Button
                 disabled={selectedFollowers.length === 0 || !planTitle.trim()}
                 onClick={async () => {
+                  
+                  const coords = drawnPolygon.current.getPath().getArray().map(pt => ({
+                    lat: pt.lat(),
+                    lng: pt.lng(),
+                  }));
                   const plan = await createPlan({
                     title: planTitle,
                     eventIds: selectedEventIds,
                     routeData: routeData,
                     durations: eventDurations,
+                    start: startDate,
+                    end: endDate,
+                    polygon: coords,
                   });
                   setPlanId(plan.id);
                   await inviteUsers(plan.id, selectedFollowers);

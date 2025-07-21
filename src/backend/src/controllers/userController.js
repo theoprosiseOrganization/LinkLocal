@@ -631,3 +631,5 @@ exports.joinPlan = async (req, res) => {
     res.status(500).json({ error: `Failed to join plan: ${error.message}` });
   }
 };
+
+// exports.shufflePlan = async (req, res) => {
