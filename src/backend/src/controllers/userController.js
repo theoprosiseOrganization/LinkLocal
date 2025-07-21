@@ -817,8 +817,11 @@ exports.shufflePlan = async (req, res) => {
       endMs,
       plan.owner_id
     );
-  
-    const origin = tagSetsByUser.__originLoc;
+
+    const start = {
+      lat: tagSetsByUser.__originLoc.latitude,
+      lng: tagSetsByUser.__originLoc.longitude,
+    };
     const waypoints = selectedIds
       .map((id) => {
         const e = events.find((ev) => ev.id === id);
@@ -830,9 +833,8 @@ exports.shufflePlan = async (req, res) => {
       })
       .filter(Boolean);
 
-    const routeDataResp = await fetchOptimalRoute(origin, waypoints, "DRIVE");
+    const routeDataResp = await fetchOptimalRoute(start, waypoints, "DRIVE");
     const routeData = await routeDataResp.routes?.[0];
-
 
     let { data: updatedPlan, error: updateError } = await supabase
       .from("plans")

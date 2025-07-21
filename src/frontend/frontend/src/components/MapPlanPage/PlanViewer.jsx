@@ -46,6 +46,9 @@ export default function PlanViewer() {
         .then(setEvents)
         .catch(() => alert("Failed to load events"));
     }
+    console.log("plan:", plan);
+    console.log("events:", events);
+    console.log("plan event ids:", plan?.event_ids);
   }, [plan]);
 
   const orderedEvents = React.useMemo(() => {
