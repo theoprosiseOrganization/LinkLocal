@@ -391,14 +391,14 @@ export async function meUrl(path) {
   return `${URL}/users/${me}${path}`;
 }
 
-export async function createPlan({ title, eventIds, routeData, durations }) {
+export async function createPlan({ title, eventIds, routeData, durations, start, end, polygon }) {
   const url = await meUrl("/plans");
   const res = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ title, eventIds, routeData, durations }),
+    body: JSON.stringify({ title, eventIds, routeData, durations, start, end, polygon }),
     credentials: "include",
   });
   const response = await res.json();
