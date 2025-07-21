@@ -166,7 +166,6 @@ export default function HomePage() {
                     </label>
                   </div>
                 </div>
-                <h3>Filter Map</h3>
                 <div
                   style={{
                     display: "flex",

@@ -285,9 +285,8 @@ exports.getEventsWithinRadius = async (req, res) => {
   try {
     const rows = await prisma.$queryRawUnsafe(
       `
-      SELECT e.*, el."streetAddress", ST_AsText(el.location) AS geom
-      FROM event_locations el
-      JOIN events e ON e.id = el."eventId"
+      SELECT id, "eventId", "streetAddress", ST_AsText(location) AS location
+      FROM event_locations
       WHERE ST_DWithin(
         el.location::geography,
         ST_MakePoint($1, $2)::geography,

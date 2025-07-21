@@ -17,13 +17,13 @@ const router = express.Router();
 
 // Event endpoints
 router.get("/", getEvents);
+router.post("/within-radius", getEventsWithinRadius);
 router.get("/:id", getEventById);
 router.post("/", createEvent);
 router.put("/:id", updateEvent);
 router.delete("/:id", deleteEvent);
 router.post("/within-polygon", getEventsWithinPolygon);
 router.post("/optimal-route", getOptimalRoute);
-router.post("/within-radius", getEventsWithinRadius);
 
 // Likes
 router.get("/:id/likes", getEventUserLikes);
