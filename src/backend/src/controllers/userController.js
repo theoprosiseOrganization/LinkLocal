@@ -203,8 +203,6 @@ exports.removeUserFriend = async (req, res) => {
   }
 };
 
-// Preferences are yet to be implemented
-// The implementation will depend on the challenge requirements
 exports.getUserPreferences = async (req, res) => {
   try {
     const user = await prisma.user.findUnique({
@@ -661,7 +659,7 @@ const computeTravelTimeMs = (locA, locB) => {
   return factor * 60 * 60 * 1000; // Convert to milliseconds
 };
 
-const tagScore = (event, tagSetsByUser, creatorId) => {
+const tagScore = (event, tagSetsByUser, creatorId, friendsInPlan) => {
   let total = 0;
   for (const [userId, tagSet] of Object.entries(tagSetsByUser)) {
     if (userId === "__originLoc") continue;
@@ -669,13 +667,23 @@ const tagScore = (event, tagSetsByUser, creatorId) => {
       (sum, tag) => sum + (tagSet.has(tag) ? 1 : 0),
       0
     );
-    const weight = userId == creatorId ? 2 : 1;
+    // Weight: 3 if creator, else 1, then scale by friend count in plan (at least 1)
+    const baseWeight = userId == creatorId ? 3 : 1;
+    const friendCount = (friendsInPlan?.[userId]?.size || 0) + 1; // +1 to ensure minimum weight
+    const weight = baseWeight * friendCount;
     total += matches * weight;
   }
   return total;
 };
 
-function generateEventPlan(events, tagSetsByUser, startMs, endMs, creatorId) {
+function generateEventPlan(
+  events,
+  tagSetsByUser,
+  startMs,
+  endMs,
+  creatorId,
+  friendsInPlan
+) {
   const used = new Set();
   const picks = [];
   const durations = {};
@@ -729,13 +737,13 @@ function generateEventPlan(events, tagSetsByUser, startMs, endMs, creatorId) {
 
     // Compute tag scores for scaling
     const scores = possibleEvents.map((e) =>
-      tagScore(e, tagSetsByUser, creatorId)
+      tagScore(e, tagSetsByUser, creatorId, friendsInPlan)
     );
     const maxScore = Math.max(...scores, 1); // avoid division by zero
 
     possibleEvents.sort((a, b) => {
-      const scoreA = tagScore(a, tagSetsByUser, creatorId);
-      const scoreB = tagScore(b, tagSetsByUser, creatorId);
+      const scoreA = tagScore(a, tagSetsByUser, creatorId, friendsInPlan);
+      const scoreB = tagScore(b, tagSetsByUser, creatorId, friendsInPlan);
       if (scoreA !== scoreB) {
         return scoreB - scoreA; // Higher score first
       }
@@ -747,11 +755,10 @@ function generateEventPlan(events, tagSetsByUser, startMs, endMs, creatorId) {
     picks.push(pick.id);
 
     // Dynamically set duration
-    const score = tagScore(pick, tagSetsByUser, creatorId);
+    const score = tagScore(pick, tagSetsByUser, creatorId, friendsInPlan);
     // Scale duration between MIN and MAX based on score
     let duration =
-      MIN_DURATION +
-      ((MAX_DURATION - MIN_DURATION) * score) / maxScore;
+      MIN_DURATION + ((MAX_DURATION - MIN_DURATION) * score) / maxScore;
 
     // Don't exceed event's end or plan's end
     const latestPossibleEnd = Math.min(pick.eventEndMs, endMs);
@@ -797,6 +804,23 @@ exports.shufflePlan = async (req, res) => {
     const endMs = new Date(plan.end_time).getTime();
 
     const allIds = [plan.owner_id, ...(plan.participants || [])];
+
+    const friendships = await prisma.user.findMany({
+      where: { id: { in: allIds } },
+      select: {
+        id: true,
+        friends: { select: { id: true } },
+      },
+    });
+
+    // Build a map: userId -> Set of friendIds in the plan
+    const friendsInPlan = {};
+    for (const user of friendships) {
+      friendsInPlan[user.id] = new Set(
+        user.friends.map((f) => f.id).filter((id) => allIds.includes(id))
+      );
+    }
+
     const users = await prisma.user.findMany({
       where: { id: { in: allIds } },
       include: { tags: true },
@@ -840,11 +864,14 @@ exports.shufflePlan = async (req, res) => {
       tagSetsByUser,
       startMs,
       endMs,
-      plan.owner_id
+      plan.owner_id,
+      friendsInPlan
     );
 
-    if(selectedIds.length === 0) {
-      return res.status(400).json({ error: "No suitable events found for the plan." });
+    if (selectedIds.length === 0) {
+      return res
+        .status(400)
+        .json({ error: "No suitable events found for the plan." });
     }
 
     const start = {
