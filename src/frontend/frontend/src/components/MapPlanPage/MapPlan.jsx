@@ -96,7 +96,6 @@ export default function MapPlan() {
         }
       } else {
         setIsWeatherBad(false);
-        console.error("Failed to fetch weather data");
       }
     });
   }, [isTagDialogOpen, userData, startDate]);
@@ -130,7 +129,7 @@ export default function MapPlan() {
     );
   };
 
-  // Utility: Check if plan start is in weather range
+  // Check if plan start is in weather range
   function isPlanStartInWeatherRange(planStartDate, weatherList) {
     if (!planStartDate || !weatherList?.length) return false;
     const planStartUnix = Math.floor(new Date(planStartDate).getTime() / 1000);
@@ -139,7 +138,7 @@ export default function MapPlan() {
     return planStartUnix >= firstDt && planStartUnix <= lastDt;
   }
 
-  // Utility: Find closest weather entry
+  // Find closest weather entry
   function getClosestWeatherEntry(planStartDate, weatherList) {
     if (!planStartDate || !weatherList?.length) return null;
     const planStartUnix = Math.floor(new Date(planStartDate).getTime() / 1000);
@@ -151,15 +150,28 @@ export default function MapPlan() {
     }, weatherList[0]);
   }
 
-  // Utility: Define what is "bad" weather
+  // Convert kelvin to farenheit
+  function kelvinToFahrenheit(kelvin) {
+    return Math.round((kelvin - 273.15) * 9 / 5 + 32);
+  }
+
+  // Define what is "bad" weather
   function isWeatherBadEntry(weatherEntry) {
     if (!weatherEntry) return false;
+    // If it is colder than 40 degrees F, consider it bad weather
+    const tempF = kelvinToFahrenheit(weatherEntry.main?.feels_like || 0);
+    if (tempF < 40) return true;
     // Example: bad if rain, snow, or thunderstorm in weather[0].main
     const main = weatherEntry.weather?.[0]?.main?.toLowerCase() || "";
     return (
       main.includes("rain") ||
       main.includes("snow") ||
       main.includes("thunderstorm")
+      || main.includes("drizzle")
+      || main.includes("mist")
+      || main.includes("fog")
+      || main.includes("smoke")
+      || main.includes("hail")
     );
   }
 
