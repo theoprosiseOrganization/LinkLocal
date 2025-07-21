@@ -287,8 +287,8 @@ exports.getEventsWithinRadius = async (req, res) => {
       SELECT id, "eventId", "streetAddress", ST_AsText(location) AS location
       FROM event_locations
       WHERE ST_DWithin(
-        location,
-        ST_SetSRID(ST_MakePoint(${longitude}, ${latitude}), 4326),
+        location::geography,
+        ST_MakePoint(${longitude}, ${latitude})::geography,
         ${radius}
       )
     `);
