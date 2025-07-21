@@ -247,7 +247,7 @@ exports.getEventsWithinPolygon = async (req, res) => {
       where: { id: { in: eventsIds.map((e) => e.eventId) } },
       include: { tags: true },
     });
-    
+
     const eventIdToLoc = new Map(eventsIds.map((e) => [e.eventId, e]));
 
     for (const event of events) {
@@ -269,6 +269,44 @@ exports.getEventsWithinPolygon = async (req, res) => {
     res.json(events);
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+const getEventsInRadius = async (req, res) => {
+  const { latitude, longitude, radius } = req.body;
+
+  if (!latitude || !longitude || !radius) {
+    return res.status(400).json({ error: "Invalid input" });
+  }
+  try {
+    const rows = await prisma.$queryRawUnsafe(`
+      SELECT e.*, el."streetAddress", ST_AsText(el.location) AS geom
+      FROM event_locations el
+      JOIN events el ON e.id = el."eventId"
+      WHERE ST_DWithin(
+        el.location,
+        ST_MakePoint(${longitude}, ${latitude})::geography,
+        ${radius}
+      )
+    `);
+
+    const events = rows.map((row) => {
+      const match = parsePoint(row.geom);
+      if (!match) return null;
+      return {
+        ...row,
+        location: match
+          ? {
+              longitude: +match[1],
+              latitude: +match[2],
+              address: row.streetAddress,
+            }
+          : null,
+      };
+    });
+    res.json(events.filter((event) => event !== null));
+  } catch (error) {
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 };
 

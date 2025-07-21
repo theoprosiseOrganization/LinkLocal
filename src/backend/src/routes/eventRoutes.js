@@ -10,6 +10,7 @@ const {
   unlikeEvent,
   getEventsWithinPolygon,
   getOptimalRoute,
+  getEventsWithinRadius,
 } = require("../controllers/eventController");
 
 const router = express.Router();
@@ -22,6 +23,7 @@ router.put("/:id", updateEvent);
 router.delete("/:id", deleteEvent);
 router.post("/within-polygon", getEventsWithinPolygon);
 router.post("/optimal-route", getOptimalRoute);
+router.post("/within-radius", getEventsWithinRadius);
 
 // Likes
 router.get("/:id/likes", getEventUserLikes);

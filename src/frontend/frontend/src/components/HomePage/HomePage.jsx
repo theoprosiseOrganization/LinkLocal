@@ -27,6 +27,7 @@ import {
   getUserFollowing,
   getSessionUserId,
 } from "../../api";
+import { userLocation } from "../../Context/UserLocationContext";
 
 export default function HomePage() {
   const [eventsToDisplay, setEventsToDisplay] = useState([]);
