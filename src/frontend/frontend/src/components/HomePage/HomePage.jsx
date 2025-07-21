@@ -6,8 +6,8 @@
  * It currently displays all events fetched from the API.
  * The map shows the user's current location if available.
  * The events are displayed in a horizontal list format.
- * 
- * 
+ *
+ *
  * @component
  * @example
  * <HomePage />
@@ -18,56 +18,188 @@ import Layout from "../Layout/Layout";
 import MapComponent from "../MapComponent/MapComponent";
 import "./HomePage.css";
 import HorizontalEvents from "../VerticalEvents/HorizontalEvents";
-import { getAllEvents } from "../../api";
-import React, { useEffect, useState } from "react";
+import { getAllEvents, getEventsWithinRadius } from "../../api";
+import React, { use, useEffect, useState } from "react";
+import { Button } from "../../../components/ui/Button";
+import { ChevronRightIcon, ChevronLeftIcon } from "lucide-react";
+import {
+  getUserFollowers,
+  getUserFollowing,
+  getSessionUserId,
+} from "../../api";
+import { useUserLocation } from "../../Context/UserLocationContext";
+import { ar } from "date-fns/locale";
 
 export default function HomePage() {
   const [eventsToDisplay, setEventsToDisplay] = useState([]);
-  const [currentLocation, setCurrentLocation] = useState(null);
+  const [showOverlay, setShowOverlay] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [userFilter, setUserFilter] = useState("none"); // Default to no users - can be "followers", "following", "all" or "none"
+  const [loading, setLoading] = useState(false); // Loading state for events
+  const [usersToDisplay, setUsersToDisplay] = useState([]); // State to hold users based on filter
+  const { userLocation: currentLocation } = useUserLocation(); // Get user location from context
+  const [radiusKM, setRadiusKM] = useState(5); // Default radius for events
+  const [radiusFilter, setRadiusFilter] = useState(false);
 
   useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const events = await getAllEvents();
-        setEventsToDisplay(events);
-      } catch (error) {
-        setEventsToDisplay([]); // If there's an error, set to empty array
+    const fetch = async () => {
+      if (radiusFilter && currentLocation) {
+        setLoading(true); // Start loading
+        try {
+          const events = await getEventsWithinRadius(
+            currentLocation,
+            radiusKM * 1000
+          );
+          setEventsToDisplay(events);
+        } catch {
+          setEventsToDisplay([]);
+        } finally {
+          setLoading(false); // End loading
+        }
+      } else {
+        try {
+          const events = await getAllEvents();
+          setEventsToDisplay(events);
+        } catch (err) {
+          setEventsToDisplay([]);
+        }
       }
     };
-    fetchEvents();
-  }, []);
+    fetch();
+  }, [currentLocation, radiusFilter, radiusKM]);
 
   useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          setCurrentLocation({
-            lat: pos.coords.latitude,
-            lng: pos.coords.longitude,
-          });
-        },
-        (err) => {
-          // Handle error or fallback
+    const fetchUserData = async () => {
+      setLoading(true); // Start loading
+      try {
+        const userId = await getSessionUserId();
+        let people = [];
+        if (userFilter === "followers") {
+          people = await getUserFollowers(userId);
         }
-      );
-    }
-  }, []);
+        if (userFilter === "following") {
+          people = await getUserFollowing(userId);
+        }
+        if (userFilter === "all") {
+          people = await getUserFollowers(userId);
+          people = people.concat(await getUserFollowing(userId));
+        }
+        setUsersToDisplay(people);
+      } catch (err) {
+        setUsersToDisplay([]);
+      } finally {
+        setLoading(false); // End loading
+      }
+    };
+    fetchUserData();
+  }, [userFilter]);
+
   return (
     <Layout>
       <div className="homepage-vertical">
-        <div className="homepage-top">
-          <h1>Welcome to LinkLocal!</h1>
-        </div>
         <div className="homepage-bottom-overlay">
-          <MapComponent events={eventsToDisplay} currentLocation={currentLocation}/>
-          <div className="homepage-overlay">
-            <div className="vertical-events-container">
-              <h2 className="text-xl font-bold mb-4 text-[var(--primary)] text-center">
-                View Some Nearby Events
-              </h2>
-              <HorizontalEvents events={eventsToDisplay} />
+          <MapComponent
+            events={eventsToDisplay}
+            currentLocation={currentLocation}
+            users={usersToDisplay}
+          />
+          {showOverlay && (
+            <div
+              className={`homepage-overlay${!showOverlay ? " slide-out" : ""}`}
+            >
+              <div className="vertical-events-container">
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  className="size-8"
+                  onClick={() => {
+                    setSidebarOpen(true);
+                    setShowOverlay(false);
+                  }}
+                >
+                  <ChevronRightIcon />
+                </Button>
+
+                <h2 className="text-xl font-bold mb-4 text-[var(--primary)] text-center">
+                  View Some Nearby Events
+                </h2>
+
+                <HorizontalEvents events={eventsToDisplay} />
+              </div>
             </div>
-          </div>
+          )}
+          {sidebarOpen && (
+            <div className="sidebar-overlay">
+              <Button
+                variant="secondary"
+                size="icon"
+                className="close-sidebar"
+                onClick={() => {
+                  setSidebarOpen(false);
+                  setShowOverlay(true);
+                }}
+              >
+                <ChevronLeftIcon />
+              </Button>
+              <div>
+                <div className="mb-4">
+                  <label htmlFor="radius" className="block mb-1">
+                    Show Events Within Radius (KM): {radiusKM}
+                  </label>
+                  <input
+                    id="radius"
+                    type="range"
+                    min={1}
+                    max={50}
+                    step={1}
+                    value={radiusKM}
+                    onChange={(e) => setRadiusKM(Number(e.target.value))}
+                  />
+                  <div className="mt-2">
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={radiusFilter}
+                        onChange={() => setRadiusFilter((f) => !f)}
+                      />
+                      Enable Radius Filter
+                    </label>
+                  </div>
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "1rem",
+                    marginBottom: "1rem",
+                  }}
+                >
+                  <Button
+                    variant={
+                      userFilter === "followers" ? "primary" : "secondary"
+                    }
+                    onClick={() => setUserFilter("followers")}
+                  >
+                    Show Followers
+                  </Button>
+                  <Button
+                    variant={
+                      userFilter === "following" ? "primary" : "secondary"
+                    }
+                    onClick={() => setUserFilter("following")}
+                  >
+                    Show Following
+                  </Button>
+                  <Button
+                    variant={userFilter === "all" ? "primary" : "secondary"}
+                    onClick={() => setUserFilter("all")}
+                  >
+                    Show All
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </Layout>

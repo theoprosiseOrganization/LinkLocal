@@ -20,7 +20,10 @@ export default function HorizontalScroll({ images }) {
 
   return (
     <ScrollArea className="w-full rounded-md border whitespace-nowrap">
-      <div className="flex w-max space-x-4 p-4">
+      <div
+        className="flex w-max space-x-4 p-4"
+        style={{ background: "var(--card)" }}
+      >
         {images.map((img, idx) => (
           <figure key={img.url || img} className="shrink-0 h-64 w-48">
             <div className="overflow-hidden rounded-md h-full w-full">

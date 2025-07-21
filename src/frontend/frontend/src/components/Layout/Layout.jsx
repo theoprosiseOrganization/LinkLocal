@@ -2,7 +2,7 @@
  * Layout component for the application.
  * It includes a navigation header and manages dark mode state.
  * The dark mode preference is stored in local storage and applied to the body element.
- * 
+ *
  * @component
  * @param {Object} props - The properties passed to the component.
  * @param {React.ReactNode} props.children - The content to be rendered within the layout.
@@ -13,18 +13,18 @@ import React, { useEffect, useState } from "react";
 
 export default function Layout({ children }) {
   const [darkMode, setDarkMode] = useState(() => {
-  if (typeof window !== "undefined") {
-    const storedTheme = localStorage.getItem("theme");
-    if (storedTheme) {
-      return storedTheme === "dark";
+    if (typeof window !== "undefined") {
+      const storedTheme = localStorage.getItem("theme");
+      if (storedTheme) {
+        return storedTheme === "dark";
+      }
+      return (
+        window.matchMedia &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches
+      );
     }
-    return (
-      window.matchMedia &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches
-    );
-  }
-  return false;
-});
+    return false;
+  });
 
   useEffect(() => {
     if (darkMode) {

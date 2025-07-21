@@ -194,6 +194,28 @@ export default function MapComponent({
               </AdvancedMarkerWithRef>
             ) : null
           )}
+          {users &&
+            users.map((user, idx) =>
+              user.location &&
+              typeof user.location.latitude === "number" &&
+              typeof user.location.longitude === "number" ? (
+                <AdvancedMarkerWithRef
+                  key={user.id || `user-${idx}`}
+                  position={{
+                    lat: user.location.latitude,
+                    lng: user.location.longitude,
+                  }}
+                  title={user.name || "User"}
+                >
+                  <Pin
+                    glyph={"👤"}
+                    background={"#007bff"}
+                    glyphColor={"white"}
+                    borderColor={"#007bff"}
+                  />
+                </AdvancedMarkerWithRef>
+              ) : null
+            )}
 
           {infoWindowShown && selectedMarker && (
             <InfoWindow

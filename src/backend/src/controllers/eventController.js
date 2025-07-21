@@ -247,7 +247,56 @@ exports.getEventsWithinPolygon = async (req, res) => {
       where: { id: { in: eventsIds.map((e) => e.eventId) } },
       include: { tags: true },
     });
-    
+
+    const eventIdToLoc = new Map(eventsIds.map((e) => [e.eventId, e]));
+
+    for (const event of events) {
+      const loc = eventIdToLoc.get(event.id);
+      if (loc) {
+        const match = parsePoint(loc.location);
+        if (match) {
+          const [, longitude, latitude] = match;
+          event.location = {
+            address: loc.streetAddress,
+            latitude: parseFloat(latitude),
+            longitude: parseFloat(longitude),
+          };
+        } else {
+          event.location = null;
+        }
+      }
+    }
+    res.json(events);
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+exports.getEventsWithinRadius = async (req, res) => {
+  const { latitude, longitude, radius } = req.body;
+
+  if (
+    typeof latitude !== "number" ||
+    typeof longitude !== "number" ||
+    typeof radius !== "number"
+  ) {
+    return res.status(400).json({ error: "Invalid input" });
+  }
+  try {
+    const eventsIds = await prisma.$queryRawUnsafe(`
+      SELECT id, "eventId", "streetAddress", ST_AsText(location) AS location
+      FROM event_locations
+      WHERE ST_DWithin(
+        location::geography,
+        ST_MakePoint(${longitude}, ${latitude})::geography,
+        ${radius}
+      )
+    `);
+    const events = await prisma.event.findMany({
+      where: { id: { in: eventsIds.map((e) => e.eventId) } },
+      include: { tags: true },
+    });
+
     const eventIdToLoc = new Map(eventsIds.map((e) => [e.eventId, e]));
 
     for (const event of events) {

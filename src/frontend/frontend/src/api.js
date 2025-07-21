@@ -386,12 +386,12 @@ export async function getOptimalRoute(start, events, transportType) {
   return response;
 }
 
-export async function meUrl(path){
+export async function meUrl(path) {
   const me = await getSessionUserId();
   return `${URL}/users/${me}${path}`;
 }
 
-export async function createPlan( {title, eventIds, routeData, durations}){
+export async function createPlan({ title, eventIds, routeData, durations }) {
   const url = await meUrl("/plans");
   const res = await fetch(url, {
     method: "POST",
@@ -458,4 +458,20 @@ export async function getMyInvitations() {
     throw new Error(response.error || "Failed to fetch invitations");
   }
   return response;
+}
+
+export async function getEventsWithinRadius({ lat, lng }, radius) {
+  const res = await fetch(`${URL}/events/within-radius`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ latitude: lat, longitude: lng, radius: radius }),
+    credentials: "include",
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.error || "Failed to fetch events within radius");
+  }
+  return data;
 }
