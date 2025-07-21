@@ -527,7 +527,7 @@ export async function shufflePlan(planId) {
 export async function getWeatherData(lat, lng) {
   const apiKey = import.meta.env.VITE_WEATHER_API_KEY;
   const response = await fetch(
-    `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}`
+    `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lng}&appid=${apiKey}`
   );
   const data = await response.json();
   console.log(data);
