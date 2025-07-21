@@ -28,6 +28,7 @@ import {
   getSessionUserId,
 } from "../../api";
 import { useUserLocation } from "../../Context/UserLocationContext";
+import { ar } from "date-fns/locale";
 
 export default function HomePage() {
   const [eventsToDisplay, setEventsToDisplay] = useState([]);
@@ -44,45 +45,28 @@ export default function HomePage() {
     const fetch = async () => {
       if (radiusFilter && currentLocation) {
         setLoading(true); // Start loading
-        try{
-          const events = await getEventsWithinRadius(currentLocation, radiusKM * 1000);
+        try {
+          const events = await getEventsWithinRadius(
+            currentLocation,
+            radiusKM * 1000
+          );
           setEventsToDisplay(events);
-        }
-        catch {
+        } catch {
           setEventsToDisplay([]);
-        }
-        finally {
+        } finally {
           setLoading(false); // End loading
         }
-      }
-      else{
+      } else {
         try {
           const events = await getAllEvents();
           setEventsToDisplay(events);
-        }
-        catch (err) {
+        } catch (err) {
           setEventsToDisplay([]);
         }
       }
-    }
+    };
     fetch();
   }, [currentLocation, radiusFilter, radiusKM]);
-
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          setCurrentLocation({
-            lat: pos.coords.latitude,
-            lng: pos.coords.longitude,
-          });
-        },
-        (err) => {
-          // Handle error or fallback
-        }
-      );
-    }
-  }, []);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -158,9 +142,30 @@ export default function HomePage() {
                 <ChevronLeftIcon />
               </Button>
               <div>
-                <div classname="mb-4">
-                  
+                <div className="mb-4">
+                  <label htmlFor="radius" className="block mb-1">
+                    Show Events Within Radius (KM): {radiusKM}
+                  </label>
+                  <input
+                    id="radius"
+                    type="range"
+                    min={1}
+                    max={50}
+                    step={1}
+                    value={radiusKM}
+                    onChange={(e) => setRadiusKM(Number(e.target.value))}
+                  />
+                  <div className="mt-2">
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={radiusFilter}
+                        onChange={() => setRadiusFilter((f) => !f)}
+                      />
+                      Enable Radius Filter
+                    </label>
                   </div>
+                </div>
                 <h3>Filter Map</h3>
                 <div
                   style={{

@@ -272,23 +272,32 @@ exports.getEventsWithinPolygon = async (req, res) => {
   }
 };
 
-const getEventsInRadius = async (req, res) => {
+exports.getEventsWithinRadius = async (req, res) => {
   const { latitude, longitude, radius } = req.body;
 
-  if (!latitude || !longitude || !radius) {
+  if (
+    typeof latitude !== "number" ||
+    typeof longitude !== "number" ||
+    typeof radius !== "number"
+  ) {
     return res.status(400).json({ error: "Invalid input" });
   }
   try {
-    const rows = await prisma.$queryRawUnsafe(`
+    const rows = await prisma.$queryRawUnsafe(
+      `
       SELECT e.*, el."streetAddress", ST_AsText(el.location) AS geom
       FROM event_locations el
-      JOIN events el ON e.id = el."eventId"
+      JOIN events e ON e.id = el."eventId"
       WHERE ST_DWithin(
-        el.location,
-        ST_MakePoint(${longitude}, ${latitude})::geography,
-        ${radius}
+        el.location::geography,
+        ST_MakePoint($1, $2)::geography,
+        $3
       )
-    `);
+      `,
+      longitude,
+      latitude,
+      radius
+    );
 
     const events = rows.map((row) => {
       const match = parsePoint(row.geom);
@@ -306,6 +315,7 @@ const getEventsInRadius = async (req, res) => {
     });
     res.json(events.filter((event) => event !== null));
   } catch (error) {
+    console.error("Error fetching events within radius:", error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
