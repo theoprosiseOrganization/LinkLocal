@@ -203,8 +203,6 @@ exports.removeUserFriend = async (req, res) => {
   }
 };
 
-// Preferences are yet to be implemented
-// The implementation will depend on the challenge requirements
 exports.getUserPreferences = async (req, res) => {
   try {
     const user = await prisma.user.findUnique({
@@ -661,21 +659,36 @@ const computeTravelTimeMs = (locA, locB) => {
   return factor * 60 * 60 * 1000; // Convert to milliseconds
 };
 
-const tagScore = (event, tagSetsByUser, creatorId) => {
+const tagScore = (event, tagSetsByUser, creatorId, friendsInPlan) => {
   let total = 0;
+  // Loop through each user's tag set
+  // and count how many tags match the event's tags
   for (const [userId, tagSet] of Object.entries(tagSetsByUser)) {
     if (userId === "__originLoc") continue;
     const matches = event.tagNames.reduce(
       (sum, tag) => sum + (tagSet.has(tag) ? 1 : 0),
       0
     );
-    const weight = userId == creatorId ? 2 : 1;
+    // Weight: 3 if creator, else 1, then scale by friend count in plan (at least 1)
+    const baseWeight = userId == creatorId ? 3 : 1;
+    const friendCount = (friendsInPlan?.[userId]?.size || 0) + 1; // +1 to ensure minimum weight
+    const weight = baseWeight * friendCount;
     total += matches * weight;
   }
   return total;
 };
 
-function generateEventPlan(events, tagSetsByUser, startMs, endMs, creatorId) {
+function generateEventPlan(
+  events,
+  tagSetsByUser,
+  startMs,
+  endMs,
+  creatorId,
+  friendsInPlan
+) {
+  // Parameters for duration scaling
+  const MIN_DURATION = 30 * 60 * 1000; // 30 min
+  const MAX_DURATION = 2 * 60 * 60 * 1000; // 2 hours
   const used = new Set();
   const picks = [];
   const durations = {};
@@ -691,6 +704,18 @@ function generateEventPlan(events, tagSetsByUser, startMs, endMs, creatorId) {
     e.tagNames = (e.tags || []).map((t) => t.name);
   });
 
+  // Cache for tag scores to avoid recomputing
+  const scoreCache = new Map();
+  const getTagScore = (event) => {
+    if (!scoreCache.has(event.id)) {
+      scoreCache.set(
+        event.id,
+        tagScore(event, tagSetsByUser, creatorId, friendsInPlan)
+      );
+    }
+    return scoreCache.get(event.id);
+  };
+
   while (true) {
     if (curTime >= endMs) break;
     const candidates = events.filter((e) => !used.has(e.id));
@@ -698,6 +723,7 @@ function generateEventPlan(events, tagSetsByUser, startMs, endMs, creatorId) {
       break;
     }
 
+    // Filter candidates by distance and time
     const possibleEvents = candidates
       .map((e) => {
         const travel = computeTravelTimeMs(
@@ -714,18 +740,25 @@ function generateEventPlan(events, tagSetsByUser, startMs, endMs, creatorId) {
           eventEndMs: new Date(e.endTime).getTime(),
         };
       })
-      // Only keep events that can be attended for a full hour before they end
+      // Only keep events that can be attended for at least MIN_DURATION before they end
       .filter(
-        (e) => e.arriveAt + 60 * 60 * 1000 <= Math.min(e.eventEndMs, endMs)
+        (e) => e.arriveAt + MIN_DURATION <= Math.min(e.eventEndMs, endMs)
       );
 
     if (possibleEvents.length === 0) {
       break;
     }
 
+    // Compute tag scores for scaling
+    const scores = possibleEvents.map((e) =>
+      getTagScore(e, tagSetsByUser, creatorId, friendsInPlan)
+    );
+    const maxScore = Math.max(...scores, 1); // avoid division by zero
+
+    // Sort by score first, then by arrival time
     possibleEvents.sort((a, b) => {
-      const scoreA = tagScore(a, tagSetsByUser, creatorId);
-      const scoreB = tagScore(b, tagSetsByUser, creatorId);
+      const scoreA = getTagScore(a, tagSetsByUser, creatorId, friendsInPlan);
+      const scoreB = getTagScore(b, tagSetsByUser, creatorId, friendsInPlan);
       if (scoreA !== scoreB) {
         return scoreB - scoreA; // Higher score first
       }
@@ -733,12 +766,26 @@ function generateEventPlan(events, tagSetsByUser, startMs, endMs, creatorId) {
     });
 
     const pick = possibleEvents[0];
-    picks.push(pick.id);
     used.add(pick.id);
+    picks.push(pick.id);
 
-    durations[pick.id] = 60 * 60 * 1000; // Default duration of 1 hour
+    // Dynamically set duration
+    const score = getTagScore(pick, tagSetsByUser, creatorId, friendsInPlan);
+    // Scale duration between MIN and MAX based on score
+    let duration =
+      MIN_DURATION + ((MAX_DURATION - MIN_DURATION) * score) / maxScore;
 
-    curTime = pick.arriveAt + 60 * 60 * 1000; // 1 hour at event
+    // Don't exceed event's end or plan's end
+    const latestPossibleEnd = Math.min(pick.eventEndMs, endMs);
+    if (pick.arriveAt + duration > latestPossibleEnd) {
+      duration = latestPossibleEnd - pick.arriveAt;
+    }
+    // Don't go below MIN_DURATION
+    duration = Math.max(duration, MIN_DURATION);
+
+    durations[pick.id] = duration;
+
+    curTime = pick.arriveAt + duration;
     curLoc = pick.location;
   }
 
@@ -746,6 +793,8 @@ function generateEventPlan(events, tagSetsByUser, startMs, endMs, creatorId) {
 }
 
 exports.shufflePlan = async (req, res) => {
+  const MAX_EVENT_DISTANCE_KM = 75;
+
   const supabase = createClient(supabaseUrl, supabaseKey);
 
   try {
@@ -772,6 +821,27 @@ exports.shufflePlan = async (req, res) => {
     const endMs = new Date(plan.end_time).getTime();
 
     const allIds = [plan.owner_id, ...(plan.participants || [])];
+
+    // give more preference to people who are more followed by people in the plan
+    // get all followers of all people in the plan
+    const friendships = await prisma.follows.findMany({
+      where: { followingId: { in: allIds } },
+      include: { following: true }, // Include following details
+    });
+
+    // Build a map: userId -> Set of followers of userId in the plan
+    const friendsInPlan = {};
+    for (const user of allIds) {
+      friendsInPlan[user] = new Set(
+        friendships
+          .filter(
+            (f) => f.followingId === user && allIds.includes(f.followerId)
+          )
+          .map((f) => f.followerId)
+      );
+    }
+
+    // Grab tags for all users in the plan
     const users = await prisma.user.findMany({
       where: { id: { in: allIds } },
       include: { tags: true },
@@ -779,19 +849,19 @@ exports.shufflePlan = async (req, res) => {
 
     // build tag sets by user
     const tagSetsByUser = {};
-    for (const user of users) {
-      tagSetsByUser[user.id] = new Set((user.tags || []).map((t) => t.name));
-      if (user.id === plan.owner_id) {
-        const loc = await getUserLocation(user.id);
-        if (!loc) {
-          return res.status(404).json({ error: "Owner location not found" });
+    await Promise.all(
+      users.map(async (user) => {
+        tagSetsByUser[user.id] = new Set((user.tags || []).map((t) => t.name));
+        if (user.id === plan.owner_id) {
+          const loc = await getUserLocation(user.id);
+          if (!loc) throw new Error("Owner location not found");
+          tagSetsByUser.__originLoc = {
+            latitude: loc.latitude,
+            longitude: loc.longitude,
+          };
         }
-        tagSetsByUser.__originLoc = {
-          latitude: loc.latitude,
-          longitude: loc.longitude,
-        };
-      }
-    }
+      })
+    );
 
     events = events.filter((e) => {
       const start = new Date(e.startTime).getTime();
@@ -806,7 +876,7 @@ exports.shufflePlan = async (req, res) => {
             lat: tagSetsByUser.__originLoc.latitude,
             lng: tagSetsByUser.__originLoc.longitude,
           }
-        ) <= 50
+        ) <= MAX_EVENT_DISTANCE_KM // Only include events within 75 km of origin
       );
     });
 
@@ -815,10 +885,20 @@ exports.shufflePlan = async (req, res) => {
       tagSetsByUser,
       startMs,
       endMs,
-      plan.owner_id
+      plan.owner_id,
+      friendsInPlan
     );
-  
-    const origin = tagSetsByUser.__originLoc;
+
+    if (selectedIds.length === 0) {
+      return res
+        .status(400)
+        .json({ error: "No suitable events found for the plan." });
+    }
+
+    const start = {
+      lat: tagSetsByUser.__originLoc.latitude,
+      lng: tagSetsByUser.__originLoc.longitude,
+    };
     const waypoints = selectedIds
       .map((id) => {
         const e = events.find((ev) => ev.id === id);
@@ -830,9 +910,8 @@ exports.shufflePlan = async (req, res) => {
       })
       .filter(Boolean);
 
-    const routeDataResp = await fetchOptimalRoute(origin, waypoints, "DRIVE");
+    const routeDataResp = await fetchOptimalRoute(start, waypoints, "DRIVE");
     const routeData = await routeDataResp.routes?.[0];
-
 
     let { data: updatedPlan, error: updateError } = await supabase
       .from("plans")

@@ -21,6 +21,12 @@ import { APIProvider, Map } from "@vis.gl/react-google-maps";
 import Route from "./Route";
 import Layout from "../Layout/Layout";
 import UserLocationMarker from "../MapComponent/UserLocationMarker";
+import { Button } from "../../../components/ui/button";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "../../../components/ui/hover-card";
 
 export default function PlanViewer() {
   const { planId } = useParams();
@@ -65,7 +71,8 @@ export default function PlanViewer() {
           <div className="text-2xl font-bold tracking-wide flex-1 text-left">
             <h1>{plan.title || "Plan Title"}</h1>
             {!hasJoined ? (
-              <button
+              <Button
+                variant="secondary"
                 className="btn-primary ml-4"
                 onClick={async () => {
                   await joinPlan(planId);
@@ -76,19 +83,29 @@ export default function PlanViewer() {
                 }}
               >
                 Accept Invite
-              </button>
+              </Button>
             ) : (
-              <button
-                className="btn-secondary ml-4"
-                onClick={async () => {
-                  const reshuffled = await shufflePlan(planId);
-                  setPlan(reshuffled);
-                  alert("Plan has been reshuffled!");
-                  window.location.reload(); // Reload to reflect changes
-                }}
-              >
-                Reshuffle Plan
-              </button>
+              <HoverCard>
+                <HoverCardTrigger asChild>
+                  <Button
+                    variant="secondary"
+                    onClick={async () => {
+                      const reshuffled = await shufflePlan(planId);
+                      setPlan(reshuffled);
+                      alert("Plan has been reshuffled!");
+                      window.location.reload(); // Reload to reflect changes
+                    }}
+                  >
+                    Shuffle Plan
+                  </Button>
+                </HoverCardTrigger>
+                <HoverCardContent className="w-64">
+                  <p className="text-sm">
+                    Regenerate the events in this plan based on your preferences
+                    as well as the preferences of the creator.
+                  </p>
+                </HoverCardContent>
+              </HoverCard>
             )}
           </div>
           <div className="flex-1 text-right">

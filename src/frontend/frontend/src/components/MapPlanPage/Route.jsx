@@ -45,6 +45,7 @@ const Route = ({ route, event_ids }) => {
       fetchEvents();
     }, [event_ids]);
   }
+
   const onMarkerClick = useCallback(
     (id, marker) => {
       if (id !== selectedId) {
