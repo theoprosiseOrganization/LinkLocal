@@ -63,6 +63,18 @@ export default function MapPlan() {
   const [isTagDialogOpen, setIsTagDialogOpen] = useState(false);
   const [preferredTag, setPreferredTag] = useState("");
   const [eventDurations, setEventDurations] = useState({});
+  const [selectedDate, setSelectedDate] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
+
+  useEffect(() => {
+    if (selectedDate && startTime) {
+      setStartDate(`${selectedDate}T${startTime}`);
+    }
+    if (selectedDate && endTime) {
+      setEndDate(`${selectedDate}T${endTime}`);
+    }
+  }, [selectedDate, startTime, endTime]);
 
   const filterStart = startDate ? new Date(startDate) : null;
   const filterEnd = endDate ? new Date(endDate) : null;
@@ -278,7 +290,8 @@ export default function MapPlan() {
       });
 
       const pick = possibleEvents[0];
-      const isPreferred = preferredTag && (pick.tags || []).some(t=> t.name === preferredTag);
+      const isPreferred =
+        preferredTag && (pick.tags || []).some((t) => t.name === preferredTag);
       const durationMs = (isPreferred ? 90 : 60) * 60 * 1000; // 90 mins if preferred tag, else 60 mins
       picks.push(pick.id);
       durations[pick.id] = durationMs;
@@ -336,21 +349,32 @@ export default function MapPlan() {
         </p>
         <div className="flex gap-4 mb-4">
           <div>
-            <Label htmlFor="filter-start">Start</Label>
+            <Label htmlFor="filter-date">Date</Label>
             <Input
-              id="filter-start"
-              type="datetime-local"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
+              id="filter-date"
+              type="date"
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
             />
           </div>
           <div>
-            <Label htmlFor="filter-end">End</Label>
+            <Label htmlFor="filter-start-time">Start Time</Label>
             <Input
-              id="filter-end"
-              type="datetime-local"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
+              id="filter-start-time"
+              type="time"
+              value={startTime}
+              onChange={(e) => setStartTime(e.target.value)}
+              disabled={!selectedDate}
+            />
+          </div>
+          <div>
+            <Label htmlFor="filter-end-time">End Time</Label>
+            <Input
+              id="filter-end-time"
+              type="time"
+              value={endTime}
+              onChange={(e) => setEndTime(e.target.value)}
+              disabled={!selectedDate}
             />
           </div>
         </div>
@@ -603,11 +627,13 @@ export default function MapPlan() {
               <Button
                 disabled={selectedFollowers.length === 0 || !planTitle.trim()}
                 onClick={async () => {
-                  
-                  const coords = drawnPolygon.current.getPath().getArray().map(pt => ({
-                    lat: pt.lat(),
-                    lng: pt.lng(),
-                  }));
+                  const coords = drawnPolygon.current
+                    .getPath()
+                    .getArray()
+                    .map((pt) => ({
+                      lat: pt.lat(),
+                      lng: pt.lng(),
+                    }));
                   const plan = await createPlan({
                     title: planTitle,
                     eventIds: selectedEventIds,
