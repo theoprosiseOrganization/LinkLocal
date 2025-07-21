@@ -691,6 +691,10 @@ function generateEventPlan(events, tagSetsByUser, startMs, endMs, creatorId) {
     e.tagNames = (e.tags || []).map((t) => t.name);
   });
 
+  // Parameters for duration scaling
+  const MIN_DURATION = 30 * 60 * 1000; // 30 min
+  const MAX_DURATION = 2 * 60 * 60 * 1000; // 2 hours
+
   while (true) {
     if (curTime >= endMs) break;
     const candidates = events.filter((e) => !used.has(e.id));
@@ -714,14 +718,20 @@ function generateEventPlan(events, tagSetsByUser, startMs, endMs, creatorId) {
           eventEndMs: new Date(e.endTime).getTime(),
         };
       })
-      // Only keep events that can be attended for a full hour before they end
+      // Only keep events that can be attended for at least MIN_DURATION before they end
       .filter(
-        (e) => e.arriveAt + 60 * 60 * 1000 <= Math.min(e.eventEndMs, endMs)
+        (e) => e.arriveAt + MIN_DURATION <= Math.min(e.eventEndMs, endMs)
       );
 
     if (possibleEvents.length === 0) {
       break;
     }
+
+    // Compute tag scores for scaling
+    const scores = possibleEvents.map((e) =>
+      tagScore(e, tagSetsByUser, creatorId)
+    );
+    const maxScore = Math.max(...scores, 1); // avoid division by zero
 
     possibleEvents.sort((a, b) => {
       const scoreA = tagScore(a, tagSetsByUser, creatorId);
@@ -733,12 +743,27 @@ function generateEventPlan(events, tagSetsByUser, startMs, endMs, creatorId) {
     });
 
     const pick = possibleEvents[0];
-    picks.push(pick.id);
     used.add(pick.id);
+    picks.push(pick.id);
 
-    durations[pick.id] = 60 * 60 * 1000; // Default duration of 1 hour
+    // Dynamically set duration
+    const score = tagScore(pick, tagSetsByUser, creatorId);
+    // Scale duration between MIN and MAX based on score
+    let duration =
+      MIN_DURATION +
+      ((MAX_DURATION - MIN_DURATION) * score) / maxScore;
 
-    curTime = pick.arriveAt + 60 * 60 * 1000; // 1 hour at event
+    // Don't exceed event's end or plan's end
+    const latestPossibleEnd = Math.min(pick.eventEndMs, endMs);
+    if (pick.arriveAt + duration > latestPossibleEnd) {
+      duration = latestPossibleEnd - pick.arriveAt;
+    }
+    // Don't go below MIN_DURATION
+    duration = Math.max(duration, MIN_DURATION);
+
+    durations[pick.id] = duration;
+
+    curTime = pick.arriveAt + duration;
     curLoc = pick.location;
   }
 
@@ -806,7 +831,7 @@ exports.shufflePlan = async (req, res) => {
             lat: tagSetsByUser.__originLoc.latitude,
             lng: tagSetsByUser.__originLoc.longitude,
           }
-        ) <= 50
+        ) <= 75 // Only include events within 75 km of origin
       );
     });
 
