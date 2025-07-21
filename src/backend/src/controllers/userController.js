@@ -653,19 +653,17 @@ const computeTravelTimeMs = (locA, locB) => {
 };
 
 const tagScore = (event) => {
-  if (!userData || !userData.tags) return 0;
-  const regularScore = (event.tags || []).reduce(
-    (score, { name }) => score + (userTagSet.has(name) ? 1 : 0),
-    0
-  );
-  if (preferredTag) {
-    // If event has preferredTag, give it a big boost
-    const hasPreferred = (event.tags || []).some(
-      (t) => t.name === preferredTag
+  let total = 0;
+  for (const [userId, tagSet] of Object.entries(tagSetsByUser)) {
+    if ((userId = "__originLoc")) continue; // Skip origin location
+    const matches = event.tagNames.reduce(
+      (sum, tag) => sum + (tagSet.has(tag) ? 1 : 0),
+      0
     );
-    return hasPreferred ? 1000 + regularScore : regularScore;
+    const weight = userId == creatorId ? 2 : 1; // Creator's tags count double
+    total += matches * weight;
   }
-  return regularScore;
+  return total;
 };
 
 function generateEventPlan(events, tagSetsByUser, startMs, endMs, creatorId) {
@@ -708,36 +706,53 @@ function generateEventPlan(events, tagSetsByUser, startMs, endMs, creatorId) {
     }
 
     possibleEvents.sort((a, b) => {
-      const diff = tagScore(b) - tagScore(a);
-      return diff !== 0 ? diff : a.arriveAt - b.arriveAt;
+      const scoreA = tagScore(a, tagSetsByUser, creatorId);
+      const scoreB = tagScore(b, tagSetsByUser, creatorId);
+      if (scoreA !== scoreB) {
+        return scoreB - scoreA; // Higher score first
+      }
+      return a.arriveAt - b.arriveAt; // Earlier arrival first
     });
 
     const pick = possibleEvents[0];
-    const isPreferred =
-      preferredTag && (pick.tags || []).some((t) => t.name === preferredTag);
-    const durationMs = (isPreferred ? 90 : 60) * 60 * 1000; // 90 mins if preferred tag, else 60 mins
     picks.push(pick.id);
-    durations[pick.id] = durationMs;
-    usedIds.add(pick.id);
+    used.add(pick.id);
+
+    durations[pick.id] = 60 * 60 * 1000; // Default duration of 1 hour
 
     curTime = pick.arriveAt + 60 * 60 * 1000; // 1 hour at event
-    curLoc = {
-      lat: pick.location?.latitude,
-      lng: pick.location?.longitude,
-    };
+    curLoc = pick.location;
   }
 
-  setSelectedEventIds(picks);
-  if (picks.length === 0) {
-    alert("No events could be selected based on your criteria.");
-    return;
-  }
-  alert(
-    `Generated plan with ${picks.length} events based on your criteria. You can now calculate the route.`
-  );
-  setEventDurations(durations);
+  return { selectedIds: picks, durations };
 }
 
 exports.shufflePlan = async (req, res) => {
-  const supabase = createClient(supabaseUrl, supabaseKey);
+  try {
+    const planId = req.params.planId;
+    const me = req.params.id;
+
+    let {data: plan, error: pe} = await supabase
+      .from("plans")
+      .select("owner_id, participants, start_time, end_time, polygon")
+      .eq("id", planId)
+      .single();
+    if (pe) {
+      return res.status(404).json({ error: `Plan not found: ${pe.message}` });
+    }
+    // fetch events in polygon and timeslot
+    let {data: events, error: ee} = await supabase
+      .from("events")
+      .select("id, title, start_time, end_time, location, tags")
+      .eq("polygon", plan.polygon)
+      .gte("start_time", plan.start_time)
+      .lte("end_time", plan.end_time);
+    if (ee) {
+      return res.status(500).json({ error: `Failed to fetch events: ${ee.message}` });
+    }
+
+    // load tags for participants
+    const userIds = [plan.owner_id, ...(plan.participants || [])];
+    let {at}
+  }
 };
