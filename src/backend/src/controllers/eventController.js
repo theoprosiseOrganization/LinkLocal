@@ -283,39 +283,41 @@ exports.getEventsWithinRadius = async (req, res) => {
     return res.status(400).json({ error: "Invalid input" });
   }
   try {
-    const rows = await prisma.$queryRawUnsafe(
-      `
+    const eventsIds = await prisma.$queryRawUnsafe(`
       SELECT id, "eventId", "streetAddress", ST_AsText(location) AS location
       FROM event_locations
       WHERE ST_DWithin(
-        el.location::geography,
-        ST_MakePoint($1, $2)::geography,
-        $3
+        location,
+        ST_SetSRID(ST_MakePoint(${longitude}, ${latitude}), 4326),
+        ${radius}
       )
-      `,
-      longitude,
-      latitude,
-      radius
-    );
-
-    const events = rows.map((row) => {
-      const match = parsePoint(row.geom);
-      if (!match) return null;
-      return {
-        ...row,
-        location: match
-          ? {
-              longitude: +match[1],
-              latitude: +match[2],
-              address: row.streetAddress,
-            }
-          : null,
-      };
+    `);
+    const events = await prisma.event.findMany({
+      where: { id: { in: eventsIds.map((e) => e.eventId) } },
+      include: { tags: true },
     });
-    res.json(events.filter((event) => event !== null));
+
+    const eventIdToLoc = new Map(eventsIds.map((e) => [e.eventId, e]));
+
+    for (const event of events) {
+      const loc = eventIdToLoc.get(event.id);
+      if (loc) {
+        const match = parsePoint(loc.location);
+        if (match) {
+          const [, longitude, latitude] = match;
+          event.location = {
+            address: loc.streetAddress,
+            latitude: parseFloat(latitude),
+            longitude: parseFloat(longitude),
+          };
+        } else {
+          event.location = null;
+        }
+      }
+    }
+    res.json(events);
   } catch (error) {
-    console.error("Error fetching events within radius:", error);
-    return res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
