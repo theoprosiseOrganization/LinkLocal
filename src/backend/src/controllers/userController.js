@@ -661,6 +661,8 @@ const computeTravelTimeMs = (locA, locB) => {
 
 const tagScore = (event, tagSetsByUser, creatorId, friendsInPlan) => {
   let total = 0;
+  // Loop through each user's tag set
+  // and count how many tags match the event's tags
   for (const [userId, tagSet] of Object.entries(tagSetsByUser)) {
     if (userId === "__originLoc") continue;
     const matches = event.tagNames.reduce(
@@ -702,6 +704,7 @@ function generateEventPlan(
     e.tagNames = (e.tags || []).map((t) => t.name);
   });
 
+  // Cache for tag scores to avoid recomputing
   const scoreCache = new Map();
   const getTagScore = (event) => {
     if (!scoreCache.has(event.id)) {
@@ -720,6 +723,7 @@ function generateEventPlan(
       break;
     }
 
+    // Filter candidates by distance and time
     const possibleEvents = candidates
       .map((e) => {
         const travel = computeTravelTimeMs(
@@ -751,6 +755,7 @@ function generateEventPlan(
     );
     const maxScore = Math.max(...scores, 1); // avoid division by zero
 
+    // Sort by score first, then by arrival time
     possibleEvents.sort((a, b) => {
       const scoreA = getTagScore(a, tagSetsByUser, creatorId, friendsInPlan);
       const scoreB = getTagScore(b, tagSetsByUser, creatorId, friendsInPlan);
@@ -819,7 +824,6 @@ exports.shufflePlan = async (req, res) => {
 
     // give more preference to people who are more followed by people in the plan
     // get all followers of all people in the plan
-
     const friendships = await prisma.follows.findMany({
       where: { followingId: { in: allIds } },
       include: { following: true }, // Include following details
@@ -837,6 +841,7 @@ exports.shufflePlan = async (req, res) => {
       );
     }
 
+    // Grab tags for all users in the plan
     const users = await prisma.user.findMany({
       where: { id: { in: allIds } },
       include: { tags: true },
