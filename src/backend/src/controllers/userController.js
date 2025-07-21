@@ -805,19 +805,23 @@ exports.shufflePlan = async (req, res) => {
 
     const allIds = [plan.owner_id, ...(plan.participants || [])];
 
-    const friendships = await prisma.user.findMany({
-      where: { id: { in: allIds } },
-      select: {
-        id: true,
-        friends: { select: { id: true } },
-      },
+    // give more preference to people who are more followed by people in the plan
+    // get all followers of all people in the plan
+
+    const friendships = await prisma.follows.findMany({
+      where: { followingId: { in: allIds } },
+      include: { following: true }, // Include following details
     });
 
-    // Build a map: userId -> Set of friendIds in the plan
+    // Build a map: userId -> Set of followers of userId in the plan
     const friendsInPlan = {};
-    for (const user of friendships) {
-      friendsInPlan[user.id] = new Set(
-        user.friends.map((f) => f.id).filter((id) => allIds.includes(id))
+    for (const user of allIds) {
+      friendsInPlan[user] = new Set(
+        friendships
+          .filter(
+            (f) => f.followingId === user && allIds.includes(f.followerId)
+          )
+          .map((f) => f.followerId)
       );
     }
 
