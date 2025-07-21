@@ -10,7 +10,12 @@
  */
 import { useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import { getPlanById, getEventById } from "../../api";
+import {
+  getPlanById,
+  getEventById,
+  getSessionUserId,
+  joinPlan,
+} from "../../api";
 import { APIProvider, Map } from "@vis.gl/react-google-maps";
 import Route from "./Route";
 import Layout from "../Layout/Layout";
@@ -20,11 +25,15 @@ export default function PlanViewer() {
   const { planId } = useParams();
   const [plan, setPlan] = useState(null);
   const [events, setEvents] = useState([]);
+  const [hasJoined, setHasJoined] = useState(false);
 
   useEffect(() => {
-    getPlanById(planId)
-      .then(setPlan)
-      .catch(() => alert("Failed to load plan"));
+    (async () => {
+      const p = await getPlanById(planId);
+      setPlan(p);
+      const userId = await getSessionUserId();
+      setHasJoined((p.participants || []).includes(userId));
+    })();
   }, [planId]);
 
   const durations = plan?.durations || {};
