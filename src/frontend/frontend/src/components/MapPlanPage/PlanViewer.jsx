@@ -35,7 +35,7 @@ export default function PlanViewer() {
       const userId = await getSessionUserId();
       setHasJoined((p.participants || []).includes(userId));
     })();
-  }, [planId]);
+  }, [planId, plan]);
 
   const durations = plan?.durations || {};
 

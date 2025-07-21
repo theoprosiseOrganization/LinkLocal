@@ -817,10 +817,7 @@ exports.shufflePlan = async (req, res) => {
       endMs,
       plan.owner_id
     );
-    console.log(
-      `Generated plan with ${selectedIds.length} events for plan ${planId}`
-    );
-
+  
     const origin = tagSetsByUser.__originLoc;
     const waypoints = selectedIds
       .map((id) => {
@@ -854,7 +851,6 @@ exports.shufflePlan = async (req, res) => {
 
     res.json(updatedPlan);
   } catch (error) {
-    console.error("Error shuffling plan:", error);
     res.status(500).json({ error: `Failed to shuffle plan: ${error.message}` });
   }
 };
