@@ -512,6 +512,10 @@ exports.createPlan = async (req, res) => {
           event_ids: eventIds,
           route_data: routeData,
           durations: durations,
+          participants: [ownerId], // Start with the owner as participant
+          start_time: start,
+          end_time: end,
+          polygon: polygon,
         },
       ])
       .select()
@@ -523,6 +527,7 @@ exports.createPlan = async (req, res) => {
     }
     res.json(data);
   } catch (error) {
+    console.error("Error creating plan:", error);
     res.status(500).json({ error: `Failed to create plan: ${error.message}` });
   }
 };
@@ -743,7 +748,7 @@ exports.shufflePlan = async (req, res) => {
     if (planError) {
       return res.status(404).json({ error: `Plan not found: ${planError.message}` });
     }
-    let events = await getEventsWithinPolygon(plan.polygon);
+    let events = await fetchEventsWithinPolygon(plan.polygon);
 
     const startMs = new Date(plan.start_time).getTime();
     const endMs = new Date(plan.end_time).getTime();
@@ -769,7 +774,7 @@ exports.shufflePlan = async (req, res) => {
     // build tag sets by user
     const tagSetsByUser = {};
     for (const user of users) {
-      tagSetsByUser[user.id] = new Set((user.tags | []).map((t) => t.name));
+      tagSetsByUser[user.id] = new Set((user.tags || []).map((t) => t.name));
       if (user.id === plan.owner_id) {
         const loc = await getUserLocation(user.id);
         if (!loc) {
@@ -800,7 +805,7 @@ exports.shufflePlan = async (req, res) => {
       };
     });
 
-    const routeData = await getOptimalRoute(origin, waypoints, "DRIVE");
+    const routeData = await fetchOptimalRoute(origin, waypoints, "DRIVE");
 
     let { data: updatedPlan, error: updateError } = await supabase
       .from("plans")

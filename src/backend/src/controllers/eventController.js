@@ -285,6 +285,8 @@ async function fetchEventsWithinPolygon(polygon) {
   }
 }
 
+exports.fetchEventsWithinPolygon = fetchEventsWithinPolygon;
+
 exports.getEventsWithinRadius = async (req, res) => {
   const { latitude, longitude, radius } = req.body;
 
@@ -401,3 +403,5 @@ async function fetchOptimalRoute(start, events, transportType) {
   }
   return response.json();
 }
+
+exports.fetchOptimalRoute = fetchOptimalRoute;

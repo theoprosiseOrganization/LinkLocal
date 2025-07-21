@@ -402,6 +402,7 @@ export async function createPlan({ title, eventIds, routeData, durations, start,
     credentials: "include",
   });
   const response = await res.json();
+  console.log("createPlan response:", response);
   if (!res.ok) {
     throw new Error(response.error || "Failed to create plan");
   }
