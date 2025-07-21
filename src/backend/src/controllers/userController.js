@@ -753,6 +753,34 @@ exports.shufflePlan = async (req, res) => {
 
     // load tags for participants
     const userIds = [plan.owner_id, ...(plan.participants || [])];
-    let {at}
+    let {data: users, error: ue} = await supabase
+      .from("User")
+      .select("id, tags(name). user_locations(location)")
+      .in("id", userIds);
+    if (ue) {
+      return res.status(500).json({ error: `Failed to fetch users: ${ue.message}` });
+    }
+    // build tag sets by user
+    const tagSetsByUser = {};
+    users.forEach((user) => {
+      tagSetsByUser[user.id] = new Set((user.tags || []).map((t) => t.name));
+      if (user.id == plan.owner_id && user.user_locations) {
+        const { latitude, longitude } = user.user_locations;
+        tagSetsByUser.__originLoc = {
+          lat: latitude,
+          lng: longitude,
+        };
   }
+}
+const {selectedIds, durations} = generateEventPlan(
+  events,
+  tagSetsByUser,
+  new Date(plan.start_time).getTime(),
+  new Date(plan.end_time).getTime(),
+  plan.owner_id
+);
+
+const route_data = await fetchOptimal
+  }
+
 };
