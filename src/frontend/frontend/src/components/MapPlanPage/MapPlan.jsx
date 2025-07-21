@@ -225,108 +225,110 @@ export default function MapPlan() {
 
   /**
    * This function generates an event plan based on the selected area and time period.
-   * It filters the events found within the drawn polygon based on the user's selected time period.
-   * It then selects events that can be attended for a full hour, considering travel time.
-   * The function prioritizes events based on the user's tags and the time they can be attended
-   * before they end.
+   * It filters events based on the user's selected criteria, computes travel times,
+   * and dynamically assigns durations to each event based on their tag scores.
+   * The function ensures that the selected events fit within the user's availability
+   * and the event's time constraints.
+   * If no events are found or if the user hasn't selected a time period, it alerts
+   * the user accordingly.
    *
    * @returns {void}
    */
-  const generateEventPlan = () => {
-    if (!filterStart || !filterEnd) {
-      alert("Please select a time period for the events.");
-      return;
-    }
-    let durations = {};
+const generateEventPlan = () => {
+  if (!filterStart || !filterEnd) {
+    alert("Please select a time period for the events.");
+    return;
+  }
+  let durations = {};
 
-    const eventsToGenerate = filteredEvents
-      .slice() // copy array
-      .sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
+  const eventsToGenerate = filteredEvents
+    .slice()
+    .sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
 
-    if (eventsToGenerate.length === 0) {
-      alert("No events found in the selected area/time period.");
-      return;
-    }
+  if (eventsToGenerate.length === 0) {
+    alert("No events found in the selected area/time period.");
+    return;
+  }
 
-    const usedIds = new Set();
-    const picks = [];
-    let curTime = filterStart.getTime();
-    let curLoc = {
-      lat: userData?.location?.latitude,
-      lng: userData?.location?.longitude,
-    };
-
-    const MIN_DURATION = 30 * 60 * 1000; // 30 min
-    const MAX_DURATION = 2 * 60 * 60 * 1000; // 2 hours
-
-    while (true) {
-      if( curTime >= filterEnd.getTime() ) {
-        break; // No more time left to attend events
-      }
-      const candidates = eventsToGenerate.filter((e) => !usedIds.has(e.id));
-      if (candidates.length === 0) {
-        break;
-      }
-
-      const possibleEvents = candidates
-        .map((e) => {
-          const eventStartMs = new Date(e.startTime).getTime();
-          const eventEndMs = new Date(e.endTime).getTime();
-          const travelTimeMs = computeTravelTimeMs(curLoc, {
-            lat: e.location?.latitude,
-            lng: e.location?.longitude,
-          });
-          const arriveAt = Math.max(eventStartMs, curTime + travelTimeMs);
-          return { ...e, arriveAt, eventEndMs };
-        })
-        // Only keep events that can be attended for at least MIN_DURATION
-        .filter(
-          (e) =>
-            e.arriveAt + MIN_DURATION <=
-            Math.min(e.eventEndMs, filterEnd.getTime())
-        );
-
-      if (!possibleEvents || possibleEvents.length === 0) {
-        break;
-      }
-
-      const scores = possibleEvents.map((e) => 
-        tagScore(e)
-      ); 
-
-      const maxScore = Math.max(...scores, 1); // Avoid division by zero
-
-
-      possibleEvents.sort((a, b) => {
-        const diff = tagScore(b) - tagScore(a);
-        return diff !== 0 ? diff : a.arriveAt - b.arriveAt;
-      });
-
-      const pick = possibleEvents[0];
-      const isPreferred =
-        preferredTag && (pick.tags || []).some((t) => t.name === preferredTag);
-      const durationMs = (isPreferred ? 90 : 60) * 60 * 1000; // 90 mins if preferred tag, else 60 mins
-      picks.push(pick.id);
-      durations[pick.id] = durationMs;
-      usedIds.add(pick.id);
-
-      curTime = pick.arriveAt + 60 * 60 * 1000; // 1 hour at event
-      curLoc = {
-        lat: pick.location?.latitude,
-        lng: pick.location?.longitude,
-      };
-    }
-
-    setSelectedEventIds(picks);
-    if (picks.length === 0) {
-      alert("No events could be selected based on your criteria.");
-      return;
-    }
-    alert(
-      `Generated plan with ${picks.length} events based on your criteria. You can now calculate the route.`
-    );
-    setEventDurations(durations);
+  const usedIds = new Set();
+  const picks = [];
+  let curTime = filterStart.getTime();
+  let curLoc = {
+    lat: userData?.location?.latitude,
+    lng: userData?.location?.longitude,
   };
+
+  const MIN_DURATION = 30 * 60 * 1000; // 30 min
+  const MAX_DURATION = 2 * 60 * 60 * 1000; // 2 hours
+
+  while (true) {
+    if (curTime >= filterEnd.getTime()) break;
+    const candidates = eventsToGenerate.filter((e) => !usedIds.has(e.id));
+    if (candidates.length === 0) break;
+
+    const possibleEvents = candidates
+      .map((e) => {
+        const eventStartMs = new Date(e.startTime).getTime();
+        const eventEndMs = new Date(e.endTime).getTime();
+        const travelTimeMs = computeTravelTimeMs(curLoc, {
+          lat: e.location?.latitude,
+          lng: e.location?.longitude,
+        });
+        const arriveAt = Math.max(eventStartMs, curTime + travelTimeMs);
+        return { ...e, arriveAt, eventEndMs };
+      })
+      .filter(
+        (e) =>
+          e.arriveAt + MIN_DURATION <=
+          Math.min(e.eventEndMs, filterEnd.getTime())
+      );
+
+    if (!possibleEvents || possibleEvents.length === 0) break;
+
+    // Compute tag scores for scaling
+    const scores = possibleEvents.map((e) => tagScore(e));
+    const maxScore = Math.max(...scores, 1); // Avoid division by zero
+
+    possibleEvents.sort((a, b) => {
+      const diff = tagScore(b) - tagScore(a);
+      return diff !== 0 ? diff : a.arriveAt - b.arriveAt;
+    });
+
+    const pick = possibleEvents[0];
+    usedIds.add(pick.id);
+    picks.push(pick.id);
+
+    // Dynamically set duration based on tag score
+    const score = tagScore(pick);
+    let duration =
+      MIN_DURATION + ((MAX_DURATION - MIN_DURATION) * score) / maxScore;
+
+    // Don't exceed event's end or plan's end
+    const latestPossibleEnd = Math.min(pick.eventEndMs, filterEnd.getTime());
+    if (pick.arriveAt + duration > latestPossibleEnd) {
+      duration = latestPossibleEnd - pick.arriveAt;
+    }
+    duration = Math.max(duration, MIN_DURATION);
+
+    durations[pick.id] = duration;
+
+    curTime = pick.arriveAt + duration;
+    curLoc = {
+      lat: pick.location?.latitude,
+      lng: pick.location?.longitude,
+    };
+  }
+
+  setSelectedEventIds(picks);
+  if (picks.length === 0) {
+    alert("No events could be selected based on your criteria.");
+    return;
+  }
+  alert(
+    `Generated plan with ${picks.length} events based on your criteria. You can now calculate the route.`
+  );
+  setEventDurations(durations);
+};
 
   const handleTempSelectEvent = (eventId) => {
     setTempSelectedEventIds((prev) =>
