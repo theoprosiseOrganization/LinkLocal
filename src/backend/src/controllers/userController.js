@@ -13,6 +13,7 @@ const { createClient } = require("@supabase/supabase-js");
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_KEY;
 const RECOMMENDATION_SERVICE_URL = process.env.RECOMMENDATION_SERVICE_URL;
+const {fetchEventsWithinPolygon, fetchOptimalRoute} = require("./eventController");
 
 // User CRUD
 exports.getUsers = async (req, res) => {
@@ -734,16 +735,15 @@ exports.shufflePlan = async (req, res) => {
     const planId = req.params.planId;
     const userId = req.params.id;
 
-    let { data: plan, error: pe } = await supabase
+    let { data: plan, error: planError } = await supabase
       .from("plans")
       .select("owner_id, participants, start_time, end_time, polygon")
       .eq("id", planId)
       .single();
-    if (pe) {
-      return res.status(404).json({ error: `Plan not found: ${pe.message}` });
+    if (planError) {
+      return res.status(404).json({ error: `Plan not found: ${planError.message}` });
     }
-    // fetch events in polygon and timeslot
-    let events = await fetchEventsWithinPolygon(plan.polygon);
+    let events = await getEventsWithinPolygon(plan.polygon);
 
     const startMs = new Date(plan.start_time).getTime();
     const endMs = new Date(plan.end_time).getTime();
@@ -800,7 +800,7 @@ exports.shufflePlan = async (req, res) => {
       };
     });
 
-    const routeData = await fetchOptimalRoute(origin, waypoints, "DRIVE");
+    const routeData = await getOptimalRoute(origin, waypoints, "DRIVE");
 
     let { data: updatedPlan, error: updateError } = await supabase
       .from("plans")

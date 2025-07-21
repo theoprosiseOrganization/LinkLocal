@@ -235,6 +235,19 @@ exports.getEventsWithinPolygon = async (req, res) => {
     return res.status(400).json({ error: "Invalid polygon" });
   }
   try {
+   const events = await fetchEventsWithinPolygon(polygon);
+    if (!events || events.length === 0) {
+      return res.status(404).json({ error: "No events found within polygon" });
+    }
+    res.json(events);
+
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+async function fetchEventsWithinPolygon(polygon) {
+  try {
     const eventsIds = await prisma.$queryRawUnsafe(`
       SELECT id, "eventId", "streetAddress", ST_AsText(location) AS location
       FROM event_locations
@@ -266,11 +279,11 @@ exports.getEventsWithinPolygon = async (req, res) => {
         }
       }
     }
-    res.json(events);
+    return events;
   } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
+    throw error;
   }
-};
+}
 
 exports.getEventsWithinRadius = async (req, res) => {
   const { latitude, longitude, radius } = req.body;
@@ -330,58 +343,61 @@ exports.getOptimalRoute = async (req, res) => {
     if (!start || !events || events.length === 0) {
       return res.status(400).json({ error: "Invalid input" });
     }
-    const routeRequest = {
-      origin: {
-        location: {
-          latLng: {
-            latitude: start.lat,
-            longitude: start.lng,
-          },
-        },
-      },
-      destination: {
-        location: {
-          latLng: {
-            latitude: start.lat,
-            longitude: start.lng,
-          },
-        },
-      },
-      intermediates: events.map((event) => ({
-        location: {
-          latLng: {
-            latitude: event.lat,
-            longitude: event.lng,
-          },
-        },
-      })),
-      travelMode: transportType,
-      optimizeWaypointOrder: "true",
-      computeAlternativeRoutes: true,
-      units: "METRIC",
-    };
-
-    const url = new URL(ROUTES_API_ENDPOINT);
-    url.searchParams.set("fields", FIELD_MASK);
-
-    const apiKey = process.env.VITE_GOOGLE_MAPS_API_KEY;
-    const response = await fetch(url.toString(), {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Goog-Api-Key": apiKey,
-      },
-      body: JSON.stringify(routeRequest),
-    });
-    if (!response.ok) {
-      const errorText = await response.text();
-      return res
-        .status(response.status)
-        .json({ error: "Failed to fetch route" });
-    }
-    const data = await response.json();
+    const data = await fetchOptimalRoute(start, events, transportType);
     return res.json(data);
   } catch (error) {
-    return res.status(500).json({ error: "Internal Server Error" });
+    return res.status(500).json({ error: error.message || "Internal Server Error" });
   }
 };
+
+async function fetchOptimalRoute(start, events, transportType) {
+  const routeRequest = {
+    origin: {
+      location: {
+        latLng: {
+          latitude: start.lat,
+          longitude: start.lng,
+        },
+      },
+    },
+    destination: {
+      location: {
+        latLng: {
+          latitude: start.lat,
+          longitude: start.lng,
+        },
+      },
+    },
+    intermediates: events.map((event) => ({
+      location: {
+        latLng: {
+          latitude: event.lat,
+          longitude: event.lng,
+        },
+      },
+    })),
+    travelMode: transportType,
+    optimizeWaypointOrder: "true",
+    computeAlternativeRoutes: true,
+    units: "METRIC",
+  };
+
+  const url = new URL(ROUTES_API_ENDPOINT);
+  url.searchParams.set("fields", FIELD_MASK);
+
+  const apiKey = process.env.VITE_GOOGLE_MAPS_API_KEY;
+  const response = await fetch(url.toString(), {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Goog-Api-Key": apiKey,
+    },
+    body: JSON.stringify(routeRequest),
+  });
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error("Failed to fetch route:", response.status, response.statusText, errorText);
+    throw new Error("Failed to fetch route");
+  }
+  return response.json();
+}
