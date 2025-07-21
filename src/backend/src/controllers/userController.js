@@ -13,7 +13,10 @@ const { createClient } = require("@supabase/supabase-js");
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_KEY;
 const RECOMMENDATION_SERVICE_URL = process.env.RECOMMENDATION_SERVICE_URL;
-const {fetchEventsWithinPolygon, fetchOptimalRoute} = require("./eventController");
+const {
+  fetchEventsWithinPolygon,
+  fetchOptimalRoute,
+} = require("./eventController");
 
 // User CRUD
 exports.getUsers = async (req, res) => {
@@ -502,7 +505,8 @@ exports.createPlan = async (req, res) => {
 
   try {
     const ownerId = req.params.id;
-    const { title, eventIds, routeData, durations, start, end, polygon } = req.body;
+    const { title, eventIds, routeData, durations, start, end, polygon } =
+      req.body;
     const { data, error } = await supabase
       .from("plans")
       .insert([
@@ -657,15 +661,15 @@ const computeTravelTimeMs = (locA, locB) => {
   return factor * 60 * 60 * 1000; // Convert to milliseconds
 };
 
-const tagScore = (event) => {
+const tagScore = (event, tagSetsByUser, creatorId) => {
   let total = 0;
   for (const [userId, tagSet] of Object.entries(tagSetsByUser)) {
-    if ((userId = "__originLoc")) continue; // Skip origin location
+    if (userId === "__originLoc") continue;
     const matches = event.tagNames.reduce(
       (sum, tag) => sum + (tagSet.has(tag) ? 1 : 0),
       0
     );
-    const weight = userId == creatorId ? 2 : 1; // Creator's tags count double
+    const weight = userId == creatorId ? 2 : 1;
     total += matches * weight;
   }
   return total;
@@ -678,11 +682,17 @@ function generateEventPlan(events, tagSetsByUser, startMs, endMs, creatorId) {
   let curTime = startMs;
   let curLoc = tagSetsByUser.__originLoc;
 
+  const toLatLng = (loc) => ({
+    lat: loc.latitude,
+    lng: loc.longitude,
+  });
+
   events.forEach((e) => {
     e.tagNames = (e.tags || []).map((t) => t.name);
   });
 
   while (true) {
+    if (curTime >= endMs) break;
     const candidates = events.filter((e) => !used.has(e.id));
     if (candidates.length === 0) {
       break;
@@ -690,7 +700,10 @@ function generateEventPlan(events, tagSetsByUser, startMs, endMs, creatorId) {
 
     const possibleEvents = candidates
       .map((e) => {
-        const travel = computeTravelTimeMs(curLoc, e.location);
+        const travel = computeTravelTimeMs(
+          toLatLng(curLoc),
+          toLatLng(e.location)
+        );
         const arrive = Math.max(
           new Date(e.startTime).getTime(),
           curTime + travel
@@ -703,7 +716,7 @@ function generateEventPlan(events, tagSetsByUser, startMs, endMs, creatorId) {
       })
       // Only keep events that can be attended for a full hour before they end
       .filter(
-        (e) => e.arriveAt + 60 * 60 * 1000 <= Math.min(e.eventEnd, endMs)
+        (e) => e.arriveAt + 60 * 60 * 1000 <= Math.min(e.eventEndMs, endMs)
       );
 
     if (possibleEvents.length === 0) {
@@ -745,24 +758,18 @@ exports.shufflePlan = async (req, res) => {
       .eq("id", planId)
       .single();
     if (planError) {
-      return res.status(404).json({ error: `Plan not found: ${planError.message}` });
+      return res
+        .status(404)
+        .json({ error: `Plan not found: ${planError.message}` });
     }
-    let events = await fetchEventsWithinPolygon(plan.polygon);
+    const geojson = {
+      type: "Polygon",
+      coordinates: [plan.polygon.map((coord) => [coord.lng, coord.lat])],
+    };
+    let events = await fetchEventsWithinPolygon(geojson);
 
     const startMs = new Date(plan.start_time).getTime();
     const endMs = new Date(plan.end_time).getTime();
-    events = events.filter((e) => {
-      const start = new Date(e.startTime).getTime();
-      const end = new Date(e.endTime).getTime();
-      return (
-        start >= startMs &&
-        end <= endMs &&
-        computeDistanceKm(
-          { lat: e.location.latitude, lng: e.location.longitude },
-          tagSetsByUser.__originLoc
-        ) <= 50 // Only events within 50 km of origin
-      );
-    });
 
     const allIds = [plan.owner_id, ...(plan.participants || [])];
     const users = await prisma.user.findMany({
@@ -786,6 +793,23 @@ exports.shufflePlan = async (req, res) => {
       }
     }
 
+    events = events.filter((e) => {
+      const start = new Date(e.startTime).getTime();
+      const end = new Date(e.endTime).getTime();
+      // Include events that overlap with plan window
+      return (
+        end > startMs &&
+        start < endMs &&
+        computeDistanceKm(
+          { lat: e.location.latitude, lng: e.location.longitude },
+          {
+            lat: tagSetsByUser.__originLoc.latitude,
+            lng: tagSetsByUser.__originLoc.longitude,
+          }
+        ) <= 50
+      );
+    });
+
     const { selectedIds, durations } = generateEventPlan(
       events,
       tagSetsByUser,
@@ -793,18 +817,25 @@ exports.shufflePlan = async (req, res) => {
       endMs,
       plan.owner_id
     );
+    console.log(
+      `Generated plan with ${selectedIds.length} events for plan ${planId}`
+    );
 
     const origin = tagSetsByUser.__originLoc;
-    const waypoints = selectedIds.map((id) => {
-      const e = events.find((ev) => ev.id === id);
-      if (!e) return null;
-      return {
-        latitude: e.location.latitude,
-        longitude: e.location.longitude,
-      };
-    });
+    const waypoints = selectedIds
+      .map((id) => {
+        const e = events.find((ev) => ev.id === id);
+        if (!e) return null;
+        return {
+          lat: e.location.latitude,
+          lng: e.location.longitude,
+        };
+      })
+      .filter(Boolean);
 
-    const routeData = await fetchOptimalRoute(origin, waypoints, "DRIVE");
+    const routeDataResp = await fetchOptimalRoute(origin, waypoints, "DRIVE");
+    const routeData = await routeDataResp.routes?.[0];
+
 
     let { data: updatedPlan, error: updateError } = await supabase
       .from("plans")

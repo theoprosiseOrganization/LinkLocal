@@ -353,6 +353,7 @@ exports.getOptimalRoute = async (req, res) => {
 };
 
 async function fetchOptimalRoute(start, events, transportType) {
+  console.log("Fetching optimal route with start:", start, "events:", events, "transportType:", transportType);
   const routeRequest = {
     origin: {
       location: {
@@ -396,6 +397,7 @@ async function fetchOptimalRoute(start, events, transportType) {
     },
     body: JSON.stringify(routeRequest),
   });
+  console.log("Route API response status:", response);
   if (!response.ok) {
     const errorText = await response.text();
     console.error("Failed to fetch route:", response.status, response.statusText, errorText);
