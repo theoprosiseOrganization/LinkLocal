@@ -42,7 +42,6 @@ import {
 } from "../../api";
 import Route from "./Route";
 import UserLocationMarker from "../MapComponent/UserLocationMarker";
-import { pt } from "date-fns/locale";
 
 export default function MapPlan() {
   const [eventsInPoly, setEventsInPoly] = useState([]);

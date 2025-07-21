@@ -730,9 +730,9 @@ function generateEventPlan(events, tagSetsByUser, startMs, endMs, creatorId) {
 exports.shufflePlan = async (req, res) => {
   try {
     const planId = req.params.planId;
-    const me = req.params.id;
+    const userId = req.params.id;
 
-    let {data: plan, error: pe} = await supabase
+    let { data: plan, error: pe } = await supabase
       .from("plans")
       .select("owner_id, participants, start_time, end_time, polygon")
       .eq("id", planId)
@@ -741,46 +741,83 @@ exports.shufflePlan = async (req, res) => {
       return res.status(404).json({ error: `Plan not found: ${pe.message}` });
     }
     // fetch events in polygon and timeslot
-    let {data: events, error: ee} = await supabase
-      .from("events")
-      .select("id, title, start_time, end_time, location, tags")
-      .eq("polygon", plan.polygon)
-      .gte("start_time", plan.start_time)
-      .lte("end_time", plan.end_time);
-    if (ee) {
-      return res.status(500).json({ error: `Failed to fetch events: ${ee.message}` });
-    }
+    let events = await fetchEventsWithinPolygon(plan.polygon);
 
-    // load tags for participants
-    const userIds = [plan.owner_id, ...(plan.participants || [])];
-    let {data: users, error: ue} = await supabase
-      .from("User")
-      .select("id, tags(name). user_locations(location)")
-      .in("id", userIds);
-    if (ue) {
-      return res.status(500).json({ error: `Failed to fetch users: ${ue.message}` });
-    }
+    const startMs = new Date(plan.start_time).getTime();
+    const endMs = new Date(plan.end_time).getTime();
+    events = events.filter((e) => {
+      const start = new Date(e.startTime).getTime();
+      const end = new Date(e.endTime).getTime();
+      return (
+        start >= startMs &&
+        end <= endMs &&
+        computeDistanceKm(
+          { lat: e.location.latitude, lng: e.location.longitude },
+          tagSetsByUser.__originLoc
+        ) <= 50 // Only events within 50 km of origin
+      );
+    });
+
+    const allIds = [plan.owner_id, ...(plan.participants || [])];
+    const users = await prisma.user.findMany({
+      where: { id: { in: allIds } },
+      include: { tags: true },
+    });
+
     // build tag sets by user
     const tagSetsByUser = {};
-    users.forEach((user) => {
-      tagSetsByUser[user.id] = new Set((user.tags || []).map((t) => t.name));
-      if (user.id == plan.owner_id && user.user_locations) {
-        const { latitude, longitude } = user.user_locations;
+    for (const user of users) {
+      tagSetsByUser[user.id] = new Set((user.tags | []).map((t) => t.name));
+      if (user.id === plan.owner_id) {
+        const loc = await getUserLocation(user.id);
+        if (!loc) {
+          return res.status(404).json({ error: "Owner location not found" });
+        }
         tagSetsByUser.__originLoc = {
-          lat: latitude,
-          lng: longitude,
+          latitude: loc.latitude,
+          longitude: loc.longitude,
         };
-  }
-}
-const {selectedIds, durations} = generateEventPlan(
-  events,
-  tagSetsByUser,
-  new Date(plan.start_time).getTime(),
-  new Date(plan.end_time).getTime(),
-  plan.owner_id
-);
+      }
+    }
 
-const route_data = await fetchOptimal
-  }
+    const { selectedIds, durations } = generateEventPlan(
+      events,
+      tagSetsByUser,
+      startMs,
+      endMs,
+      plan.owner_id
+    );
 
+    const origin = tagSetsByUser.__originLoc;
+    const waypoints = selectedIds.map((id) => {
+      const e = events.find((ev) => ev.id === id);
+      if (!e) return null;
+      return {
+        latitude: e.location.latitude,
+        longitude: e.location.longitude,
+      };
+    });
+
+    const routeData = await fetchOptimalRoute(origin, waypoints, "DRIVE");
+
+    let { data: updatedPlan, error: updateError } = await supabase
+      .from("plans")
+      .update({
+        event_ids: selectedIds,
+        durations: durations,
+        route_data: routeData,
+      })
+      .eq("id", planId)
+      .single();
+    if (updateError) {
+      return res
+        .status(500)
+        .json({ error: `Failed to update plan: ${updateError.message}` });
+    }
+
+    res.json(updatedPlan);
+  } catch (error) {
+    console.error("Error shuffling plan:", error);
+    res.status(500).json({ error: `Failed to shuffle plan: ${error.message}` });
+  }
 };
