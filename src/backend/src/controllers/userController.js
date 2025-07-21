@@ -595,3 +595,39 @@ exports.getPlanById = async (req, res) => {
     res.status(500).json({ error: `Failed to get plan: ${error.message}` });
   }
 };
+
+exports.joinPlan = async (req, res) => {
+  const supabase = createClient(supabaseUrl, supabaseKey);
+
+  try {
+    const { planId } = req.params;
+    const userId = req.params.id;
+    const { data:plan, error } = await supabase
+      .from("plans")
+      .select("participants")
+      .eq("id", planId)
+      .single();
+    if (error) {
+      return res
+        .status(500)
+        .json({ error: `Failed to join plan in DB: ${error.message}` });
+    }
+    const alreadyJoined = plan.participants?.includes(userId);
+    const newParts = alreadyJoined
+      ? plan.participants
+      : [...(plan.participants || []), userId];
+    let {data, error: updateError} = await supabase
+      .from("plans")
+      .update({ participants: newParts })
+      .eq("id", planId)
+      .single();
+    if (updateError) {
+      return res
+        .status(500)
+        .json({ error: `Failed to update plan participants: ${updateError.message}` });
+    }
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: `Failed to join plan: ${error.message}` });
+  }
+};
