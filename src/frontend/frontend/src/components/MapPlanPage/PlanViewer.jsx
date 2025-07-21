@@ -35,7 +35,7 @@ export default function PlanViewer() {
       const userId = await getSessionUserId();
       setHasJoined((p.participants || []).includes(userId));
     })();
-  }, [planId, plan]);
+  }, [planId]);
 
   const durations = plan?.durations || {};
 
@@ -84,6 +84,7 @@ export default function PlanViewer() {
                   const reshuffled = await shufflePlan(planId);
                   setPlan(reshuffled);
                   alert("Plan has been reshuffled!");
+                  window.location.reload(); // Reload to reflect changes
                 }}
               >
                 Reshuffle Plan
