@@ -843,6 +843,10 @@ exports.shufflePlan = async (req, res) => {
       plan.owner_id
     );
 
+    if(selectedIds.length === 0) {
+      return res.status(400).json({ error: "No suitable events found for the plan." });
+    }
+
     const start = {
       lat: tagSetsByUser.__originLoc.latitude,
       lng: tagSetsByUser.__originLoc.longitude,

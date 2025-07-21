@@ -256,7 +256,13 @@ export default function MapPlan() {
       lng: userData?.location?.longitude,
     };
 
+    const MIN_DURATION = 30 * 60 * 1000; // 30 min
+    const MAX_DURATION = 2 * 60 * 60 * 1000; // 2 hours
+
     while (true) {
+      if( curTime >= filterEnd.getTime() ) {
+        break; // No more time left to attend events
+      }
       const candidates = eventsToGenerate.filter((e) => !usedIds.has(e.id));
       if (candidates.length === 0) {
         break;
@@ -273,16 +279,23 @@ export default function MapPlan() {
           const arriveAt = Math.max(eventStartMs, curTime + travelTimeMs);
           return { ...e, arriveAt, eventEndMs };
         })
-        // Only keep events that can be attended for a full hour before they end
+        // Only keep events that can be attended for at least MIN_DURATION
         .filter(
           (e) =>
-            e.arriveAt + 60 * 60 * 1000 <=
+            e.arriveAt + MIN_DURATION <=
             Math.min(e.eventEndMs, filterEnd.getTime())
         );
 
       if (!possibleEvents || possibleEvents.length === 0) {
         break;
       }
+
+      const scores = possibleEvents.map((e) => 
+        tagScore(e)
+      ); 
+
+      const maxScore = Math.max(...scores, 1); // Avoid division by zero
+
 
       possibleEvents.sort((a, b) => {
         const diff = tagScore(b) - tagScore(a);
