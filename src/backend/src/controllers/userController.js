@@ -17,6 +17,10 @@ const {
   fetchEventsWithinPolygon,
   fetchOptimalRoute,
 } = require("./eventController");
+const { MAX } = require("uuid");
+
+const MINUTES_TO_MS = 60 * 1000; // Convert minutes to milliseconds
+const AVERAGE_DRIVE_SPEED_KMH = 50; // Average driving speed in km/h
 
 // User CRUD
 exports.getUsers = async (req, res) => {
@@ -605,38 +609,52 @@ exports.getPlanById = async (req, res) => {
 
 exports.joinPlan = async (req, res) => {
   const supabase = createClient(supabaseUrl, supabaseKey);
+  const { planId, id: userId } = req.params;
 
-  try {
-    const { planId } = req.params;
-    const userId = req.params.id;
-    const { data: plan, error } = await supabase
+  const MAX_TRIES = 5;
+  for (let attempt = 1; attempt <= MAX_TRIES; attempt++) {
+    // Read current array
+    const { data: plan, error: fetchErr } = await supabase
       .from("plans")
       .select("participants")
       .eq("id", planId)
       .single();
-    if (error) {
-      return res
-        .status(500)
-        .json({ error: `Failed to join plan in DB: ${error.message}` });
+
+    if (fetchErr) {
+      return res.status(500).json({ error: fetchErr.message });
     }
-    const alreadyJoined = plan.participants?.includes(userId);
-    const newParts = alreadyJoined
-      ? plan.participants
-      : [...(plan.participants || []), userId];
-    let { data, error: updateError } = await supabase
+
+    const current = plan.participants || [];
+
+    // If already joined, bail
+    if (current.includes(userId)) {
+      return res.json({ participants: current });
+    }
+
+    const newParts = [...current, userId];
+
+    // Use array comparison for Postgres arrays
+    const { data: updated, error: updateErr } = await supabase
       .from("plans")
       .update({ participants: newParts })
       .eq("id", planId)
+      .filter("participants", "eq", `{${current.join(",")}}`) // Postgres array literal
       .single();
-    if (updateError) {
-      return res.status(500).json({
-        error: `Failed to update plan participants: ${updateError.message}`,
-      });
+
+    if (updateErr) {
+      continue; // Try again
     }
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: `Failed to join plan: ${error.message}` });
+
+    if (updated) {
+      // Successfully updated
+      return res.json(updated);
+    }
+    // Else, updated null and race occurred - retry
   }
+  // If we reach here, it means we exhausted all attempts
+  return res.status(500).json({
+    error: `Failed to join plan after ${MAX_TRIES} attempts. Please try again later.`,
+  });
 };
 
 const computeDistanceKm = (locA, locB) => {
@@ -655,8 +673,8 @@ const computeDistanceKm = (locA, locB) => {
 
 const computeTravelTimeMs = (locA, locB) => {
   const distanceKm = computeDistanceKm(locA, locB);
-  const factor = distanceKm / 50; // Assuming average speed of 50 km/h
-  return factor * 60 * 60 * 1000; // Convert to milliseconds
+  const factor = distanceKm / AVERAGE_DRIVE_SPEED_KMH; // Assuming average speed of 50 km/h
+  return factor * 60 * MINUTES_TO_MS; // Convert to milliseconds
 };
 
 const tagScore = (event, tagSetsByUser, creatorId, friendsInPlan) => {
@@ -687,8 +705,8 @@ function generateEventPlan(
   friendsInPlan
 ) {
   // Parameters for duration scaling
-  const MIN_DURATION = 30 * 60 * 1000; // 30 min
-  const MAX_DURATION = 2 * 60 * 60 * 1000; // 2 hours
+  const MIN_DURATION = 30 * MINUTES_TO_MS; // 30 min
+  const MAX_DURATION = 2 * 60 * MINUTES_TO_MS; // 2 hours
   const used = new Set();
   const picks = [];
   const durations = {};

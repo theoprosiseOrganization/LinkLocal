@@ -33,12 +33,19 @@ import {
   DialogTitle,
 } from "../../../components/ui/dialog";
 import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "../../../components/ui/alert";
+import { AlertCircleIcon } from "lucide-react";
+import {
   getSessionUserId,
   getUserById,
   getOptimalRoute,
   createPlan,
   inviteUsers,
   getUserFollowers,
+  getWeatherData,
 } from "../../api";
 import Route from "./Route";
 import UserLocationMarker from "../MapComponent/UserLocationMarker";
@@ -66,6 +73,11 @@ export default function MapPlan() {
   const [selectedDate, setSelectedDate] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
+  const [isWeatherBad, setIsWeatherBad] = useState(false);
+  const MIN_DURATION = 30 * 60 * 1000; // 30 min at event
+  const MAX_DURATION = 2 * 60 * 60 * 1000; // 2 hours at event
+  const MINUTES_TO_MS = 60 * 1000; // Convert minutes to milliseconds
+  const AVERAGE_DRIVE_SPEED_KMH = 50; // Average driving speed in km/h
 
   useEffect(() => {
     if (selectedDate && startTime) {
@@ -75,6 +87,28 @@ export default function MapPlan() {
       setEndDate(`${selectedDate}T${endTime}`);
     }
   }, [selectedDate, startTime, endTime]);
+
+  useEffect(() => {
+    if (!isTagDialogOpen) return;
+    if (!userData?.location) return;
+
+    getWeatherData(
+      userData.location.latitude,
+      userData.location.longitude
+    ).then((data) => {
+      if (data && data.list) {
+        // Check if plan start is in range
+        if (isPlanStartInWeatherRange(startDate, data.list)) {
+          const closest = getClosestWeatherEntry(startDate, data.list);
+          setIsWeatherBad(isWeatherBadEntry(closest));
+        } else {
+          setIsWeatherBad(false);
+        }
+      } else {
+        setIsWeatherBad(false);
+      }
+    });
+  }, [isTagDialogOpen, userData, startDate]);
 
   const filterStart = startDate ? new Date(startDate) : null;
   const filterEnd = endDate ? new Date(endDate) : null;
@@ -105,6 +139,52 @@ export default function MapPlan() {
     );
   };
 
+  // Check if plan start is in weather range
+  function isPlanStartInWeatherRange(planStartDate, weatherList) {
+    if (!planStartDate || !weatherList?.length) return false;
+    const planStartUnix = Math.floor(new Date(planStartDate).getTime() / 1000);
+    const firstDt = weatherList[0].dt;
+    const lastDt = weatherList[weatherList.length - 1].dt;
+    return planStartUnix >= firstDt && planStartUnix <= lastDt;
+  }
+
+  // Find closest weather entry
+  function getClosestWeatherEntry(planStartDate, weatherList) {
+    if (!planStartDate || !weatherList?.length) return null;
+    const planStartUnix = Math.floor(new Date(planStartDate).getTime() / 1000);
+    return weatherList.reduce((closest, entry) => {
+      return Math.abs(entry.dt - planStartUnix) <
+        Math.abs(closest.dt - planStartUnix)
+        ? entry
+        : closest;
+    }, weatherList[0]);
+  }
+
+  // Convert kelvin to Fahrenheit
+  function kelvinToFahrenheit(kelvin) {
+    return Math.round(((kelvin - 273.15) * 9) / 5 + 32);
+  }
+
+  // Define what is "bad" weather
+  function isWeatherBadEntry(weatherEntry) {
+    if (!weatherEntry) return false;
+    // If it is colder than 40 degrees F, consider it bad weather
+    const tempF = kelvinToFahrenheit(weatherEntry.main?.feels_like || 0);
+    if (tempF < 40) return true;
+    // Example: bad if rain, snow, or thunderstorm in weather[0].main
+    const main = weatherEntry.weather?.[0]?.main?.toLowerCase() || "";
+    return (
+      main.includes("rain") ||
+      main.includes("snow") ||
+      main.includes("thunderstorm") ||
+      main.includes("drizzle") ||
+      main.includes("mist") ||
+      main.includes("fog") ||
+      main.includes("smoke") ||
+      main.includes("hail")
+    );
+  }
+
   const computeDistanceKm = (locA, locB) => {
     const R = 6371; // Radius of the Earth in km
     const dLat = (locB.lat - locA.lat) * (Math.PI / 180);
@@ -121,8 +201,8 @@ export default function MapPlan() {
 
   const computeTravelTimeMs = (locA, locB) => {
     const distanceKm = computeDistanceKm(locA, locB);
-    const factor = distanceKm / 50; // Assuming average speed of 50 km/h
-    return factor * 60 * 60 * 1000; // Convert to milliseconds
+    const factor = distanceKm / AVERAGE_DRIVE_SPEED_KMH; // Assuming average speed of 50 km/h
+    return factor * 60 * MINUTES_TO_MS; // Convert to milliseconds
   };
 
   const tagScore = (event) => {
@@ -234,101 +314,103 @@ export default function MapPlan() {
    *
    * @returns {void}
    */
-const generateEventPlan = () => {
-  if (!filterStart || !filterEnd) {
-    alert("Please select a time period for the events.");
-    return;
-  }
-  let durations = {};
-
-  const eventsToGenerate = filteredEvents
-    .slice()
-    .sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
-
-  if (eventsToGenerate.length === 0) {
-    alert("No events found in the selected area/time period.");
-    return;
-  }
-
-  const usedIds = new Set();
-  const picks = [];
-  let curTime = filterStart.getTime();
-  let curLoc = {
-    lat: userData?.location?.latitude,
-    lng: userData?.location?.longitude,
-  };
-
-  const MIN_DURATION = 30 * 60 * 1000; // 30 min
-  const MAX_DURATION = 2 * 60 * 60 * 1000; // 2 hours
-
-  while (true) {
-    if (curTime >= filterEnd.getTime()) break;
-    const candidates = eventsToGenerate.filter((e) => !usedIds.has(e.id));
-    if (candidates.length === 0) break;
-
-    const possibleEvents = candidates
-      .map((e) => {
-        const eventStartMs = new Date(e.startTime).getTime();
-        const eventEndMs = new Date(e.endTime).getTime();
-        const travelTimeMs = computeTravelTimeMs(curLoc, {
-          lat: e.location?.latitude,
-          lng: e.location?.longitude,
-        });
-        const arriveAt = Math.max(eventStartMs, curTime + travelTimeMs);
-        return { ...e, arriveAt, eventEndMs };
-      })
-      .filter(
-        (e) =>
-          e.arriveAt + MIN_DURATION <=
-          Math.min(e.eventEndMs, filterEnd.getTime())
-      );
-
-    if (!possibleEvents || possibleEvents.length === 0) break;
-
-    // Compute tag scores for scaling
-    const scores = possibleEvents.map((e) => tagScore(e));
-    const maxScore = Math.max(...scores, 1); // Avoid division by zero
-
-    possibleEvents.sort((a, b) => {
-      const diff = tagScore(b) - tagScore(a);
-      return diff !== 0 ? diff : a.arriveAt - b.arriveAt;
-    });
-
-    const pick = possibleEvents[0];
-    usedIds.add(pick.id);
-    picks.push(pick.id);
-
-    // Dynamically set duration based on tag score
-    const score = tagScore(pick);
-    let duration =
-      MIN_DURATION + ((MAX_DURATION - MIN_DURATION) * score) / maxScore;
-
-    // Don't exceed event's end or plan's end
-    const latestPossibleEnd = Math.min(pick.eventEndMs, filterEnd.getTime());
-    if (pick.arriveAt + duration > latestPossibleEnd) {
-      duration = latestPossibleEnd - pick.arriveAt;
+  const generateEventPlan = () => {
+    if (!filterStart || !filterEnd) {
+      alert("Please select a time period for the events.");
+      return;
     }
-    duration = Math.max(duration, MIN_DURATION);
+    let durations = {};
 
-    durations[pick.id] = duration;
+    const eventsToGenerate = filteredEvents
+      .slice()
+      .sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
 
-    curTime = pick.arriveAt + duration;
-    curLoc = {
-      lat: pick.location?.latitude,
-      lng: pick.location?.longitude,
+    if (eventsToGenerate.length === 0) {
+      alert("No events found in the selected area/time period.");
+      return;
+    }
+
+    const usedIds = new Set();
+    const picks = [];
+    let curTime = filterStart.getTime();
+    let curLoc = {
+      lat: userData?.location?.latitude,
+      lng: userData?.location?.longitude,
     };
-  }
 
-  setSelectedEventIds(picks);
-  if (picks.length === 0) {
-    alert("No events could be selected based on your criteria.");
-    return;
-  }
-  alert(
-    `Generated plan with ${picks.length} events based on your criteria. You can now calculate the route.`
-  );
-  setEventDurations(durations);
-};
+    while (true) {
+      if (curTime >= filterEnd.getTime()) break;
+      const candidates = eventsToGenerate.filter((e) => !usedIds.has(e.id));
+      if (candidates.length === 0) break;
+
+      const possibleEvents = candidates
+        .map((e) => {
+          const eventStartMs = new Date(e.startTime).getTime();
+          const eventEndMs = new Date(e.endTime).getTime();
+          const travelTimeMs = computeTravelTimeMs(curLoc, {
+            lat: e.location?.latitude,
+            lng: e.location?.longitude,
+          });
+          const arriveAt = Math.max(eventStartMs, curTime + travelTimeMs);
+          return { ...e, arriveAt, eventEndMs };
+        })
+        .filter(
+          (e) =>
+            e.arriveAt + MIN_DURATION <=
+            Math.min(e.eventEndMs, filterEnd.getTime())
+        );
+
+      if (!possibleEvents || possibleEvents.length === 0) break;
+
+      // Compute tag scores for scaling
+      const scores = possibleEvents.map((e) => tagScore(e));
+      const maxScore = Math.max(...scores, 1); // Avoid division by zero
+
+      possibleEvents.sort((a, b) => {
+        const diff = tagScore(b) - tagScore(a);
+        return diff !== 0 ? diff : a.arriveAt - b.arriveAt;
+      });
+
+      const pick = possibleEvents[0];
+      usedIds.add(pick.id);
+      picks.push(pick.id);
+
+      // Dynamically set duration based on tag score
+      const score = tagScore(pick);
+      let duration =
+        MIN_DURATION + ((MAX_DURATION - MIN_DURATION) * score) / maxScore;
+
+      // Increase duration by 50% if weather is bad - spend more time at event and less traveling
+      if (isWeatherBad) {
+        duration = duration * 1.5;
+      }
+
+      // Don't exceed event's end or plan's end
+      const latestPossibleEnd = Math.min(pick.eventEndMs, filterEnd.getTime());
+      if (pick.arriveAt + duration > latestPossibleEnd) {
+        duration = latestPossibleEnd - pick.arriveAt;
+      }
+      duration = Math.max(duration, MIN_DURATION);
+
+      durations[pick.id] = duration;
+
+      curTime = pick.arriveAt + duration;
+      curLoc = {
+        lat: pick.location?.latitude,
+        lng: pick.location?.longitude,
+      };
+    }
+
+    setSelectedEventIds(picks);
+    if (picks.length === 0) {
+      alert("No events could be selected based on your criteria.");
+      return;
+    }
+    alert(
+      `Generated plan with ${picks.length} events based on your criteria. You can now calculate the route.`
+    );
+    setEventDurations(durations);
+  };
 
   const handleTempSelectEvent = (eventId) => {
     setTempSelectedEventIds((prev) =>
@@ -442,6 +524,19 @@ const generateEventPlan = () => {
                 />
                 <span className="text-sm">No Preference</span>
               </label>
+              {isWeatherBad && (
+                <Alert variant="destructive">
+                  <AlertCircleIcon />
+                  <AlertTitle>Weather Alert!</AlertTitle>
+                  <AlertDescription>
+                    <p>
+                      Due to forecasted weather in your area, generated plan
+                      will include more time at events and less travel time for
+                      your safety.
+                    </p>
+                  </AlertDescription>
+                </Alert>
+              )}
             </div>
             <DialogFooter>
               <Button
@@ -560,7 +655,6 @@ const generateEventPlan = () => {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-
         <p className="mb-4 text-[var(--muted-foreground)]">
           When selected, calculate the optimal route from your location to your
           events:
