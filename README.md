@@ -31,17 +31,26 @@ Upon hovering over the user location, [the cursor changes and shows a tooltip.](
 ![GIF of hover interaction](/images/ScreenRecording2025-07-22at1.15.09PM-ezgif.com-video-to-gif-converter.gif)
 
 ## Complex Visual Styling
-code link, video/pic link
+
+The site has dark mode implemented, which is used across all visual components. It is implemented using 
 ## Loading State
 
-When uploading images to an event plan, a loading alert is set while S3 handles the images.
-
+When uploading images to an event plan, a loading alert is set while S3 receives the images.
+![GIF of image upload loading](/images/imageUpload.gif)
 ## Multiple Views
 
 The app has multiple pages with different views:
 
 ## User Authentication
 
+The app allows users to create accounts, sign in, sign out, and stay authenticated with Express session management.
+
+Here are images of the sign in and sign up screens:
+
+![Sign In](/images/login.png)
+![Sign Up](/images/signup.png)
+
 ## Database Integration
+
 
 ## API Integration
