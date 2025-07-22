@@ -372,6 +372,11 @@ export default function MapPlan() {
       const score = tagScore(pick);
       let duration =
         MIN_DURATION + ((MAX_DURATION - MIN_DURATION) * score) / maxScore;
+      
+      // Increase duration by 50% if weather is bad - spend more time at event and less traveling
+      if(isWeatherBad){
+        duration =  duration * 1.5; 
+      }
 
       // Don't exceed event's end or plan's end
       const latestPossibleEnd = Math.min(pick.eventEndMs, filterEnd.getTime());
