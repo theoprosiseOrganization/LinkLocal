@@ -335,7 +335,8 @@ export default function MapPlan() {
       lng: userData?.location?.longitude,
     };
 
-    const MIN_DURATION = 30 * 60 * 1000; // 30 min
+    const MIN_RECOMMENDED = 30 * 60 * 1000; // 30 min
+    const MIN_HARD_STOP = 15 * 60 * 1000; // 15 min
     const MAX_DURATION = 2 * 60 * 60 * 1000; // 2 hours
 
     while (true) {
@@ -343,7 +344,7 @@ export default function MapPlan() {
       const candidates = eventsToGenerate.filter((e) => !usedIds.has(e.id));
       if (candidates.length === 0) break;
 
-      const possibleEvents = candidates
+      let possibleEvents = candidates
         .map((e) => {
           const eventStartMs = new Date(e.startTime).getTime();
           const eventEndMs = new Date(e.endTime).getTime();
@@ -354,14 +355,24 @@ export default function MapPlan() {
           const arriveAt = Math.max(eventStartMs, curTime + travelTimeMs);
           return { ...e, arriveAt, eventEndMs };
         })
-        .filter(
-          (e) =>
-            e.arriveAt + MIN_DURATION <=
-            Math.min(e.eventEndMs, filterEnd.getTime())
+        
+        const anyOverlap = possibleEvents.filter(e =>
+          e.arriveAt < Math.min(e.eventEndMs, filterEnd.getTime())
         );
+      
+         possibleEvents = anyOverlap.filter((e) => {
+          e.arriveAt + MIN_RECOMMENDED <= Math.min(
+            e.eventEndMs,
+            filterEnd.getTime()
+          );
 
-      if (!possibleEvents || possibleEvents.length === 0) break;
-
+      if (possibleEvents.length === 0 && isWeatherBad && picks.length === 0) {
+        possibleEvents = anyOverlap.filter(e => {
+          e.arriveAt + MIN_HARD_STOP <= Math.min(
+            e.eventEndMs, filterEnd.getTime()
+          );
+        });
+      }
       // Compute tag scores for scaling
       const scores = possibleEvents.map((e) => tagScore(e));
       const maxScore = Math.max(...scores, 1); // Avoid division by zero
@@ -378,7 +389,7 @@ export default function MapPlan() {
       // Dynamically set duration based on tag score
       const score = tagScore(pick);
       let duration =
-        MIN_DURATION + ((MAX_DURATION - MIN_DURATION) * score) / maxScore;
+        MIN_RECOMMENDED + ((MAX_DURATION - MIN_RECOMMENDED) * score) / maxScore;
 
       // Increase duration by 50% if weather is bad - spend more time at event and less traveling
       if (isWeatherBad) {
@@ -390,14 +401,14 @@ export default function MapPlan() {
       // Cap duration so it never exceeds available window
       duration = Math.min(duration, latestPossibleEnd - pick.arriveAt);
 
-      // Ensure duration is at least MIN_DURATION but never more than available window
+      // Ensure duration is at least MIN_RECOMMENDED but never more than available window
       duration = Math.max(
         Math.min(duration, latestPossibleEnd - pick.arriveAt),
-        MIN_DURATION
+        MIN_RECOMMENDED
       );
 
-      // If the available window is less than MIN_DURATION, still allow the event to be picked
-      if (latestPossibleEnd - pick.arriveAt < MIN_DURATION) {
+      // If the available window is less than MIN_RECOMMENDED, still allow the event to be picked
+      if (latestPossibleEnd - pick.arriveAt < MIN_RECOMMENDED) {
         duration = latestPossibleEnd - pick.arriveAt;
       }
 
