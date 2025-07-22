@@ -387,10 +387,22 @@ export default function MapPlan() {
 
       // Don't exceed event's end or plan's end
       const latestPossibleEnd = Math.min(pick.eventEndMs, filterEnd.getTime());
-      if (pick.arriveAt + duration > latestPossibleEnd) {
+      // Cap duration so it never exceeds available window
+      duration = Math.min(duration, latestPossibleEnd - pick.arriveAt);
+
+      // Ensure duration is at least MIN_DURATION but never more than available window
+      duration = Math.max(
+        Math.min(duration, latestPossibleEnd - pick.arriveAt),
+        MIN_DURATION
+      );
+
+      // If the available window is less than MIN_DURATION, still allow the event to be picked
+      if (latestPossibleEnd - pick.arriveAt < MIN_DURATION) {
         duration = latestPossibleEnd - pick.arriveAt;
       }
-      duration = Math.max(duration, MIN_DURATION);
+
+      // If duration is not positive, break
+      if (duration <= 0) break;
 
       durations[pick.id] = duration;
 
@@ -532,8 +544,9 @@ export default function MapPlan() {
                   <AlertTitle>Weather Alert!</AlertTitle>
                   <AlertDescription>
                     <p>
-                        Due to forecasted weather in your area, generated plan will include
-                        more time at events and less travel time for your safety.
+                      Due to forecasted weather in your area, generated plan
+                      will include more time at events and less travel time for
+                      your safety.
                     </p>
                   </AlertDescription>
                 </Alert>
