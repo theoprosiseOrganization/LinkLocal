@@ -613,7 +613,7 @@ exports.joinPlan = async (req, res) => {
 
   const MAX_TRIES = 5;
   for (let attempt = 1; attempt <= MAX_TRIES; attempt++) {
-    // Read current arrray
+    // Read current array
     const { data: plan, error: fetchErr } = await supabase
       .from("plans")
       .select("participants")
@@ -633,15 +633,20 @@ exports.joinPlan = async (req, res) => {
 
     const newParts = [...current, userId];
 
+    // Use array comparison for Postgres arrays
     const { data: updated, error: updateErr } = await supabase
       .from("plans")
       .update({ participants: newParts })
       .eq("id", planId)
-      .eq("participants", current) // Ensure we only update if current matches
+      .filter("participants", "eq", `{${current.join(",")}}`) // Postgres array literal
       .single();
 
     if (updateErr) {
-      return res.status(500).json({ error: updateErr.message });
+      // If updateErr is because of malformed array, log for debugging
+      if (updateErr.message.includes("malformed array")) {
+        console.error("Malformed array error:", current, newParts);
+      }
+      continue; // Try again
     }
 
     if (updated) {
