@@ -360,16 +360,18 @@ export default function MapPlan() {
         (e) => e.arriveAt < Math.min(e.eventEndMs, filterEnd.getTime())
       );
 
-      let possibleEvents = anyOverlap.filter((e) => {
-        e.arriveAt + MIN_RECOMMENDED <=
-          Math.min(e.eventEndMs, filterEnd.getTime());
-      });
+      let possibleEvents = anyOverlap.filter(
+        (e) =>
+          e.arriveAt + MIN_RECOMMENDED <=
+          Math.min(e.eventEndMs, filterEnd.getTime())
+      );
 
       if (possibleEvents.length === 0 && isWeatherBad && picks.length === 0) {
-        possibleEvents = anyOverlap.filter((e) => {
-          e.arriveAt + MIN_HARD_STOP <=
-            Math.min(e.eventEndMs, filterEnd.getTime());
-        });
+        possibleEvents = anyOverlap.filter(
+          (e) =>
+            e.arriveAt + MIN_HARD_STOP <=
+            Math.min(e.eventEndMs, filterEnd.getTime())
+        );
       }
       if (possibleEvents.length === 0) {
         alert("No events available in the selected time period.");
@@ -406,13 +408,13 @@ export default function MapPlan() {
 
       // Ensure duration is at least MIN_RECOMMENDED but never more than available window
       duration = Math.max(
-        Math.min(duration, latestPossibleEnd - pick.arriveAt),
+        Math.min(duration, latestEnd - pick.arriveAt),
         MIN_RECOMMENDED
       );
 
       // If the available window is less than MIN_RECOMMENDED, still allow the event to be picked
-      if (latestPossibleEnd - pick.arriveAt < MIN_RECOMMENDED) {
-        duration = latestPossibleEnd - pick.arriveAt;
+      if (latestEnd - pick.arriveAt < MIN_RECOMMENDED) {
+        duration = latestEnd - pick.arriveAt;
       }
 
       // If duration is not positive, break
