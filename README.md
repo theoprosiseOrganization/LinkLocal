@@ -31,7 +31,7 @@ Upon hovering over the user location, [the cursor changes and shows a tooltip.](
 
 ## Complex Visual Styling
 
-The site has dark mode implemented, which is used across all visual components. It is implemented using 
+A component with advanced visual standing in the site are event pins. Event pins 
 ## Loading State
 
 When uploading images to an event plan, a [loading alert is set](https://github.com/theoprosiseOrganization/LinkLocal/blob/main/src/frontend/frontend/src/components/CreateEventPage/CreateEventPage.jsx#L372) while S3 receives the images.
@@ -51,5 +51,11 @@ Here are images of the sign in and sign up screens:
 
 ## Database Integration
 
+This site uses supabase to host a Postgres server with a PostGIS extension to allow for efficient querying of geospatial data.
+Images are hosted on AWS S3.
+
+![Supabase Schema](/images/supabaseDb.png)
 
 ## API Integration
+
+This site uses [Google Maps API](https://developers.google.com/maps) for [routing](https://github.com/theoprosiseOrganization/LinkLocal/blob/main/src/backend/src/controllers/eventController.js#L342), [map display](https://github.com/theoprosiseOrganization/LinkLocal/blob/main/src/frontend/frontend/src/components/MapComponent/MapComponent.jsx), and [location lookups](https://github.com/theoprosiseOrganization/LinkLocal/blob/main/src/frontend/frontend/src/components/LocationAutocomplete/LocationAutocomplete.jsx). It uses [OpenWeather API](https://openweathermap.org/) to [query weather data](https://github.com/theoprosiseOrganization/LinkLocal/blob/main/src/frontend/frontend/src/api.js#L527) for event planning.
