@@ -341,37 +341,39 @@ export default function MapPlan() {
 
     while (true) {
       if (curTime >= filterEnd.getTime()) break;
+
       const candidates = eventsToGenerate.filter((e) => !usedIds.has(e.id));
       if (candidates.length === 0) break;
 
-      let possibleEvents = candidates
-        .map((e) => {
-          const eventStartMs = new Date(e.startTime).getTime();
-          const eventEndMs = new Date(e.endTime).getTime();
-          const travelTimeMs = computeTravelTimeMs(curLoc, {
-            lat: e.location?.latitude,
-            lng: e.location?.longitude,
-          });
-          const arriveAt = Math.max(eventStartMs, curTime + travelTimeMs);
-          return { ...e, arriveAt, eventEndMs };
-        })
-        
-        const anyOverlap = possibleEvents.filter(e =>
-          e.arriveAt < Math.min(e.eventEndMs, filterEnd.getTime())
-        );
-      
-         possibleEvents = anyOverlap.filter((e) => {
-          e.arriveAt + MIN_RECOMMENDED <= Math.min(
-            e.eventEndMs,
-            filterEnd.getTime()
-          );
+      const mapped = candidates.map((e) => {
+        const eventStartMs = new Date(e.startTime).getTime();
+        const eventEndMs = new Date(e.endTime).getTime();
+        const travelTimeMs = computeTravelTimeMs(curLoc, {
+          lat: e.location?.latitude,
+          lng: e.location?.longitude,
+        });
+        const arriveAt = Math.max(eventStartMs, curTime + travelTimeMs);
+        return { ...e, arriveAt, eventEndMs };
+      });
+
+      const anyOverlap = mapped.filter(
+        (e) => e.arriveAt < Math.min(e.eventEndMs, filterEnd.getTime())
+      );
+
+      let possibleEvents = anyOverlap.filter((e) => {
+        e.arriveAt + MIN_RECOMMENDED <=
+          Math.min(e.eventEndMs, filterEnd.getTime());
+      });
 
       if (possibleEvents.length === 0 && isWeatherBad && picks.length === 0) {
-        possibleEvents = anyOverlap.filter(e => {
-          e.arriveAt + MIN_HARD_STOP <= Math.min(
-            e.eventEndMs, filterEnd.getTime()
-          );
+        possibleEvents = anyOverlap.filter((e) => {
+          e.arriveAt + MIN_HARD_STOP <=
+            Math.min(e.eventEndMs, filterEnd.getTime());
         });
+      }
+      if (possibleEvents.length === 0) {
+        alert("No events available in the selected time period.");
+        return;
       }
       // Compute tag scores for scaling
       const scores = possibleEvents.map((e) => tagScore(e));
@@ -386,6 +388,9 @@ export default function MapPlan() {
       usedIds.add(pick.id);
       picks.push(pick.id);
 
+      const latestEnd = Math.min(pick.eventEndMs, filterEnd.getTime());
+      const available = latestEnd - pick.arriveAt;
+
       // Dynamically set duration based on tag score
       const score = tagScore(pick);
       let duration =
@@ -396,10 +401,8 @@ export default function MapPlan() {
         duration = duration * 1.5;
       }
 
-      // Don't exceed event's end or plan's end
-      const latestPossibleEnd = Math.min(pick.eventEndMs, filterEnd.getTime());
       // Cap duration so it never exceeds available window
-      duration = Math.min(duration, latestPossibleEnd - pick.arriveAt);
+      duration = Math.min(duration, available);
 
       // Ensure duration is at least MIN_RECOMMENDED but never more than available window
       duration = Math.max(
