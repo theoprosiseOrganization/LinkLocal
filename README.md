@@ -14,9 +14,8 @@ Repository for capstone project. Geospatial social media for everyone.
 - **Scope:** Initially, the app focuses on geolocation-based social networking, including media posting and sharing by users. It may expand to include more advanced features like AI-driven recommendations and business partnerships.
 
 ## Links
-**Project Plan**: [doc]<add link to your project plan here>
-**Wireframes**: [here]<add a link to wire frames>
-<img src="OR_INSERT_INLINE_YOUR_WIREFRAME_IMAGE_URL" width=600>
+**Project Plan**: [DOCUMENT](https://docs.google.com/document/d/1IzVixf38Zmvk7Wrw93jVC6rlOulZEJLKhD5qWValPNU/edit?tab=t.0#heading=h.6b6nbvhbbspp)
+**Wireframes**: [WIREFRAMES](https://app.moqups.com/NHtHEc8z7ygj99jd1jDdcNob7VSv1IwO/view/page/a57f5c842)
 
 <add any other links here as you work on your project>
 
@@ -35,7 +34,7 @@ Upon hovering over the user location, [the cursor changes and shows a tooltip.](
 The site has dark mode implemented, which is used across all visual components. It is implemented using 
 ## Loading State
 
-When uploading images to an event plan, a loading alert is set while S3 receives the images.
+When uploading images to an event plan, a [loading alert is set](https://github.com/theoprosiseOrganization/LinkLocal/blob/main/src/frontend/frontend/src/components/CreateEventPage/CreateEventPage.jsx#L372) while S3 receives the images.
 ![GIF of image upload loading](/images/imageUpload.gif)
 ## Multiple Views
 
