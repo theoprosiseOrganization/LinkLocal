@@ -20,11 +20,15 @@ def fetch_all_edges():
     Fetch all edges from the Follows table in Supabase.
     Returns a list of tuples (followerId, followingId).
     """
-    response = supabase.table("Follows").select("followerId, followingId").execute()
-    if not response.data:
-        print("No edges found in Follows table.")
+    try:
+        response = supabase.table("Follows").select("followerId, followingId").execute()
+        if not response.data:
+            print("No edges found in Follows table.")
+            return []
+        return [(row["followerId"], row["followingId"]) for row in response.data]
+    except Exception as e:
+        print(f"Error fetching edges from Supabase: {e}")
         return []
-    return [(row["followerId"], row["followingId"]) for row in response.data]
 
 def dump_csv(edges, path="follows.csv"):
     """
