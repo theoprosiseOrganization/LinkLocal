@@ -17,7 +17,10 @@ Repository for capstone project. Geospatial social media for everyone.
 **Project Plan**: [DOCUMENT](https://docs.google.com/document/d/1IzVixf38Zmvk7Wrw93jVC6rlOulZEJLKhD5qWValPNU/edit?tab=t.0#heading=h.6b6nbvhbbspp)
 **Wireframes**: [WIREFRAMES](https://app.moqups.com/NHtHEc8z7ygj99jd1jDdcNob7VSv1IwO/view/page/a57f5c842)
 
-<add any other links here as you work on your project>
+**Demo Presentation**: [SLIDES](https://docs.google.com/presentation/d/1-d_dzQ2Jr7Bj0cFU70FiyQVNiokMrXLvuXzCz1Z3QKM/edit?usp=sharing)
+**Recommendation System Flowchart**: [CHART](https://www.mermaidchart.com/app/projects/d6594cbc-d7bf-408c-ab1d-d1f3481dc4d9/diagrams/0da7cc2d-f788-4109-bb42-cae1bb6c2325/version/v0.1/edit)
+
+**Location Data Storage Plan**: [PLAN](https://docs.google.com/document/d/1kYD2qAJxblI4sDbYJ-tGkQkwn-RBuUe2Jvc0n-PV5vs/edit?usp=sharing)
 
 ## Demo Video
 [CREATED WEEK 9](<insert link in Week 9!>)
@@ -31,7 +34,7 @@ Upon hovering over the user location, [the cursor changes and shows a tooltip.](
 
 ## Complex Visual Styling
 
-A component with advanced visual standing in the site are event pins. Event pins 
+A component with advanced visual styling is the home page map component. 
 ## Loading State
 
 When uploading images to an event plan, a [loading alert is set](https://github.com/theoprosiseOrganization/LinkLocal/blob/main/src/frontend/frontend/src/components/CreateEventPage/CreateEventPage.jsx#L372) while S3 receives the images.
