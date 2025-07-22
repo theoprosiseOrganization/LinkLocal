@@ -382,6 +382,7 @@ export default function MapPlan() {
 
       // Increase duration by 50% if weather is bad - spend more time at event and less traveling
       if (isWeatherBad) {
+        console.log("Weather is bad, increasing duration by 50%");
         duration = duration * 1.5;
       }
 
@@ -526,7 +527,7 @@ export default function MapPlan() {
               </label>
             </div>
             <DialogFooter>
-              {
+              {isWeatherBad &&
                 <Alert variant="destructive">
                   <AlertCircleIcon />
                   <AlertTitle>Weather Alert!</AlertTitle>
