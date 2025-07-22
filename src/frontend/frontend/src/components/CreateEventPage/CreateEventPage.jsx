@@ -81,33 +81,27 @@ export default function CreateEventPage() {
   };
 
   /**
+   * Handles the form submission for creating a new event.
    *
-   * This function handles the form submission for creating a new event.
-   * It performs the following steps:
+   * Steps performed:
    * 1. Prevents the default form submission behavior.
-   * 2. Fetches the user ID from the session using a POST request to `/
-   * auth/me`.
-   * 3. Converts the selected tags into their names by mapping over
-   * the `selectedTags` array and finding the corresponding tag object in
-   * the `allTags` array.
-   *    If a tag is not found, it uses the tag ID as the name.
-   * 4. Calls the `createEvent` function with the event data, including
-   * the user ID, location, title, description, and tags.
-   * 5. If images are provided, it uploads them using the `uploadEventImages`
-   * function, which returns an array of image URLs.
-   * 6. Updates the event with the image URLs if any images were uploaded.
-   * 7. Resets the form state and file input after successful event creation.
+   * 2. Retrieves the user ID from the session via the `getSessionUserId` function.
+   * 3. Constructs start and end date-time objects from separate date and time inputs.
+   * 4. Converts selected tag IDs into tag names by mapping over `selectedTags` and
+   *    finding corresponding tag objects in `allTags`. If a tag is not found, uses the tag ID as the name.
+   * 5. Calls `createEvent` with event data including user ID, location, title, description, tags, and times.
+   * 6. If up to 5 images are selected, uploads them separately using `uploadEventImages` (requires event ID).
+   * 7. Updates the event with uploaded image URLs if any.
+   * 8. Resets form state, selected tags, and clears the file input after successful creation.
+   * 9. Uses alert dialogs to notify the user of errors or success.
    *
-   * It must upload images separately, as image upload requires an event ID
-   * to be created.
+   * Note: Image upload is done separately because it requires the event ID returned from event creation.
    *
-   *  @param {Event} e - The event object triggered by the form submission.
-   *  @returns {Promise<void>} A promise that resolves when the event is created.
-   *  @throws {Error} If the user session cannot be fetched or if the event
-   *  creation fails.
-   *  @example
-   *  handleSubmit(event);
-   *
+   * @param {Event} e - The form submission event.
+   * @returns {Promise<void>} Resolves when the event creation process completes.
+   * @throws {Error} Throws if user session cannot be fetched or event creation fails.
+   * @example
+   * handleSubmit(event);
    */
   const handleSubmit = async (e) => {
     e.preventDefault();
