@@ -39,6 +39,7 @@ export default function HomePage() {
   const { userLocation: currentLocation } = useUserLocation(); // Get user location from context
   const [radiusKM, setRadiusKM] = useState(5); // Default radius for events
   const [radiusFilter, setRadiusFilter] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     const fetch = async () => {
@@ -93,6 +94,14 @@ export default function HomePage() {
     fetchUserData();
   }, [userFilter]);
 
+  useEffect(() => {
+    async function checkLogin() {
+      const userId = await getSessionUserId();
+      setIsLoggedIn(!!userId);
+    }
+    checkLogin();
+  }, []);
+
   return (
     <Layout>
       <div className="homepage-vertical">
@@ -113,8 +122,12 @@ export default function HomePage() {
                 size="icon"
                 className="size-8"
                 onClick={() => {
-                  setSidebarOpen(true);
-                  setShowOverlay(false);
+                  if (isLoggedIn) {
+                    setSidebarOpen(true);
+                    setShowOverlay(false);
+                  } else {
+                    alert("Please log in to access sidebar features.");
+                  }
                 }}
               >
                 <ChevronRightIcon />
