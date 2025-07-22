@@ -43,7 +43,7 @@ The app has multiple pages with different views:
 
 ## User Authentication
 
-The app allows users to create accounts, sign in, sign out, and stay authenticated with Express session management.
+The app allows users to create accounts, [sign in](https://github.com/theoprosiseOrganization/LinkLocal/blob/main/src/frontend/frontend/src/components/SignInPage/SignInPage.jsx), [sign out](https://github.com/theoprosiseOrganization/LinkLocal/blob/main/src/frontend/frontend/src/components/SignUpPage/SignUpPage.jsx), and stay authenticated with [Express session management](https://github.com/theoprosiseOrganization/LinkLocal/blob/main/src/backend/src/controllers/authController.js).
 
 Here are images of the sign in and sign up screens:
 
