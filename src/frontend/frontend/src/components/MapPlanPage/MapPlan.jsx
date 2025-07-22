@@ -524,7 +524,7 @@ export default function MapPlan() {
                 />
                 <span className="text-sm">No Preference</span>
               </label>
-              {
+              {isWeatherBad && (
                 <Alert variant="destructive">
                   <AlertCircleIcon />
                   <AlertTitle>Weather Alert!</AlertTitle>
@@ -536,7 +536,7 @@ export default function MapPlan() {
                     </p>
                   </AlertDescription>
                 </Alert>
-              }
+              )}
             </div>
             <DialogFooter>
               <Button
