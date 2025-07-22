@@ -382,7 +382,6 @@ export default function MapPlan() {
 
       // Increase duration by 50% if weather is bad - spend more time at event and less traveling
       if (isWeatherBad) {
-        console.log("Weather is bad, increasing duration by 50%");
         duration = duration * 1.5;
       }
 

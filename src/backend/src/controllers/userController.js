@@ -642,10 +642,6 @@ exports.joinPlan = async (req, res) => {
       .single();
 
     if (updateErr) {
-      // If updateErr is because of malformed array, log for debugging
-      if (updateErr.message.includes("malformed array")) {
-        console.error("Malformed array error:", current, newParts);
-      }
       continue; // Try again
     }
 
