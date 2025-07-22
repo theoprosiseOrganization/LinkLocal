@@ -530,7 +530,6 @@ export async function getWeatherData(lat, lng) {
     `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lng}&appid=${apiKey}`
   );
   const data = await response.json();
-  console.log(data);
   if (!response.ok) {
     throw new Error(data.message || "Failed to fetch weather data");
   }

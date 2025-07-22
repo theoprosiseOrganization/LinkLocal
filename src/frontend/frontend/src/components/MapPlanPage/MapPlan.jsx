@@ -316,6 +316,8 @@ export default function MapPlan() {
       alert("Please select a time period for the events.");
       return;
     }
+
+    console.log("Filtered events:", filteredEvents)
     let durations = {};
 
     const eventsToGenerate = filteredEvents
@@ -355,16 +357,20 @@ export default function MapPlan() {
         const arriveAt = Math.max(eventStartMs, curTime + travelTimeMs);
         return { ...e, arriveAt, eventEndMs };
       });
+      console.log("Mapped events with travel times:", mapped);
 
       const anyOverlap = mapped.filter(
         (e) => e.arriveAt < Math.min(e.eventEndMs, filterEnd.getTime())
       );
+      console.log("Any overlap events:", anyOverlap);
+
 
       let possibleEvents = anyOverlap.filter(
         (e) =>
           e.arriveAt + MIN_RECOMMENDED <=
           Math.min(e.eventEndMs, filterEnd.getTime())
       );
+      console.log("Possible events after initial filter:", possibleEvents);
 
       if (possibleEvents.length === 0 && isWeatherBad && picks.length === 0) {
         possibleEvents = anyOverlap.filter(
@@ -373,6 +379,7 @@ export default function MapPlan() {
             Math.min(e.eventEndMs, filterEnd.getTime())
         );
       }
+      console.log("Possible events after weather adjustment:", possibleEvents);
       if (possibleEvents.length === 0) {
         alert("No events available in the selected time period.");
         return;
