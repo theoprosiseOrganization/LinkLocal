@@ -33,6 +33,12 @@ import {
   DialogTitle,
 } from "../../../components/ui/dialog";
 import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "../../../components/ui/alert";
+import { AlertCircleIcon } from "lucide-react";
+import {
   getSessionUserId,
   getUserById,
   getOptimalRoute,
@@ -43,6 +49,7 @@ import {
 } from "../../api";
 import Route from "./Route";
 import UserLocationMarker from "../MapComponent/UserLocationMarker";
+import { is } from "date-fns/locale";
 
 export default function MapPlan() {
   const [eventsInPoly, setEventsInPoly] = useState([]);
@@ -152,7 +159,7 @@ export default function MapPlan() {
 
   // Convert kelvin to farenheit
   function kelvinToFahrenheit(kelvin) {
-    return Math.round((kelvin - 273.15) * 9 / 5 + 32);
+    return Math.round(((kelvin - 273.15) * 9) / 5 + 32);
   }
 
   // Define what is "bad" weather
@@ -166,12 +173,12 @@ export default function MapPlan() {
     return (
       main.includes("rain") ||
       main.includes("snow") ||
-      main.includes("thunderstorm")
-      || main.includes("drizzle")
-      || main.includes("mist")
-      || main.includes("fog")
-      || main.includes("smoke")
-      || main.includes("hail")
+      main.includes("thunderstorm") ||
+      main.includes("drizzle") ||
+      main.includes("mist") ||
+      main.includes("fog") ||
+      main.includes("smoke") ||
+      main.includes("hail")
     );
   }
 
@@ -372,10 +379,10 @@ export default function MapPlan() {
       const score = tagScore(pick);
       let duration =
         MIN_DURATION + ((MAX_DURATION - MIN_DURATION) * score) / maxScore;
-      
+
       // Increase duration by 50% if weather is bad - spend more time at event and less traveling
-      if(isWeatherBad){
-        duration =  duration * 1.5; 
+      if (isWeatherBad) {
+        duration = duration * 1.5;
       }
 
       // Don't exceed event's end or plan's end
@@ -519,6 +526,18 @@ export default function MapPlan() {
               </label>
             </div>
             <DialogFooter>
+              {
+                <Alert variant="destructive">
+                  <AlertCircleIcon />
+                  <AlertTitle>Weather Alert!</AlertTitle>
+                  <AlertDescription>
+                    <p>
+                        Due to forecasted weather in your area, generated plan will include
+                        more time at events and less travel time for your safety.
+                    </p>
+                  </AlertDescription>
+                </Alert>
+              }
               <Button
                 variant="outline"
                 onClick={() => setIsTagDialogOpen(false)}
@@ -635,7 +654,6 @@ export default function MapPlan() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-
         <p className="mb-4 text-[var(--muted-foreground)]">
           When selected, calculate the optimal route from your location to your
           events:
