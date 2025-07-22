@@ -49,7 +49,6 @@ import {
 } from "../../api";
 import Route from "./Route";
 import UserLocationMarker from "../MapComponent/UserLocationMarker";
-import { is } from "date-fns/locale";
 
 export default function MapPlan() {
   const [eventsInPoly, setEventsInPoly] = useState([]);
@@ -75,6 +74,10 @@ export default function MapPlan() {
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [isWeatherBad, setIsWeatherBad] = useState(false);
+  const MIN_DURATION = 30 * 60 * 1000; // 30 min at event
+  const MAX_DURATION = 2 * 60 * 60 * 1000; // 2 hours at event
+  const MINUTES_TO_MS = 60 * 1000; // Convert minutes to milliseconds
+  const AVERAGE_DRIVE_SPEED_KMH = 50; // Average driving speed in km/h
 
   useEffect(() => {
     if (selectedDate && startTime) {
@@ -157,7 +160,7 @@ export default function MapPlan() {
     }, weatherList[0]);
   }
 
-  // Convert kelvin to farenheit
+  // Convert kelvin to Fahrenheit
   function kelvinToFahrenheit(kelvin) {
     return Math.round(((kelvin - 273.15) * 9) / 5 + 32);
   }
@@ -198,8 +201,8 @@ export default function MapPlan() {
 
   const computeTravelTimeMs = (locA, locB) => {
     const distanceKm = computeDistanceKm(locA, locB);
-    const factor = distanceKm / 50; // Assuming average speed of 50 km/h
-    return factor * 60 * 60 * 1000; // Convert to milliseconds
+    const factor = distanceKm / AVERAGE_DRIVE_SPEED_KMH; // Assuming average speed of 50 km/h
+    return factor * 60 * MINUTES_TO_MS; // Convert to milliseconds
   };
 
   const tagScore = (event) => {
@@ -334,9 +337,6 @@ export default function MapPlan() {
       lat: userData?.location?.latitude,
       lng: userData?.location?.longitude,
     };
-
-    const MIN_DURATION = 30 * 60 * 1000; // 30 min
-    const MAX_DURATION = 2 * 60 * 60 * 1000; // 2 hours
 
     while (true) {
       if (curTime >= filterEnd.getTime()) break;
@@ -527,7 +527,7 @@ export default function MapPlan() {
               </label>
             </div>
             <DialogFooter>
-              {isWeatherBad &&
+              {isWeatherBad && (
                 <Alert variant="destructive">
                   <AlertCircleIcon />
                   <AlertTitle>Weather Alert!</AlertTitle>
@@ -539,7 +539,7 @@ export default function MapPlan() {
                     </p>
                   </AlertDescription>
                 </Alert>
-              }
+              )}
               <Button
                 variant="outline"
                 onClick={() => setIsTagDialogOpen(false)}

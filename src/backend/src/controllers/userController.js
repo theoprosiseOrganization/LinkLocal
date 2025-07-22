@@ -18,6 +18,9 @@ const {
   fetchOptimalRoute,
 } = require("./eventController");
 
+const MINUTES_TO_MS = 60 * 1000; // Convert minutes to milliseconds
+const AVERAGE_DRIVE_SPEED_KMH = 50; // Average driving speed in km/h
+
 // User CRUD
 exports.getUsers = async (req, res) => {
   try {
@@ -655,8 +658,8 @@ const computeDistanceKm = (locA, locB) => {
 
 const computeTravelTimeMs = (locA, locB) => {
   const distanceKm = computeDistanceKm(locA, locB);
-  const factor = distanceKm / 50; // Assuming average speed of 50 km/h
-  return factor * 60 * 60 * 1000; // Convert to milliseconds
+  const factor = distanceKm / AVERAGE_DRIVE_SPEED_KMH; // Assuming average speed of 50 km/h
+  return factor * 60 * MINUTES_TO_MS; // Convert to milliseconds
 };
 
 const tagScore = (event, tagSetsByUser, creatorId, friendsInPlan) => {
@@ -687,8 +690,8 @@ function generateEventPlan(
   friendsInPlan
 ) {
   // Parameters for duration scaling
-  const MIN_DURATION = 30 * 60 * 1000; // 30 min
-  const MAX_DURATION = 2 * 60 * 60 * 1000; // 2 hours
+  const MIN_DURATION = 30 * MINUTES_TO_MS; // 30 min
+  const MAX_DURATION = 2 * 60 * MINUTES_TO_MS; // 2 hours
   const used = new Set();
   const picks = [];
   const durations = {};
