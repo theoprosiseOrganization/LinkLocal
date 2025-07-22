@@ -27,7 +27,7 @@ import {
 } from "@vis.gl/react-google-maps";
 import ViewEventButton from "../ViewEventPage/ViewEventButton";
 import UserLocationMarker from "./UserLocationMarker";
-import { hi } from "date-fns/locale";
+import ViewUserButton from "../ViewUserPage/ViewUserButton";
 
 const MAPS_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
@@ -71,6 +71,9 @@ export default function MapComponent({
   const [selectedMarker, setSelectedMarker] = useState(null);
   const [infoWindowShown, setInfoWindowShown] = useState(false);
   const [closeInfoWindow, setCloseInfoWindow] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState(null);
+  const [selectedUserMarker, setSelectedUserMarker] = useState(null);
+
   const defaultCoordinates = {
     lat: 37.4845,
     lng: -122.1478,
@@ -205,6 +208,11 @@ export default function MapComponent({
                     lat: user.location.latitude,
                     lng: user.location.longitude,
                   }}
+                  onMarkerClick={(marker) => {
+                    setSelectedUserId(user.id);
+                    setSelectedUserMarker(marker);
+                    setInfoWindowShown(true);
+                  }}
                   title={user.name || "User"}
                 >
                   <Pin
@@ -240,6 +248,38 @@ export default function MapComponent({
                     <ViewEventButton eventId={selectedId} />
                   ) : (
                     " No event found"
+                  )}
+                </p>
+              </div>
+            </InfoWindow>
+          )}
+          {infoWindowShown && selectedUserMarker && (
+            <InfoWindow
+              anchor={selectedUserMarker}
+              onCloseClick={() => {
+                setInfoWindowShown(false);
+                setSelectedUserId(null);
+                setSelectedUserMarker(null);
+              }}
+            >
+              <div
+                style={{
+                  background: "#1a202c",
+                  color: "#fff",
+                  padding: "16px",
+                  borderRadius: "8px",
+                  minWidth: "180px",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+                }}
+              >
+                <h2 style={{ color: "#fff", margin: "0 0 8px 0" }}>
+                  {users.find((u) => u.id === selectedUserId)?.name || "User"}
+                </h2>
+                <p style={{ color: "#fff", margin: 0 }}>
+                  {selectedUserId ? (
+                    <ViewUserButton userId={selectedUserId} />
+                  ) : (
+                    "No user found"
                   )}
                 </p>
               </div>
