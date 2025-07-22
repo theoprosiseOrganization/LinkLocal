@@ -316,8 +316,6 @@ export default function MapPlan() {
       alert("Please select a time period for the events.");
       return;
     }
-
-    console.log("Filtered events:", filteredEvents)
     let durations = {};
 
     const eventsToGenerate = filteredEvents
@@ -337,53 +335,33 @@ export default function MapPlan() {
       lng: userData?.location?.longitude,
     };
 
-    const MIN_RECOMMENDED = 30 * 60 * 1000; // 30 min
-    const MIN_HARD_STOP = 15 * 60 * 1000; // 15 min
+    const MIN_DURATION = 30 * 60 * 1000; // 30 min
     const MAX_DURATION = 2 * 60 * 60 * 1000; // 2 hours
 
     while (true) {
       if (curTime >= filterEnd.getTime()) break;
-
       const candidates = eventsToGenerate.filter((e) => !usedIds.has(e.id));
       if (candidates.length === 0) break;
 
-      const mapped = candidates.map((e) => {
-        const eventStartMs = new Date(e.startTime).getTime();
-        const eventEndMs = new Date(e.endTime).getTime();
-        const travelTimeMs = computeTravelTimeMs(curLoc, {
-          lat: e.location?.latitude,
-          lng: e.location?.longitude,
-        });
-        const arriveAt = Math.max(eventStartMs, curTime + travelTimeMs);
-        return { ...e, arriveAt, eventEndMs };
-      });
-      console.log("Mapped events with travel times:", mapped);
-
-      const anyOverlap = mapped.filter(
-        (e) => e.arriveAt < Math.min(e.eventEndMs, filterEnd.getTime())
-      );
-      console.log("Any overlap events:", anyOverlap);
-
-
-      let possibleEvents = anyOverlap.filter(
-        (e) =>
-          e.arriveAt + MIN_RECOMMENDED <=
-          Math.min(e.eventEndMs, filterEnd.getTime())
-      );
-      console.log("Possible events after initial filter:", possibleEvents);
-
-      if (possibleEvents.length === 0 && isWeatherBad && picks.length === 0) {
-        possibleEvents = anyOverlap.filter(
+      const possibleEvents = candidates
+        .map((e) => {
+          const eventStartMs = new Date(e.startTime).getTime();
+          const eventEndMs = new Date(e.endTime).getTime();
+          const travelTimeMs = computeTravelTimeMs(curLoc, {
+            lat: e.location?.latitude,
+            lng: e.location?.longitude,
+          });
+          const arriveAt = Math.max(eventStartMs, curTime + travelTimeMs);
+          return { ...e, arriveAt, eventEndMs };
+        })
+        .filter(
           (e) =>
-            e.arriveAt + MIN_HARD_STOP <=
+            e.arriveAt + MIN_DURATION <=
             Math.min(e.eventEndMs, filterEnd.getTime())
         );
-      }
-      console.log("Possible events after weather adjustment:", possibleEvents);
-      if (possibleEvents.length === 0) {
-        alert("No events available in the selected time period.");
-        return;
-      }
+
+      if (!possibleEvents || possibleEvents.length === 0) break;
+
       // Compute tag scores for scaling
       const scores = possibleEvents.map((e) => tagScore(e));
       const maxScore = Math.max(...scores, 1); // Avoid division by zero
@@ -397,35 +375,22 @@ export default function MapPlan() {
       usedIds.add(pick.id);
       picks.push(pick.id);
 
-      const latestEnd = Math.min(pick.eventEndMs, filterEnd.getTime());
-      const available = latestEnd - pick.arriveAt;
-
       // Dynamically set duration based on tag score
       const score = tagScore(pick);
       let duration =
-        MIN_RECOMMENDED + ((MAX_DURATION - MIN_RECOMMENDED) * score) / maxScore;
+        MIN_DURATION + ((MAX_DURATION - MIN_DURATION) * score) / maxScore;
 
       // Increase duration by 50% if weather is bad - spend more time at event and less traveling
       if (isWeatherBad) {
         duration = duration * 1.5;
       }
 
-      // Cap duration so it never exceeds available window
-      duration = Math.min(duration, available);
-
-      // Ensure duration is at least MIN_RECOMMENDED but never more than available window
-      duration = Math.max(
-        Math.min(duration, latestEnd - pick.arriveAt),
-        MIN_RECOMMENDED
-      );
-
-      // If the available window is less than MIN_RECOMMENDED, still allow the event to be picked
-      if (latestEnd - pick.arriveAt < MIN_RECOMMENDED) {
-        duration = latestEnd - pick.arriveAt;
+      // Don't exceed event's end or plan's end
+      const latestPossibleEnd = Math.min(pick.eventEndMs, filterEnd.getTime());
+      if (pick.arriveAt + duration > latestPossibleEnd) {
+        duration = latestPossibleEnd - pick.arriveAt;
       }
-
-      // If duration is not positive, break
-      if (duration <= 0) break;
+      duration = Math.max(duration, MIN_DURATION);
 
       durations[pick.id] = duration;
 
