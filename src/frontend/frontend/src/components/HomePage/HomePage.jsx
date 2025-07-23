@@ -28,7 +28,6 @@ import {
   getSessionUserId,
 } from "../../api";
 import { useUserLocation } from "../../Context/UserLocationContext";
-import { ar } from "date-fns/locale";
 
 export default function HomePage() {
   const [eventsToDisplay, setEventsToDisplay] = useState([]);
@@ -40,6 +39,7 @@ export default function HomePage() {
   const { userLocation: currentLocation } = useUserLocation(); // Get user location from context
   const [radiusKM, setRadiusKM] = useState(5); // Default radius for events
   const [radiusFilter, setRadiusFilter] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     const fetch = async () => {
@@ -94,6 +94,14 @@ export default function HomePage() {
     fetchUserData();
   }, [userFilter]);
 
+  useEffect(() => {
+    async function checkLogin() {
+      const userId = await getSessionUserId();
+      setIsLoggedIn(!!userId);
+    }
+    checkLogin();
+  }, []);
+
   return (
     <Layout>
       <div className="homepage-vertical">
@@ -103,103 +111,105 @@ export default function HomePage() {
             currentLocation={currentLocation}
             users={usersToDisplay}
           />
-          {showOverlay && (
-            <div
-              className={`homepage-overlay${!showOverlay ? " slide-out" : ""}`}
-            >
-              <div className="vertical-events-container">
-                <Button
-                  variant="secondary"
-                  size="icon"
-                  className="size-8"
-                  onClick={() => {
-                    setSidebarOpen(true);
-                    setShowOverlay(false);
-                  }}
-                >
-                  <ChevronRightIcon />
-                </Button>
-
-                <h2 className="text-xl font-bold mb-4 text-[var(--primary)] text-center">
-                  View Some Nearby Events
-                </h2>
-
-                <HorizontalEvents events={eventsToDisplay} />
-              </div>
-            </div>
-          )}
-          {sidebarOpen && (
-            <div className="sidebar-overlay">
+          <div
+            className={
+              "homepage-overlay " + (showOverlay ? "is-open" : "is-closed")
+            }
+          >
+            <div className="vertical-events-container">
               <Button
                 variant="secondary"
                 size="icon"
-                className="close-sidebar"
+                className="size-8"
                 onClick={() => {
-                  setSidebarOpen(false);
-                  setShowOverlay(true);
+                  if (isLoggedIn) {
+                    setSidebarOpen(true);
+                    setShowOverlay(false);
+                  } else {
+                    alert("Please log in to access sidebar features.");
+                  }
                 }}
               >
-                <ChevronLeftIcon />
+                <ChevronRightIcon />
               </Button>
-              <div>
-                <div className="mb-4">
-                  <label htmlFor="radius" className="block mb-1">
-                    Show Events Within Radius (KM): {radiusKM}
+
+              <h2 className="text-xl font-bold mb-4 text-[var(--primary)] text-center">
+                View Some Nearby Events
+              </h2>
+
+              <HorizontalEvents events={eventsToDisplay} />
+            </div>
+          </div>
+          <div
+            className={
+              "sidebar-overlay " + (sidebarOpen ? "is-open" : "is-closed")
+            }
+          >
+            <Button
+              variant="secondary"
+              size="icon"
+              className="close-sidebar"
+              onClick={() => {
+                setSidebarOpen(false);
+                setShowOverlay(true);
+              }}
+            >
+              <ChevronLeftIcon />
+            </Button>
+            <div>
+              <div className="mb-4">
+                <label htmlFor="radius" className="block mb-1">
+                  Show Events Within Radius (KM): {radiusKM}
+                </label>
+                <input
+                  id="radius"
+                  type="range"
+                  min={1}
+                  max={50}
+                  step={1}
+                  value={radiusKM}
+                  onChange={(e) => setRadiusKM(Number(e.target.value))}
+                />
+                <div className="mt-2">
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={radiusFilter}
+                      onChange={() => setRadiusFilter((f) => !f)}
+                    />
+                    Enable Radius Filter
                   </label>
-                  <input
-                    id="radius"
-                    type="range"
-                    min={1}
-                    max={50}
-                    step={1}
-                    value={radiusKM}
-                    onChange={(e) => setRadiusKM(Number(e.target.value))}
-                  />
-                  <div className="mt-2">
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={radiusFilter}
-                        onChange={() => setRadiusFilter((f) => !f)}
-                      />
-                      Enable Radius Filter
-                    </label>
-                  </div>
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "1rem",
-                    marginBottom: "1rem",
-                  }}
-                >
-                  <Button
-                    variant={
-                      userFilter === "followers" ? "primary" : "secondary"
-                    }
-                    onClick={() => setUserFilter("followers")}
-                  >
-                    Show Followers
-                  </Button>
-                  <Button
-                    variant={
-                      userFilter === "following" ? "primary" : "secondary"
-                    }
-                    onClick={() => setUserFilter("following")}
-                  >
-                    Show Following
-                  </Button>
-                  <Button
-                    variant={userFilter === "all" ? "primary" : "secondary"}
-                    onClick={() => setUserFilter("all")}
-                  >
-                    Show All
-                  </Button>
                 </div>
               </div>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "1rem",
+                  marginBottom: "1rem",
+                }}
+              >
+                <Button
+                  variant={userFilter === "followers" ? "primary" : "secondary"}
+                  onClick={() => setUserFilter("followers")}
+                >
+                  Show Followers
+                </Button>
+                <Button
+                  variant={userFilter === "following" ? "primary" : "secondary"}
+                  onClick={() => setUserFilter("following")}
+                >
+                  Show Following
+                </Button>
+                <Button
+                  variant={userFilter === "all" ? "primary" : "secondary"}
+                  onClick={() => setUserFilter("all")}
+                >
+                  Show All
+                </Button>
+              </div>
             </div>
-          )}
+          </div>
         </div>
       </div>
     </Layout>

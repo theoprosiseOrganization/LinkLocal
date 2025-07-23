@@ -179,18 +179,38 @@ def preference_score(tags1, tags2, liked_tags1, liked_tags2):
 
 def compute_features_for_user(user_id: str, candidates: list[str], dist_map: dict[str,int], max_distance: int = 4) -> pd.DataFrame:
     """
-    Compute features for user recommendations based on location, tags, and friend network.
-    :param user_id: The user ID for whom to compute features.
-    :param candidates: List of candidate user IDs to compute features for.
-    :param dist_map: Dictionary mapping user IDs to their distance from the user_id in the friend network.
-    :param max_distance: Maximum distance to consider for friend network similarity.
-    :return: DataFrame containing features for each candidate user.
-    This function computes the following features for each candidate user:
-    1. Friend score based on network similarity.
-    2. Location score based on geographical distance.
-    3. Preference score based on tags and liked events.
-    The function fetches user locations, tags, follower counts, event counts, and liked events tags from the database.
-    It then calculates the scores for each candidate user and returns a DataFrame with the computed features.
+    Computes recommendation features for a user and a set of candidate users, based on social network, location, and preferences.
+    For each candidate user, the following features are computed:
+      1. **Friend score**: Weighted combination of network similarity (based on friend graph distance), follower count ratio, and event count ratio.
+      2. **Location score**: Similarity based on geographical distance between users.
+      3. **Preference score**: Similarity based on user tags and liked event tags.
+    Data such as user locations, tags, follower counts, event counts, and liked event tags are fetched from the database using helper functions.
+    If `candidates` is empty or `user_id` is None, the function includes `user_id` in the candidates list.
+    Parameters
+    ----------
+    user_id : str
+        The user ID for whom to compute features.
+    candidates : list of str
+        List of candidate user IDs to compute features for. If empty, will default to [user_id].
+    dist_map : dict of str to int
+        Mapping from candidate user IDs to their distance from `user_id` in the friend network.
+    max_distance : int, optional
+        Maximum friend network distance to consider for similarity (default is 4).
+    Returns
+    -------
+    pd.DataFrame
+        DataFrame indexed by candidate user ID, with columns:
+            - 'friend_score'
+            - 'location_score'
+            - 'preference_score'
+    Notes
+    -----
+    - Helper functions such as `fetch_user_locations`, `fetch_user_tags`, `fetch_follower_counts`, `fetch_event_counts`, and `fetch_liked_events_tags` must be available in the environment.
+    - The function uses alert dialogs for error handling and success notification.
+    - If a required feature cannot be computed for a candidate, its value defaults to 0.
+    Example
+    -------
+    >>> compute_features_for_user("user123", ["user456", "user789"], {"user456": 2, "user789": 5})
     """
     if user_id is None or not candidates:
         candidates = [user_id] + candidates

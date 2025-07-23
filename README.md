@@ -13,280 +13,75 @@ Repository for capstone project. Geospatial social media for everyone.
 - **Habit:** The app is designed for frequent use, potentially daily, as users check for nearby friends and activities, plan meetups, and engage with community content.  
 - **Scope:** Initially, the app focuses on geolocation-based social networking, including media posting and sharing by users. It may expand to include more advanced features like AI-driven recommendations and business partnerships.
 
----
-
-# Product Spec
-
-Based on the app description, this section goes into more detail about what the app should do, and what functionalities it must provide to the users.
-
----
-
-# User Stories
-
-User stories are actions that the user should be able to perform in your app.
-
-First, focus and identify functionality that is required for your **MVP (Minimum Viable Product)** that conforms to all the project requirements and expectations. Make sure your technical challenges are part of your MVP.
-
-You should also identify optional / nice-to-have functionalities that would be done as stretch goals during MU Week 8 and 9. Remember, technical challenges should **not** be optional features; they must be code complete before the end of Week 8!
-
----
-
-## User Roles:
-
-- **“tourist”**: a user who is looking for activities in a new area  
-- **“friend”**: a user who is meeting with connections in an area
-
----
-
-## Required
-
-- User can create an account  
-- User can sign up with email and password  
-- User can verify their email address  
-- User data - including personal information and events - stored in PostgreSQL DB  
-- User can login  
-- User can log in with their email and password  
-- User can stay logged in across sessions  
-- User can view a map of nearby activities and users  
-- User can see a map view of activities and users in their area  
-- User can zoom in and out of the map to explore different areas  
-- Get directions and accurate map - Google Maps API  
-- User can search for specific activities or locations  
-- User can enter keywords to search for activities or locations  
-- User can filter search results by distance, category, or rating  
-- User can create and upload activity listings  
-- User can create a new activity listing with description, images, and tags  
-- User can upload activity listings to the platform  
-- User can view activities  
-- User can view details of an activity, including description, location, and time  
-- User can connect with friends and see their activities  
-- User can add friends to their network  
-- User can see their friends' activities  
-- User can receive push notifications when friends are nearby or enter an area  
-- User can customize notification settings and preferences  
-- User can view their profile and activity history  
-- User can see their profile information, including name, email, and activity history  
-- User can edit their profile information
-
----
-
-## Optional
-
-- User can integrate with popular social media platforms  
-- User can share activity listings and connect with friends on social media platforms  
-- User can use social media APIs to fetch user data and improve recommendations  
-- User can pay/subscribe to locals for exclusive events  
-- User can purchase subscriptions to access exclusive events and activities  
-- User can partner with local businesses to offer premium experiences  
-- Businesses can post activities in their area  
-- Businesses can create activity listings and promote their services  
-- Businesses can implement a review system to ensure high-quality business listings  
-- User can chat with friends and plan activities using text input  
-- User can develop a conversational AI chatbot  
-- User can enable users to plan trips and activities using text input  
-- User can see personalized recommendations based on their interests and location  
-- User can develop a recommendation engine using collaborative filtering or content-based filtering  
-- User can suggest activities based on user interests, location, and past interactions
-
----
-
-# Screen Archetypes
-
-- **Home Page:**  
-  - Map list of nearby people  
-  - Big button to encourage users to create event  
-  - Friends nearby notification
- ![Home Page](./images/home.png)
-
-- **Suggested Page:**  
-  - Grid or carousel showcasing 3–4 suggested events/friends with images, titles, and brief descriptions
-  ![Suggested Page](./images/suggested.png)
-
-- **Create Event Page:**  
-  - Form to input details — name, date, time, location, and description
- ![Create Event Page](./images/createEvent.png)
-
-- **Profile Page:**  
-  - User information — editable  
-  - List of all user-created events and friends list
- ![Profile Page](./images/profile.png)
-
-- **Friends Page:**  
-  - List of friends
-  - Search form to find new friends
-  ![Friends Page](./images/friends.png)
-
+## Links
+**Project Plan**: [DOCUMENT](https://docs.google.com/document/d/1IzVixf38Zmvk7Wrw93jVC6rlOulZEJLKhD5qWValPNU/edit?tab=t.0#heading=h.6b6nbvhbbspp)
+**Wireframes**: [WIREFRAMES](https://app.moqups.com/NHtHEc8z7ygj99jd1jDdcNob7VSv1IwO/view/page/a57f5c842)
 
-- **Event Page:**  
-  - Detailed view of a certain event  
-  - Many use cases and highly modular
-  ![Event Page](./images/event.png)
+**Demo Presentation**: [SLIDES](https://docs.google.com/presentation/d/1-d_dzQ2Jr7Bj0cFU70FiyQVNiokMrXLvuXzCz1Z3QKM/edit?usp=sharing)
+**Recommendation System Flowchart**: [CHART](https://www.mermaidchart.com/app/projects/d6594cbc-d7bf-408c-ab1d-d1f3481dc4d9/diagrams/0da7cc2d-f788-4109-bb42-cae1bb6c2325/version/v0.1/edit)
 
----
-
-# Data Model
-=====================
+**Location Data Storage Plan**: [PLAN](https://docs.google.com/document/d/1kYD2qAJxblI4sDbYJ-tGkQkwn-RBuUe2Jvc0n-PV5vs/edit?usp=sharing)
 
-### Users Table
+## Demo Video
+[CREATED WEEK 9](<insert link in Week 9!>)
 
-| Field Name | Description |
-| --- | --- |
-| ID | Unique identifier for each user. |
-| Name | Store the user's name. |
-| Email | For login |
-| Password | Hashed and salted for security |
-| Avatar | URL or binary data for the user's profile picture. |
-| Location (GeoJSON) | Current or default location of the user, which can be used for map features. |
-| Friends (ID) | Store friend relationships using IDs, possibly in a separate table to handle many-to-many relationships. |
-| Preferences Data | Useful for personalizing user experiences, such as suggesting events. |
-| Events (ID) | Store event IDs that the user has created or is interested in. This could also be managed in a separate table to handle many-to-many relationships. |
-| Liked Events (ID) | Store event IDs that the user has liked. |
+## Requirements
 
-### Events Table
+## Cursor Interaction
 
-| Field Name | Description |
-| --- | --- |
-| ID | Unique identifier for each event. |
-| User who posted (ID) | Reference to the user ID who created the event. |
-| Images | URLs or binary data for event images. |
-| Text Description | Detailed description of the event. |
-| GeoJSON Data | Store location data in GeoJSON format for easy integration with mapping services. |
-| Likes (ID) | Store user ID for users who have liked this specific event.
+Upon hovering over the user location, [the cursor changes and shows a tooltip.](https://github.com/theoprosiseOrganization/LinkLocal/blob/main/src/frontend/frontend/src/components/MapComponent/UserLocationMarker.jsx#L43)
+![GIF of hover interaction](/images/ScreenRecording2025-07-22at1.15.09PM-ezgif.com-video-to-gif-converter.gif)
 
----
+## Complex Visual Styling
 
-# Users Endpoints
+A component with advanced visual styling is the [PeopleGrid component](https://github.com/theoprosiseOrganization/LinkLocal/blob/main/src/frontend/frontend/src/components/FriendsPage/PeopleGrid.jsx). This component is utilized on multiple pages to view a grid of users. It dynamically displays the information for multiple users in a pleasing and efficient manner. It uses [CSS styling](https://github.com/theoprosiseOrganization/LinkLocal/blob/main/src/frontend/frontend/src/components/ProfilePage/ProfilePage.css) consistent with the rest of the site.
+![GIF of people grid](/images/peopleGridGIF.gif)
+## Loading State
 
+When uploading images to an event plan, a [loading alert is set](https://github.com/theoprosiseOrganization/LinkLocal/blob/main/src/frontend/frontend/src/components/CreateEventPage/CreateEventPage.jsx#L372) while S3 receives the images.
+![GIF of image upload loading](/images/imageUpload.gif)
+## Multiple Views
 
-#### GET /users
+The app has multiple pages with different views, here are some examples:
 
-* Retrieves a list of all users.
-* Expected parameters: None
-* Returns: JSON array of user objects
+Home Page:
+![Home Page](/images/homepage.png)
 
-#### GET /users/:id
+Create Plan:
+![Create Plan](/images/eventplan.png)
 
-* Retrieves a single user by ID.
-* Expected parameters:
-	+ id: Unique identifier for the user
-* Returns: JSON user object
+View Plan:
+![Home Page](/images/viewplan.png)
 
-#### POST /users
+Friends Page:
+![Friends Page](/images/suggested.png)
 
-* Creates a new user.
-* Expected parameters:
-	+ name: User's name
-	+ email: User's email
-	+ password: User's password (hashed and salted)
-	+ avatar: URL or binary data for the user's profile picture
-	+ location: GeoJSON data for the user's current or default location
-* Returns: JSON user object with generated ID
+View User:
+![User Page](/images/user.png)
 
-#### PUT /users/:id
+View Event:
+![Event Page](/images/viewevent.png)
 
-* Updates an existing user.
-* Expected parameters:
-	+ id: Unique identifier for the user
-	+ name: Updated user's name
-	+ email: Updated user's email
-	+ password: Updated user's password (hashed and salted)
-	+ avatar: Updated URL or binary data for the user's profile picture
-	+ location: Updated GeoJSON data for the user's current or default location
-* Returns: JSON user object with updated fields
 
-#### DELETE /users/:id
 
-* Deletes a user by ID.
-* Expected parameters:
-	+ id: Unique identifier for the user
-* Returns: Success message
 
-#### GET /users/:id/friends
 
-* Retrieves a list of friends for a user.
-* Expected parameters:
-	+ id: Unique identifier for the user
-* Returns: JSON array of friend objects
+## User Authentication
 
-#### POST /users/:id/friends
+The app allows users to create accounts, [sign in](https://github.com/theoprosiseOrganization/LinkLocal/blob/main/src/frontend/frontend/src/components/SignInPage/SignInPage.jsx), [sign out](https://github.com/theoprosiseOrganization/LinkLocal/blob/main/src/frontend/frontend/src/components/SignUpPage/SignUpPage.jsx), and stay authenticated with [Express session management](https://github.com/theoprosiseOrganization/LinkLocal/blob/main/src/backend/src/controllers/authController.js).
 
-* Adds a new friend to a user's friends list.
-* Expected parameters:
-	+ id: Unique identifier for the user
-	+ friend_id: Unique identifier for the friend to add
-* Returns: JSON friend object with added relationship
+Here are images of the sign in and sign up screens:
 
-#### DELETE /users/:id/friends/:friend_id
+![Sign In](/images/login.png)
+![Sign Up](/images/signup.png)
 
-* Removes a friend from a user's friends list.
-* Expected parameters:
-	+ id: Unique identifier for the user
-	+ friend_id: Unique identifier for the friend to remove
-* Returns: Success message
+## Database Integration
 
-#### GET /users/:id/preferences
+This site uses supabase to host a Postgres server with a PostGIS extension to allow for efficient querying of geospatial data.
+Images are hosted on AWS S3.
 
-* Retrieves a user's preferences data.
-* Expected parameters:
-	+ id: Unique identifier for the user
-* Returns: JSON preferences object
+![Supabase Schema](/images/supabaseDb.png)
 
-#### PUT /users/:id/preferences
+## API Integration
 
-* Updates a user's preferences data.
-* Expected parameters:
-	+ id: Unique identifier for the user
-	+ preferences_data: Updated preferences data
-* Returns: JSON preferences object with updated fields
-
-#### GET /users/:id/events
-
-* Retrieves a list of events created or interested in by a user.
-* Expected parameters:
-	+ id: Unique identifier for the user
-* Returns: JSON array of event objects
-
-#### POST /users/:id/events
-
-* Creates a new event for a user.
-* Expected parameters:
-	+ id: Unique identifier for the user
-	+ event_data: Event data (see Events Endpoints)
-* Returns: JSON event object with generated ID
-
-#### GET /users/:id/liked_events
-
-* Retrieves a list of events liked by a user.
-* Expected parameters:
-	+ id: Unique identifier for the user
-* Returns: JSON array of event objects
-
-#### POST /users/:id/liked_events
-
-* Likes an event for a user.
-* Expected parameters:
-	+ id: Unique identifier for the user
-	+ event_id: Unique identifier for the event to like
-* Returns: JSON event object with added like relationship
-
-#### DELETE /users/:id/likedevents/:eventid
-
-* Unlikes an event for a user.
-* Expected parameters:
----
-
-# Database
-
-- **PostgreSQL** with **PostGIS** for geospatial queries and map-based functionalities
-
----
-
-# API
-
-- **Google Maps API** for map rendering, directions, and geocoding
-
----
-
-# Backend
-
-- **Express.js** and **Node.js**
+This site uses [Google Maps API](https://developers.google.com/maps) for [routing](https://github.com/theoprosiseOrganization/LinkLocal/blob/main/src/backend/src/controllers/eventController.js#L342), [map display](https://github.com/theoprosiseOrganization/LinkLocal/blob/main/src/frontend/frontend/src/components/MapComponent/MapComponent.jsx), and [location lookups](https://github.com/theoprosiseOrganization/LinkLocal/blob/main/src/frontend/frontend/src/components/LocationAutocomplete/LocationAutocomplete.jsx). It uses [OpenWeather API](https://openweathermap.org/) to [query weather data](https://github.com/theoprosiseOrganization/LinkLocal/blob/main/src/frontend/frontend/src/api.js#L527) for event planning.
