@@ -59,7 +59,7 @@ export default function NavHeader({ darkMode, setDarkMode }) {
       </NavigationMenuItem>
       <NavigationMenuItem>
         <NavigationMenuLink asChild>
-          <Link to="/suggested">Suggested</Link>
+          <Link to="/suggested">Explore</Link>
         </NavigationMenuLink>
       </NavigationMenuItem>
       <NavigationMenuItem>
