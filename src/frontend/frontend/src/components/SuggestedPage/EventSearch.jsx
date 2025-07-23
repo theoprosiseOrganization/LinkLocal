@@ -16,33 +16,32 @@ import {
 } from "../../../components/ui/dialog";
 import { Label } from "../../../components/ui/label";
 import ViewUserButton from "../ViewUserPage/ViewUserButton";
-
-import { searchForUsers, followUser, getSessionUserId } from "../../api";
+import { followUser, getSessionUserId, searchEvents } from "../../api";
 
 export default function EventSearch() {
   const [open, setOpen] = React.useState(false);
-  const [friendsResults, setFriendsResults] = React.useState([]);
+  const [eventsResults, setEventsResults] = React.useState([]);
   const [currentUserId, setCurrentUserId] = React.useState(null);
-  const [selectedFriend, setSelectedFriend] = React.useState(null);
+  const [selectedEvent, setSelectedEvent] = React.useState(null);
   const inputRef = React.useRef(null);
 
   /**
    * This function handles the search input change.
-   * It retrieves the search query from the input and calls the searchForUsers API function.
+   * It retrieves the search query from the input and calls the searchEvents API function.
    * The results are then displayed in the command list.
    *
    * @param {string} query - The search query entered by the user.
    */
   const handleSearchChange = async (query) => {
     if (!query) {
-      setFriendsResults([]);
+      setEventsResults([]);
       return;
     }
     try {
-      const results = await searchForUsers(query);
-      setFriendsResults(results);
+      const results = await searchEvents(query);
+      setEventsResults(results);
     } catch (error) {
-      setFriendsResults([]);
+      setEventsResults([]);
       // Add error handling at some point
     }
   };
@@ -59,15 +58,6 @@ export default function EventSearch() {
     fetchCurrentUserId();
   }, []);
 
-  const handleFollow = async (followingId) => {
-    if (!currentUserId) return;
-    try {
-      await followUser(currentUserId, followingId);
-      // Handle successful follow action
-    } catch (e) {
-      // Handle error
-    }
-  };
 
   return (
     <>
@@ -78,7 +68,7 @@ export default function EventSearch() {
           onValueChange={handleSearchChange}
         />
         <CommandList>
-          {friendsResults.map((friend) => (
+          {eventsResults.map((friend) => (
             <div
               key={friend.id}
               className="flex items-center justify-between bg-[var(--card)] text-[var(--card-foreground)] rounded-xl shadow p-4 mb-2 hover:bg-[var(--muted)] transition-colors"
@@ -95,7 +85,7 @@ export default function EventSearch() {
                 variant="outline"
                 className="ml-4"
                 onClick={() => {
-                  setSelectedFriend(friend);
+                  setSelectedEvent(friend);
                   setOpen(true);
                 }}
               >
@@ -105,33 +95,25 @@ export default function EventSearch() {
           ))}
         </CommandList>
       </Command>
-      {selectedFriend && (
+      {selectedEvent && (
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogContent className="sm:max-w-[500px] bg-[var(--card)] text-[var(--card-foreground)] border border-[var(--border)] rounded-xl shadow-lg">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
                 <span className="text-[var(--primary)]">
-                  {selectedFriend.name}
+                  {selectedEvent.title}
                 </span>
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="ml-2"
-                  onClick={() => handleFollow(selectedFriend.id)}
-                >
-                  Follow User
-                </Button>
-                <ViewUserButton userId={selectedFriend.id} />
+                <ViewUserButton userId={selectedEvent.id} />
               </DialogTitle>
               <DialogDescription className="text-[var(--muted-foreground)]">
-                Email: {selectedFriend.email}
+                Data:
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
               <Label>Location</Label>
-              {selectedFriend.location ? (
+              {selectedEvent.location ? (
                 <div className="text-[var(--foreground)]">
-                  {selectedFriend.location.address}
+                  {selectedEvent.location.address}
                 </div>
               ) : (
                 <div className="text-[var(--muted-foreground)]">
