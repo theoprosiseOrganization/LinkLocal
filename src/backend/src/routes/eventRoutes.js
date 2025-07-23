@@ -11,6 +11,7 @@ const {
   getEventsWithinPolygon,
   getOptimalRoute,
   getEventsWithinRadius,
+  searchEvents,
 } = require("../controllers/eventController");
 
 const router = express.Router();
@@ -18,6 +19,7 @@ const router = express.Router();
 // Event endpoints
 router.get("/", getEvents);
 router.post("/within-radius", getEventsWithinRadius);
+router.post("/search", searchEvents);
 router.get("/:id", getEventById);
 router.post("/", createEvent);
 router.put("/:id", updateEvent);

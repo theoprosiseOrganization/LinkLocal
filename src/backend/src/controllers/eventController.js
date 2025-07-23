@@ -408,3 +408,30 @@ async function fetchOptimalRoute(start, events, transportType) {
 }
 
 exports.fetchOptimalRoute = fetchOptimalRoute;
+
+exports.searchEvents = async (req, res) => {
+  const { query } = req.body;
+  if (!query || typeof query !== "string") {
+    return res.status(400).json({ error: "Invalid search query" });
+  }
+  try {
+    const events = await prisma.event.findMany({
+      where: {
+        OR: [
+          { title: { contains: query, mode: "insensitive" } },
+          { textDescription: { contains: query, mode: "insensitive" } },
+        ],
+      },
+      include: { tags: true },
+    });
+    await Promise.all(
+      events.map(async (event) => {
+        const location = await getEventLocation(event.id);
+        event.location = location; // will be null if not found
+      })
+    );
+    res.json(events);
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+}
