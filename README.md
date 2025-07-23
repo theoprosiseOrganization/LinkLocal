@@ -34,14 +34,36 @@ Upon hovering over the user location, [the cursor changes and shows a tooltip.](
 
 ## Complex Visual Styling
 
-A component with advanced visual styling is the home page map component. 
+A component with advanced visual styling is the PeopleGrid component. This component is utilized on multiple pages to view a grid of users. It dynamically displays the information for multiple users in a pleasing and efficient manner. It uses CSS styling consistent with the rest of the site.
 ## Loading State
 
 When uploading images to an event plan, a [loading alert is set](https://github.com/theoprosiseOrganization/LinkLocal/blob/main/src/frontend/frontend/src/components/CreateEventPage/CreateEventPage.jsx#L372) while S3 receives the images.
 ![GIF of image upload loading](/images/imageUpload.gif)
 ## Multiple Views
 
-The app has multiple pages with different views:
+The app has multiple pages with different views, here are some examples:
+
+Home Page:
+![Home Page](/images/homepage.png)
+
+Create Plan:
+![Create Plan](/images/eventplan.png)
+
+View Plan:
+![Home Page](/images/viewplan.png)
+
+Friends Page:
+![Friends Page](/images/suggested.png)
+
+View User:
+![User Page](/images/user.png)
+
+View Event:
+![Event Page](/images/viewevent.png)
+
+
+
+
 
 ## User Authentication
 
