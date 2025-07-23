@@ -13,6 +13,7 @@
 import Layout from "../Layout/Layout";
 import PeopleGrid from "../FriendsPage/PeopleGrid";
 import EventSearch from "./EventSearch";
+import "../ProfilePage/ProfilePage.css";
 
 export default function SuggestedPage() {
   return (
@@ -28,7 +29,9 @@ export default function SuggestedPage() {
           <PeopleGrid type="Suggested" />
         </div>
         <div className="mt-4">
-          Search Section
+          <h2 className="events-title">
+            Search Events
+          </h2>
           <EventSearch />
         </div>
       </div>

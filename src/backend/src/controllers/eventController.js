@@ -429,10 +429,12 @@ exports.fetchOptimalRoute = fetchOptimalRoute;
 
 exports.searchEvents = async (req, res) => {
   const supabase = createClient(supabaseUrl, supabaseKey);
-  const { query } = req.body;
+  let { query } = req.body;
   if (!query || typeof query !== "string") {
     return res.status(400).json({ error: "Invalid search query" });
   }
+  query = query.trim().toLowerCase();
+  query = query + ":*"; // Add wildcard for full-text search
   try {
     const { data: events, error } = await supabase
       .from("Event")
