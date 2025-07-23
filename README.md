@@ -34,7 +34,8 @@ Upon hovering over the user location, [the cursor changes and shows a tooltip.](
 
 ## Complex Visual Styling
 
-A component with advanced visual styling is the PeopleGrid component. This component is utilized on multiple pages to view a grid of users. It dynamically displays the information for multiple users in a pleasing and efficient manner. It uses CSS styling consistent with the rest of the site.
+A component with advanced visual styling is the [PeopleGrid component](https://github.com/theoprosiseOrganization/LinkLocal/blob/main/src/frontend/frontend/src/components/FriendsPage/PeopleGrid.jsx). This component is utilized on multiple pages to view a grid of users. It dynamically displays the information for multiple users in a pleasing and efficient manner. It uses [CSS styling](https://github.com/theoprosiseOrganization/LinkLocal/blob/main/src/frontend/frontend/src/components/ProfilePage/ProfilePage.css) consistent with the rest of the site.
+![GIF of people grid](/images/peopleGridGIF.gif)
 ## Loading State
 
 When uploading images to an event plan, a [loading alert is set](https://github.com/theoprosiseOrganization/LinkLocal/blob/main/src/frontend/frontend/src/components/CreateEventPage/CreateEventPage.jsx#L372) while S3 receives the images.
