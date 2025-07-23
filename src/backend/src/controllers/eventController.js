@@ -1,5 +1,8 @@
 const { PrismaClient } = require("../../generated/prisma");
 const prisma = new PrismaClient();
+const { createClient } = require("@supabase/supabase-js");
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_KEY;
 const { v4: uuidv4 } = require("uuid");
 const joi = require("joi");
 const ROUTES_API_ENDPOINT =
@@ -235,12 +238,11 @@ exports.getEventsWithinPolygon = async (req, res) => {
     return res.status(400).json({ error: "Invalid polygon" });
   }
   try {
-   const events = await fetchEventsWithinPolygon(polygon);
+    const events = await fetchEventsWithinPolygon(polygon);
     if (!events || events.length === 0) {
       return res.status(404).json({ error: "No events found within polygon" });
     }
     res.json(events);
-
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }
@@ -348,12 +350,13 @@ exports.getOptimalRoute = async (req, res) => {
     const data = await fetchOptimalRoute(start, events, transportType);
     return res.json(data);
   } catch (error) {
-    return res.status(500).json({ error: error.message || "Internal Server Error" });
+    return res
+      .status(500)
+      .json({ error: error.message || "Internal Server Error" });
   }
 };
 
 async function fetchOptimalRoute(start, events, transportType) {
-
   const routeRequest = {
     origin: {
       location: {
@@ -399,7 +402,6 @@ async function fetchOptimalRoute(start, events, transportType) {
   });
   const json = await response.json();
 
-
   if (!response.ok) {
     const errorText = await response.text();
     throw new Error("Failed to fetch route");
@@ -409,7 +411,25 @@ async function fetchOptimalRoute(start, events, transportType) {
 
 exports.fetchOptimalRoute = fetchOptimalRoute;
 
+/**
+ * Created vector search column for events on Supabase with the following command:
+ * This vectorizes the title and textDescription fields for full-text search.
+ *
+ * ALTER TABLE "Event"
+ *   ADD COLUMN search_idx tsvector GENERATED ALWAYS AS (
+ *     to_tsvector('english', "title" || ' ' || "textDescription")
+ *   ) STORED;
+ *
+ * CREATE INDEX events_search_idx ON "Event" USING gin (search_idx);
+ * -- Generates the index for fast full-text search
+ *
+ * SELECT id, search_idx
+ * FROM "Event";
+ */
+
+
 exports.searchEvents = async (req, res) => {
+  const supabase = createClient(supabaseUrl, supabaseKey);
   const { query } = req.body;
   if (!query || typeof query !== "string") {
     return res.status(400).json({ error: "Invalid search query" });
@@ -434,4 +454,4 @@ exports.searchEvents = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }
-}
+};
