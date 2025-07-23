@@ -17,6 +17,7 @@ import {
 import { Label } from "../../../components/ui/label";
 import ViewUserButton from "../ViewUserPage/ViewUserButton";
 import { followUser, getSessionUserId, searchEvents } from "../../api";
+import ViewEventButton from "../ViewEventPage/ViewEventButton";
 
 export default function EventSearch() {
   const [open, setOpen] = React.useState(false);
@@ -68,24 +69,24 @@ export default function EventSearch() {
           onValueChange={handleSearchChange}
         />
         <CommandList>
-          {eventsResults.map((friend) => (
+          {eventsResults.map((event) => (
             <div
-              key={friend.id}
+              key={event.id}
               className="flex items-center justify-between bg-[var(--card)] text-[var(--card-foreground)] rounded-xl shadow p-4 mb-2 hover:bg-[var(--muted)] transition-colors"
             >
               <div className="flex-1 text-center">
                 <div className="font-semibold text-[var(--primary)]">
-                  {friend.name}
+                  {event.title}
                 </div>
                 <div className="text-[var(--muted-foreground)] text-sm">
-                  {friend.email}
+                  {event.textDescription || "No description provided"}
                 </div>
               </div>
               <Button
                 variant="outline"
                 className="ml-4"
                 onClick={() => {
-                  setSelectedEvent(friend);
+                  setSelectedEvent(event);
                   setOpen(true);
                 }}
               >
@@ -103,7 +104,7 @@ export default function EventSearch() {
                 <span className="text-[var(--primary)]">
                   {selectedEvent.title}
                 </span>
-                <ViewUserButton userId={selectedEvent.id} />
+                <ViewEventButton eventId={selectedEvent.id} />
               </DialogTitle>
               <DialogDescription className="text-[var(--muted-foreground)]">
                 Data:
