@@ -425,6 +425,8 @@ exports.fetchOptimalRoute = fetchOptimalRoute;
  *
  * SELECT id, search_idx
  * FROM "Event";
+ * 
+ * Created RPC function for searching events by ranking vector similarity:
  */
 
 exports.searchEvents = async (req, res) => {
@@ -433,13 +435,14 @@ exports.searchEvents = async (req, res) => {
   if (!query || typeof query !== "string") {
     return res.status(400).json({ error: "Invalid search query" });
   }
+  if (query.length > 100) {
+    return res.status(400).json({ error: "Search query too long" });
+  }
   query = query.trim().toLowerCase();
-  query = query + ":*"; // Add wildcard for full-text search
   try {
     const { data: events, error } = await supabase
-      .from("Event")
-      .select("*")
-      .textSearch("search_idx", query);
+      .rpc("search_events_ranked", { query })
+      .select("*");
     console.log("Search results:", events);
     if (error) {
       console.error("Error searching events:", error);
