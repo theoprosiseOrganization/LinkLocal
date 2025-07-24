@@ -414,29 +414,22 @@ exports.fetchOptimalRoute = fetchOptimalRoute;
 /**
  * Vector search setup for events in Supabase:
  *
- * 1. Add a tsvector column for full-text search on title and textDescription:
- *    ALTER TABLE "Event"
- *      ADD COLUMN search_idx tsvector GENERATED ALWAYS AS (
- *        to_tsvector('english', "title" || ' ' || "textDescription")
- *      ) STORED;
+ * 1. Make sure the trigram extension is available
+ *    create extension if not exists pg_trgm;
  *
- * 2. Create a GIN index for fast full-text search:
- *    CREATE INDEX events_search_idx ON "Event" USING gin (search_idx);
+ * 2. Add GIN-trigram indexes for fast prefix and similarity searches
+ *    create index if not exists idx_event_title_trgm
+ *      on "Event" using gin (title gin_trgm_ops);
  *
- * 3. (Optional) View the generated search index:
- *    SELECT id, search_idx FROM "Event";
+ *    create index if not exists idx_event_text_trgm
+ *      on "Event" using gin ("textDescription" gin_trgm_ops);
  *
- * 4. Enable trigram extension for similarity/prefix search:
- *    CREATE EXTENSION IF NOT EXISTS pg_trgm;
- *
- * 5. Add GIN-trigram indexes for fast prefix/similarity search:
- *    CREATE INDEX IF NOT EXISTS idx_event_title_trgm
- *      ON "Event" USING gin (title gin_trgm_ops);
- *    CREATE INDEX IF NOT EXISTS idx_event_text_trgm
- *      ON "Event" USING gin ("textDescription" gin_trgm_ops);
- *
- * 6. Create or replace the RPC for ranked search:
- *    CREATE OR REPLACE FUNCTION public.search_events_ranked(query_text text)
+ * 3. Create (or replace) the RPC for ranked search
+ *    CREATE OR REPLACE FUNCTION public.search_events_fuzzy(
+ *      query_text text,
+ *      max_results integer DEFAULT 3,
+ *      sim_threshold real DEFAULT 0.3  -- tune between 0.2–0.5
+ *    )
  *    RETURNS TABLE (
  *      id uuid,
  *      title text,
@@ -445,33 +438,39 @@ exports.fetchOptimalRoute = fetchOptimalRoute;
  *    )
  *    LANGUAGE sql
  *    AS $$
- *      WITH qry AS (
+ *      WITH base AS (
  *        SELECT
  *          e.id,
  *          e.title,
  *          e."textDescription",
- *          CASE
- *            WHEN length(query_text) >= 3
- *              THEN ts_rank(e.search_idx, websearch_to_tsquery('english', query_text))
- *            ELSE 1.0
- *          END AS rank
+ *          -- full‑text rank (0 if typo kills it) + trigram similarity
+ *          ts_rank(e.search_idx, websearch_to_tsquery('english', query_text)) 
+ *            + GREATEST(
+ *                similarity(e.title, query_text),
+ *                similarity(e."textDescription", query_text)
+ *              ) AS rank
  *        FROM "Event" e
  *        WHERE
  *          (
  *            length(query_text) < 3
  *            AND (
- *              e.title ILIKE query_text || '%'
+ *              e.title    ILIKE query_text || '%'
  *              OR e."textDescription" ILIKE query_text || '%'
  *            )
  *          )
  *          OR (
  *            length(query_text) >= 3
- *            AND e.search_idx @@ websearch_to_tsquery('english', query_text)
+ *            AND (
+ *              e.search_idx @@ websearch_to_tsquery('english', query_text)
+ *              OR similarity(e.title, query_text) > sim_threshold
+ *              OR similarity(e."textDescription", query_text) > sim_threshold
+ *            )
  *          )
  *      )
  *      SELECT id, title, "textDescription", rank
- *      FROM qry
+ *      FROM base
  *      ORDER BY rank DESC, title
+ *      LIMIT max_results;
  *    $$;
  */
 
@@ -487,7 +486,7 @@ exports.searchEvents = async (req, res) => {
   query = query.trim().toLowerCase();
   try {
     const { data: events, error } = await supabase
-      .rpc("search_events_ranked", { query_text: query })
+      .rpc("search_events_fuzzy", { query_text: query, max_results: 4, sim_threshold: 0.3 })
       .select("*");
     if (error) {
       return res.status(500).json({ error: "Internal Server Error" });
