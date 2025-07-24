@@ -1,5 +1,8 @@
 const { PrismaClient } = require("../../generated/prisma");
 const prisma = new PrismaClient();
+const { createClient } = require("@supabase/supabase-js");
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_KEY;
 const { v4: uuidv4 } = require("uuid");
 const joi = require("joi");
 const ROUTES_API_ENDPOINT =
@@ -235,12 +238,11 @@ exports.getEventsWithinPolygon = async (req, res) => {
     return res.status(400).json({ error: "Invalid polygon" });
   }
   try {
-   const events = await fetchEventsWithinPolygon(polygon);
+    const events = await fetchEventsWithinPolygon(polygon);
     if (!events || events.length === 0) {
       return res.status(404).json({ error: "No events found within polygon" });
     }
     res.json(events);
-
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }
@@ -348,12 +350,13 @@ exports.getOptimalRoute = async (req, res) => {
     const data = await fetchOptimalRoute(start, events, transportType);
     return res.json(data);
   } catch (error) {
-    return res.status(500).json({ error: error.message || "Internal Server Error" });
+    return res
+      .status(500)
+      .json({ error: error.message || "Internal Server Error" });
   }
 };
 
 async function fetchOptimalRoute(start, events, transportType) {
-
   const routeRequest = {
     origin: {
       location: {
@@ -399,7 +402,6 @@ async function fetchOptimalRoute(start, events, transportType) {
   });
   const json = await response.json();
 
-
   if (!response.ok) {
     const errorText = await response.text();
     throw new Error("Failed to fetch route");
@@ -408,3 +410,95 @@ async function fetchOptimalRoute(start, events, transportType) {
 }
 
 exports.fetchOptimalRoute = fetchOptimalRoute;
+
+/**
+ * Vector search setup for events in Supabase:
+ *
+ * 1. Make sure the trigram extension is available
+ *    create extension if not exists pg_trgm;
+ *
+ * 2. Add GIN-trigram indexes for fast prefix and similarity searches
+ *    create index if not exists idx_event_title_trgm
+ *      on "Event" using gin (title gin_trgm_ops);
+ *
+ *    create index if not exists idx_event_text_trgm
+ *      on "Event" using gin ("textDescription" gin_trgm_ops);
+ *
+ * 3. Create (or replace) the RPC for ranked search
+ *    CREATE OR REPLACE FUNCTION public.search_events_fuzzy(
+ *      query_text text,
+ *      max_results integer DEFAULT 3,
+ *      sim_threshold real DEFAULT 0.3  -- tune between 0.2–0.5
+ *    )
+ *    RETURNS TABLE (
+ *      id uuid,
+ *      title text,
+ *      "textDescription" text,
+ *      rank real
+ *    )
+ *    LANGUAGE sql
+ *    AS $$
+ *      WITH base AS (
+ *        SELECT
+ *          e.id,
+ *          e.title,
+ *          e."textDescription",
+ *          -- full‑text rank (0 if typo kills it) + trigram similarity
+ *          ts_rank(e.search_idx, websearch_to_tsquery('english', query_text)) 
+ *            + GREATEST(
+ *                similarity(e.title, query_text),
+ *                similarity(e."textDescription", query_text)
+ *              ) AS rank
+ *        FROM "Event" e
+ *        WHERE
+ *          (
+ *            length(query_text) < 3
+ *            AND (
+ *              e.title    ILIKE query_text || '%'
+ *              OR e."textDescription" ILIKE query_text || '%'
+ *            )
+ *          )
+ *          OR (
+ *            length(query_text) >= 3
+ *            AND (
+ *              e.search_idx @@ websearch_to_tsquery('english', query_text)
+ *              OR similarity(e.title, query_text) > sim_threshold
+ *              OR similarity(e."textDescription", query_text) > sim_threshold
+ *            )
+ *          )
+ *      )
+ *      SELECT id, title, "textDescription", rank
+ *      FROM base
+ *      ORDER BY rank DESC, title
+ *      LIMIT max_results;
+ *    $$;
+ */
+
+exports.searchEvents = async (req, res) => {
+  const supabase = createClient(supabaseUrl, supabaseKey);
+  let { query } = req.body;
+  if (!query || typeof query !== "string") {
+    return res.status(400).json({ error: "Invalid search query" });
+  }
+  if (query.length > 100) {
+    return res.status(400).json({ error: "Search query too long" });
+  }
+  query = query.trim().toLowerCase();
+  try {
+    const { data: events, error } = await supabase
+      .rpc("search_events_fuzzy", { query_text: query, max_results: 4, sim_threshold: 0.3 })
+      .select("*");
+    if (error) {
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+    await Promise.all(
+      events.map(async (event) => {
+        const location = await getEventLocation(event.id);
+        event.location = location; // will be null if not found
+      })
+    );
+    res.json(events);
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};

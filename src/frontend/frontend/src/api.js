@@ -535,3 +535,19 @@ export async function getWeatherData(lat, lng) {
   }
   return data;
 }
+
+export async function searchEvents(query) {
+  const res = await fetch(`${URL}/events/search`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ query }),
+    credentials: "include",
+  });
+  const response = await res.json();
+  if (!res.ok) {
+    throw new Error(response.error || "Failed to search for events");
+  }
+  return response;
+}
