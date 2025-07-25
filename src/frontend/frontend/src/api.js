@@ -399,7 +399,18 @@ export async function createPlan({
   start,
   end,
   polygon,
+  driving_times,
 }) {
+  console.log("Creating plan with data:", {
+    title,
+    eventIds,
+    routeData,
+    durations,
+    start,
+    end,
+    polygon,
+    driving_times,
+  });
   const url = await meUrl("/plans");
   const res = await fetch(url, {
     method: "POST",
@@ -414,6 +425,7 @@ export async function createPlan({
       start,
       end,
       polygon,
+      driving_times,
     }),
     credentials: "include",
   });

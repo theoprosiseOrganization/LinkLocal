@@ -507,7 +507,7 @@ exports.createPlan = async (req, res) => {
 
   try {
     const ownerId = req.params.id;
-    const { title, eventIds, routeData, durations, start, end, polygon } =
+    const { title, eventIds, routeData, durations, start, end, polygon, driving_times } =
       req.body;
     const { data, error } = await supabase
       .from("plans")
@@ -522,6 +522,7 @@ exports.createPlan = async (req, res) => {
           start_time: start,
           end_time: end,
           polygon: polygon,
+          driving_times: driving_times,
         },
       ])
       .select()
