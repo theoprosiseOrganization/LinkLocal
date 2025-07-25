@@ -507,8 +507,16 @@ exports.createPlan = async (req, res) => {
 
   try {
     const ownerId = req.params.id;
-    const { title, eventIds, routeData, durations, start, end, polygon, driving_times } =
-      req.body;
+    const {
+      title,
+      eventIds,
+      routeData,
+      durations,
+      start,
+      end,
+      polygon,
+      driving_times,
+    } = req.body;
     const { data, error } = await supabase
       .from("plans")
       .insert([
@@ -946,7 +954,6 @@ exports.shufflePlan = async (req, res) => {
       .eq("id", planId)
       .single();
     if (updateError) {
-      console.error("Update error:", updateError);
       return res
         .status(500)
         .json({ error: `Failed to update plan: ${updateError.message}` });
@@ -954,7 +961,6 @@ exports.shufflePlan = async (req, res) => {
 
     res.json(updatedPlan);
   } catch (error) {
-    console.error("Shuffle error:", error);
     res.status(500).json({ error: `Failed to shuffle plan: ${error.message}` });
   }
 };
