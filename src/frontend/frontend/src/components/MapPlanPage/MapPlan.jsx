@@ -320,6 +320,7 @@ export default function MapPlan() {
       return;
     }
     let durations = {};
+    let drivingTimes = {};
 
     const eventsToGenerate = filteredEvents
       .slice()
@@ -352,7 +353,7 @@ export default function MapPlan() {
             lng: e.location?.longitude,
           });
           const arriveAt = Math.max(eventStartMs, curTime + travelTimeMs);
-          return { ...e, arriveAt, eventEndMs };
+          return { ...e, arriveAt, eventEndMs, travelTimeMs };
         })
         .filter(
           (e) =>

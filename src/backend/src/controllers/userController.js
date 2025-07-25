@@ -901,7 +901,7 @@ exports.shufflePlan = async (req, res) => {
       );
     });
 
-    const { selectedIds, durations } = generateEventPlan(
+    const { selectedIds, durations, drivingTimes } = generateEventPlan(
       events,
       tagSetsByUser,
       startMs,
@@ -940,10 +940,12 @@ exports.shufflePlan = async (req, res) => {
         event_ids: selectedIds,
         durations: durations,
         route_data: routeData,
+        driving_times: drivingTimes,
       })
       .eq("id", planId)
       .single();
     if (updateError) {
+      console.error("Update error:", updateError);
       return res
         .status(500)
         .json({ error: `Failed to update plan: ${updateError.message}` });
@@ -951,6 +953,7 @@ exports.shufflePlan = async (req, res) => {
 
     res.json(updatedPlan);
   } catch (error) {
+    console.error("Shuffle error:", error);
     res.status(500).json({ error: `Failed to shuffle plan: ${error.message}` });
   }
 };
