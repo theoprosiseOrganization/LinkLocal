@@ -710,6 +710,7 @@ function generateEventPlan(
   const used = new Set();
   const picks = [];
   const durations = {};
+  const drivingTimes = {};
   let curTime = startMs;
   let curLoc = tagSetsByUser.__originLoc;
 
@@ -756,6 +757,7 @@ function generateEventPlan(
           ...e,
           arriveAt: arrive,
           eventEndMs: new Date(e.endTime).getTime(),
+          travelTime: travel,
         };
       })
       // Only keep events that can be attended for at least MIN_DURATION before they end
@@ -802,12 +804,13 @@ function generateEventPlan(
     duration = Math.max(duration, MIN_DURATION);
 
     durations[pick.id] = duration;
+    drivingTimes[pick.id] = pick.travelTime;
 
     curTime = pick.arriveAt + duration;
     curLoc = pick.location;
   }
 
-  return { selectedIds: picks, durations };
+  return { selectedIds: picks, durations, drivingTimes };
 }
 
 exports.shufflePlan = async (req, res) => {
