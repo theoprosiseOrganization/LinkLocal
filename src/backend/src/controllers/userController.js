@@ -507,8 +507,16 @@ exports.createPlan = async (req, res) => {
 
   try {
     const ownerId = req.params.id;
-    const { title, eventIds, routeData, durations, start, end, polygon } =
-      req.body;
+    const {
+      title,
+      eventIds,
+      routeData,
+      durations,
+      start,
+      end,
+      polygon,
+      driving_times,
+    } = req.body;
     const { data, error } = await supabase
       .from("plans")
       .insert([
@@ -522,6 +530,7 @@ exports.createPlan = async (req, res) => {
           start_time: start,
           end_time: end,
           polygon: polygon,
+          driving_times: driving_times,
         },
       ])
       .select()
@@ -710,6 +719,7 @@ function generateEventPlan(
   const used = new Set();
   const picks = [];
   const durations = {};
+  const drivingTimes = {};
   let curTime = startMs;
   let curLoc = tagSetsByUser.__originLoc;
 
@@ -756,6 +766,7 @@ function generateEventPlan(
           ...e,
           arriveAt: arrive,
           eventEndMs: new Date(e.endTime).getTime(),
+          travelTime: travel,
         };
       })
       // Only keep events that can be attended for at least MIN_DURATION before they end
@@ -802,12 +813,13 @@ function generateEventPlan(
     duration = Math.max(duration, MIN_DURATION);
 
     durations[pick.id] = duration;
+    drivingTimes[pick.id] = pick.travelTime;
 
     curTime = pick.arriveAt + duration;
     curLoc = pick.location;
   }
 
-  return { selectedIds: picks, durations };
+  return { selectedIds: picks, durations, drivingTimes };
 }
 
 exports.shufflePlan = async (req, res) => {
@@ -898,7 +910,7 @@ exports.shufflePlan = async (req, res) => {
       );
     });
 
-    const { selectedIds, durations } = generateEventPlan(
+    const { selectedIds, durations, drivingTimes } = generateEventPlan(
       events,
       tagSetsByUser,
       startMs,
@@ -937,6 +949,7 @@ exports.shufflePlan = async (req, res) => {
         event_ids: selectedIds,
         durations: durations,
         route_data: routeData,
+        driving_times: drivingTimes,
       })
       .eq("id", planId)
       .single();

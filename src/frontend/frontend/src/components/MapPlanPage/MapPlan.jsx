@@ -74,6 +74,7 @@ export default function MapPlan() {
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [isWeatherBad, setIsWeatherBad] = useState(false);
+  const [eventDrivingTimes, setEventDrivingTimes] = useState({});
   const MIN_DURATION = 30 * 60 * 1000; // 30 min at event
   const MAX_DURATION = 2 * 60 * 60 * 1000; // 2 hours at event
   const MINUTES_TO_MS = 60 * 1000; // Convert minutes to milliseconds
@@ -320,6 +321,7 @@ export default function MapPlan() {
       return;
     }
     let durations = {};
+    let drivingTimes = {};
 
     const eventsToGenerate = filteredEvents
       .slice()
@@ -352,7 +354,7 @@ export default function MapPlan() {
             lng: e.location?.longitude,
           });
           const arriveAt = Math.max(eventStartMs, curTime + travelTimeMs);
-          return { ...e, arriveAt, eventEndMs };
+          return { ...e, arriveAt, eventEndMs, travelTimeMs };
         })
         .filter(
           (e) =>
@@ -393,6 +395,7 @@ export default function MapPlan() {
       duration = Math.max(duration, MIN_DURATION);
 
       durations[pick.id] = duration;
+      drivingTimes[pick.id] = pick.travelTimeMs;
 
       curTime = pick.arriveAt + duration;
       curLoc = {
@@ -402,6 +405,7 @@ export default function MapPlan() {
     }
 
     setSelectedEventIds(picks);
+    setEventDrivingTimes(drivingTimes);
     if (picks.length === 0) {
       alert("No events could be selected based on your criteria.");
       return;
@@ -751,6 +755,7 @@ export default function MapPlan() {
                     start: startDate,
                     end: endDate,
                     polygon: coords,
+                    driving_times: eventDrivingTimes,
                   });
                   setPlanId(plan.id);
                   await inviteUsers(plan.id, selectedFollowers);

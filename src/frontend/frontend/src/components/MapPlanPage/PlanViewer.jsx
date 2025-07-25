@@ -44,6 +44,7 @@ export default function PlanViewer() {
   }, [planId]);
 
   const durations = plan?.durations || {};
+  const drivingTimes = plan?.driving_times || {};
 
   // Fetch events when plan is loaded
   useEffect(() => {
@@ -112,16 +113,34 @@ export default function PlanViewer() {
             <h2 className="text-xl font-semibold mb-2">Stops on This Plan</h2>
             <ul className="inline-block text-left max-h-48 overflow-y-auto pr-2">
               {(orderedEvents || []).map((event, idx) => {
-                const mins =
+                // For all but the last event, show driving time to the next event
+                const isLast = idx === orderedEvents.length - 1;
+                const nextEvent = orderedEvents[idx + 1];
+                const drivingTimeToNext =
+                  !isLast &&
+                  drivingTimes &&
+                  nextEvent &&
+                  drivingTimes[nextEvent.id]
+                    ? Math.round(drivingTimes[nextEvent.id] / 60000)
+                    : null;
+                const eventDuration =
                   durations && durations[event.id]
                     ? Math.round(durations[event.id] / 60000)
                     : 60;
                 return (
-                  <li key={event.id || idx} className="mb-1 flex items-center">
-                    <span className="font-bold mr-2">{idx + 1}.</span>
-                    <span className="font-bold">{event.title}</span>
-                    <span className="ml-2 text-sm">{mins} min</span>
-                  </li>
+                  <React.Fragment key={event.id || idx}>
+                    <li className="mb-1 flex items-center">
+                      <span className="font-bold mr-2">{idx + 1}.</span>
+                      <span className="font-bold">{event.title}</span>
+                      {/* Show driving time to next event, except for the last event */}
+                      {!isLast && drivingTimeToNext !== null && (
+                        <span className="ml-2 text-xs text-gray-500">
+                          ({drivingTimeToNext} min drive to next)
+                        </span>
+                      )}
+                      <span className="ml-2 text-sm">{eventDuration} min</span>
+                    </li>
+                  </React.Fragment>
                 );
               })}
             </ul>

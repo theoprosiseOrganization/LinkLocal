@@ -399,6 +399,7 @@ export async function createPlan({
   start,
   end,
   polygon,
+  driving_times,
 }) {
   const url = await meUrl("/plans");
   const res = await fetch(url, {
@@ -414,6 +415,7 @@ export async function createPlan({
       start,
       end,
       polygon,
+      driving_times,
     }),
     credentials: "include",
   });
