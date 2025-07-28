@@ -9,7 +9,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "./Dialog";
+} from "./dialog";
 
 function Command({ className, ...props }) {
   return (

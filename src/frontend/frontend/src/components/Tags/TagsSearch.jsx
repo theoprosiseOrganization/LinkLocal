@@ -24,12 +24,12 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "../../../components/ui/Command";
+} from "../../../components/ui/command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "../../../components/ui/Popover";
+} from "../../../components/ui/popover";
 
 export default function TagsSearch({
   tags = [],

@@ -13,20 +13,20 @@
  */
 
 import Layout from "../Layout/Layout";
-import { Input } from "../../../components/ui/Input";
-import { Label } from "../../../components/ui/Label";
+import { Input } from "../../../components/ui/input";
+import { Label } from "../../../components/ui/label";
 import { Button } from "../../../components/ui/button.jsx";
-import { Calendar } from "../../../components/ui/Calendar";
+import { Calendar } from "../../../components/ui/calendar";
 import {
   Alert,
   AlertDescription,
   AlertTitle,
-} from "../../../components/ui/Alert";
+} from "../../../components/ui/alert";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "../../../components/ui/Popover";
+} from "../../../components/ui/popover";
 import { ChevronDownIcon } from "lucide-react";
 import React, { useState, useRef, useEffect } from "react";
 import {

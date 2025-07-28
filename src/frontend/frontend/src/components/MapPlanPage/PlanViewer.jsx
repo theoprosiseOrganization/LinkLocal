@@ -26,7 +26,7 @@ import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
-} from "../../../components/ui/Hover-Card";
+} from "../../../components/ui/hover-card";
 
 export default function PlanViewer() {
   const { planId } = useParams();

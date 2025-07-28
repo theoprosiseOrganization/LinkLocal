@@ -17,7 +17,7 @@ import {
   Command,
   CommandInput,
   CommandList,
-} from "../../../components/ui/Command";
+} from "../../../components/ui/command";
 import { Button } from "../../../components/ui/button.jsx";
 import {
   Dialog,
@@ -25,8 +25,8 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "../../../components/ui/Dialog";
-import { Label } from "../../../components/ui/Label";
+} from "../../../components/ui/dialog";
+import { Label } from "../../../components/ui/label";
 import ViewUserButton from "../ViewUserPage/ViewUserButton";
 
 import { searchForUsers, followUser, getSessionUserId } from "../../api";

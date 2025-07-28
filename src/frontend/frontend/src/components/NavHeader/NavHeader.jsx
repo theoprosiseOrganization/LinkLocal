@@ -5,9 +5,9 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
   NavigationMenuContent,
-} from "../../../components/ui/Navigation-Menu";
-import { Switch } from "../../../components/ui/Switch";
-import { Label } from "../../../components/ui/Label";
+} from "../../../components/ui/navigation-menu";
+import { Switch } from "../../../components/ui/switch";
+import { Label } from "../../../components/ui/label";
 
 import "./NavHeader.css";
 

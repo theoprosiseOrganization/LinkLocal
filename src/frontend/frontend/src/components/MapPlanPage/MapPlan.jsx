@@ -21,8 +21,8 @@ import Layout from "../Layout/Layout";
 import MapWithDrawing from "./MapWithDrawing";
 const MAPS_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 import { APIProvider } from "@vis.gl/react-google-maps";
-import { Label } from "../../../components/ui/Label";
-import { Input } from "../../../components/ui/Input";
+import { Label } from "../../../components/ui/label";
+import { Input } from "../../../components/ui/input";
 import { Button } from "../../../components/ui/button.jsx";
 import {
   Dialog,
@@ -31,12 +31,12 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "../../../components/ui/Dialog";
+} from "../../../components/ui/dialog";
 import {
   Alert,
   AlertDescription,
   AlertTitle,
-} from "../../../components/ui/Alert";
+} from "../../../components/ui/alert";
 import { AlertCircleIcon } from "lucide-react";
 import {
   getSessionUserId,

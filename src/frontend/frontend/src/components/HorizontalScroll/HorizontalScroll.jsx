@@ -13,7 +13,7 @@
  */
 
 import React from "react";
-import { ScrollArea, ScrollBar } from "../../../components/ui/Scroll-Area";
+import { ScrollArea, ScrollBar } from "../../../components/ui/scroll-area";
 
 export default function HorizontalScroll({ images }) {
   if (!images || images.length === 0) return null;
