@@ -26,7 +26,7 @@ app.use(
 
 // Middleware to parse json api calls
 app.use(express.json());
-app.use(cors({ credentials: true, origin: "http://localhost:5173" }));
+app.use(cors({ credentials: true, origin: "https://linklocalsite.onrender.com/" }));
 
 app.use("/users", userRoutes);
 app.use("/events", eventRoutes);
