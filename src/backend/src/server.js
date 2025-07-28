@@ -12,6 +12,7 @@ const uploadRoutes = require("./routes/uploadRoutes");
 const app = express();
 
 // Initialize Redis client
+let redi
 
 // Middleware to handle CORS and sessions - change secret key in production
 app.use(
