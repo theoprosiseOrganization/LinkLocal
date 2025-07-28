@@ -20,7 +20,7 @@ import "./HomePage.css";
 import HorizontalEvents from "../VerticalEvents/HorizontalEvents";
 import { getAllEvents, getEventsWithinRadius } from "../../api";
 import React, { use, useEffect, useState } from "react";
-import { Button } from "../../../components/ui/Button.jsx";
+import { Button } from "../../../components/ui/button.jsx";
 import { ChevronRightIcon, ChevronLeftIcon } from "lucide-react";
 import {
   getUserFollowers,

@@ -28,7 +28,7 @@ import {
   getAllTags,
 } from "../../api";
 import React, { useRef, useEffect, useState } from "react";
-import { Button } from "../../../components/ui/Button.jsx";
+import { Button } from "../../../components/ui/button.jsx";
 import {
   Dialog,
   DialogClose,

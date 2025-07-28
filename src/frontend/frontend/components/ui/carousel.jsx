@@ -3,7 +3,7 @@ import useEmblaCarousel from "embla-carousel-react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
 import { cn } from "../../lib/utils";
-import { Button } from "./Button";
+import { Button } from "./button";
 import { Arrow } from "@radix-ui/react-popover";
 
 const CarouselContext = React.createContext(null);
