@@ -16,7 +16,7 @@
 import React from "react";
 import { Check, ChevronsUpDown, Plus } from "lucide-react";
 import { cn } from "../../../lib/utils";
-import { Button } from "../../../components/ui/button";
+import { Button } from "../../../components/ui/Button";
 import {
   Command,
   CommandEmpty,
@@ -24,12 +24,12 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "../../../components/ui/command";
+} from "../../../components/ui/Command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "../../../components/ui/popover";
+} from "../../../components/ui/Popover";
 
 export default function TagsSearch({
   tags = [],

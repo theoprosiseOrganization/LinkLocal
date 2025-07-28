@@ -19,10 +19,9 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "../../../components/ui/carousel";
+} from "../../../components/ui/Carousel";
 import EventCard from "../EventCard/EventCard";
-import Autoplay from "embla-carousel-autoplay"
-
+import Autoplay from "embla-carousel-autoplay";
 
 export default function VerticalEvents({ events = [] }) {
   return (
@@ -30,9 +29,7 @@ export default function VerticalEvents({ events = [] }) {
       opts={{ align: "start", loop: true }}
       orientation="vertical"
       className="w-full h-full max-w-xs"
-      plugins={[
-        Autoplay({ delay: 2000, stopOnInteraction: true }),
-      ]}
+      plugins={[Autoplay({ delay: 2000, stopOnInteraction: true })]}
     >
       <CarouselContent className="-mt-1" style={{ height: "100%" }}>
         {events.length === 0 ? (

@@ -4,16 +4,16 @@ import {
   Command,
   CommandInput,
   CommandList,
-} from "../../../components/ui/command";
-import { Button } from "../../../components/ui/button";
+} from "../../../components/ui/Command";
+import { Button } from "../../../components/ui/Button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "../../../components/ui/dialog";
-import { Label } from "../../../components/ui/label";
+} from "../../../components/ui/Dialog";
+import { Label } from "../../../components/ui/Label";
 import ViewUserButton from "../ViewUserPage/ViewUserButton";
 import { followUser, getSessionUserId, searchEvents } from "../../api";
 import ViewEventButton from "../ViewEventPage/ViewEventButton";

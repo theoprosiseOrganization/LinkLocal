@@ -12,16 +12,16 @@
 
 import LocationAutocomplete from "../LocationAutocomplete/LocationAutocomplete";
 import Layout from "../Layout/Layout";
-import { Button } from "../../../components/ui/button";
+import { Button } from "../../../components/ui/Button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../../../components/ui/card";
-import { Input } from "../../../components/ui/input";
-import { Label } from "../../../components/ui/label";
+} from "../../../components/ui/Card";
+import { Input } from "../../../components/ui/Input";
+import { Label } from "../../../components/ui/Label";
 import React, { useState } from "react";
 import { createUser } from "../../api";
 import { useNavigate } from "react-router";

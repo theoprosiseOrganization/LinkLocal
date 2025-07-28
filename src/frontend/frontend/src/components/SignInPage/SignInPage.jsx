@@ -12,16 +12,16 @@
  */
 
 import Layout from "../Layout/Layout";
-import { Button } from "../../../components/ui/button";
+import { Button } from "../../../components/ui/Button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../../../components/ui/card";
-import { Input } from "../../../components/ui/input";
-import { Label } from "../../../components/ui/label";
+} from "../../../components/ui/Card";
+import { Input } from "../../../components/ui/Input";
+import { Label } from "../../../components/ui/Label";
 import React, { useState } from "react";
 import { loginUser } from "../../api";
 import { useNavigate } from "react-router";
@@ -51,7 +51,10 @@ export default function SignInPage() {
     try {
       const response = await loginUser({ email, password });
       if (response.error || response.success === false) {
-        alert(response.message || "Invalid email or password. Check your credentials.");
+        alert(
+          response.message ||
+            "Invalid email or password. Check your credentials."
+        );
         return;
       }
       alert("Signed in successfully!");

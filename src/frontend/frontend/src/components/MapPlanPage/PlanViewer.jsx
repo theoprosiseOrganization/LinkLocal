@@ -21,12 +21,12 @@ import { APIProvider, Map } from "@vis.gl/react-google-maps";
 import Route from "./Route";
 import Layout from "../Layout/Layout";
 import UserLocationMarker from "../MapComponent/UserLocationMarker";
-import { Button } from "../../../components/ui/button";
+import { Button } from "../../../components/ui/Button";
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
-} from "../../../components/ui/hover-card";
+} from "../../../components/ui/Hover-Card";
 
 export default function PlanViewer() {
   const { planId } = useParams();

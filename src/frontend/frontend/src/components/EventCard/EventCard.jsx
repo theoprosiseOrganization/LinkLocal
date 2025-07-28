@@ -17,7 +17,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../../../components/ui/card";
+} from "../../../components/ui/Card";
 import "./EventCard.css";
 import HorizontalScroll from "../HorizontalScroll/HorizontalScroll";
 import ViewEventButton from "../ViewEventPage/ViewEventButton";
