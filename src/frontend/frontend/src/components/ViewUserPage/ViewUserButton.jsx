@@ -11,7 +11,7 @@
  */
 
 import { Link } from "react-router-dom";
-import { Button } from "../../../components/ui/Button";
+import { Button } from "../../../components/ui/Button.jsx";
 
 export default function ViewEventButton({ userId }) {
   return (

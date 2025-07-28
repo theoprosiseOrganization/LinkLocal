@@ -18,7 +18,7 @@ import {
   CommandInput,
   CommandList,
 } from "../../../components/ui/Command";
-import { Button } from "../../../components/ui/Button";
+import { Button } from "../../../components/.jsx";
 import {
   Dialog,
   DialogContent,

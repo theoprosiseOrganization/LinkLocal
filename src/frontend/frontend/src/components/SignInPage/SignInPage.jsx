@@ -12,7 +12,7 @@
  */
 
 import Layout from "../Layout/Layout";
-import { Button } from "../../../components/ui/Button";
+import { Button } from "../../../components/ui/Button.jsx";
 import {
   Card,
   CardContent,

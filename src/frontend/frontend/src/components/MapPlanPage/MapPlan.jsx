@@ -23,7 +23,7 @@ const MAPS_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 import { APIProvider } from "@vis.gl/react-google-maps";
 import { Label } from "../../../components/ui/Label";
 import { Input } from "../../../components/ui/Input";
-import { Button } from "../../../components/ui/Button";
+import { Button } from "../../../components/ui/Button.jsx";
 import {
   Dialog,
   DialogContent,

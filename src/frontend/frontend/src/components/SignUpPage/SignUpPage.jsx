@@ -12,7 +12,7 @@
 
 import LocationAutocomplete from "../LocationAutocomplete/LocationAutocomplete";
 import Layout from "../Layout/Layout";
-import { Button } from "../../../components/ui/Button";
+import { Button } from "../../../components/.jsx";
 import {
   Card,
   CardContent,

@@ -16,7 +16,7 @@
 import React from "react";
 import { Check, ChevronsUpDown, Plus } from "lucide-react";
 import { cn } from "../../../lib/utils";
-import { Button } from "../../../components/ui/Button";
+import { Button } from "../../../components/.jsx";
 import {
   Command,
   CommandEmpty,

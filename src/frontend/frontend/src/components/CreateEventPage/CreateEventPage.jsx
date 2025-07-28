@@ -15,7 +15,7 @@
 import Layout from "../Layout/Layout";
 import { Input } from "../../../components/ui/Input";
 import { Label } from "../../../components/ui/Label";
-import { Button } from "../../../components/ui/Button";
+import { Button } from "../../../components/ui/Button.jsx";
 import { Calendar } from "../../../components/ui/Calendar";
 import {
   Alert,
