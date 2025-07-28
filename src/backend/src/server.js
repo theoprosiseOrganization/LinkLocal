@@ -1,6 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const session = require("express-session");
+const redisStore = require("connect-redis");
+const createClient = require("redis").createClient;
 
 const userRoutes = require("./routes/userRoutes");
 const eventRoutes = require("./routes/eventRoutes");
@@ -8,6 +10,8 @@ const authRoutes = require("./routes/authRoutes");
 const uploadRoutes = require("./routes/uploadRoutes");
 
 const app = express();
+
+// Initialize Redis client
 
 // Middleware to handle CORS and sessions - change secret key in production
 app.use(
