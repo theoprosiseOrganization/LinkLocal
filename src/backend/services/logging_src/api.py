@@ -2,18 +2,18 @@ import os
 import csv
 from fastapi import FastAPI
 from pydantic import BaseModel
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 app = FastAPI()
 
 class LogPayload(BaseModel):
-    date: str
-    method: str
-    url: str
-    headers: Dict[str, Any]
-    query: Dict[str, Any]
-    params: Dict[str, Any]
-    body: Any
+    date: Optional[str] = None
+    method: Optional[str] = None
+    url: Optional[str] = None
+    headers: Optional[Dict[str, Any]] = None
+    query: Optional[Dict[str, Any]] = None
+    params: Optional[Dict[str, Any]] = None
+    body: Optional[Any] = None
 
 def append_log_to_csv(log: LogPayload, filename: str = "log.csv"):
     fieldnames = ['date', 'method', 'url', 'headers', 'query', 'params', 'body']
@@ -23,20 +23,14 @@ def append_log_to_csv(log: LogPayload, filename: str = "log.csv"):
         if not file_exists or os.stat(filename).st_size == 0:
             writer.writeheader()
         writer.writerow({
-            'date': log.date,
-            'method': log.method,
-            'url': log.url,
-            'headers': str(log.headers),
-            'query': str(log.query),
-            'params': str(log.params),
-            'body': str(log.body),
+            field: str(getattr(log, field, None)) if getattr(log, field, None) is not None else "NULL"
+            for field in fieldnames
         })
 
 
 @app.post("/log")
 def add_log_event(payload: LogPayload):
     append_log_to_csv(payload)
-    print("Log added")
 
 
 @app.get("/logs")

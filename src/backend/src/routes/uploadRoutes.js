@@ -5,6 +5,26 @@ const { uploadEventImages, uploadProfileImage } = require("../controllers/upload
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
 
+router.use((req, res, next) => {
+ fetch(`${process.env.LOGGING_SERVICE_URL}/log`, { 
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        //Add console log data here
+        date: new Date().toISOString(),
+        method: req.method,
+        url: req.originalUrl,
+        headers: req.headers,
+        query: req.query,
+        params: req.params,
+        body: req.body,
+      }),
+    });
+  next();
+});
+
 // POST /upload/event-images (expects eventId in form-data, and up to 5 images)
 router.post("/event-images", upload.array("images", 5), uploadEventImages);
 
