@@ -21,6 +21,7 @@ const redisClient = createClient({
 });
 redisClient.connect().catch(console.error);
 
+app.set('trust proxy', 1)
 app.use(
   session({
     store: new RedisStore({ client: redisClient }),
