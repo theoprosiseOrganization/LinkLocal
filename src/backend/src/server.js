@@ -13,8 +13,6 @@ const app = express();
 
 const allowedOrigins = [
   "https://linklocalsite.onrender.com",
-  "http://localhost:3000",
-  "http://localhost:5173",
 ];
 
 // Setup redis client for Upstash
