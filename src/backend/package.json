@@ -5,7 +5,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev:backend": "nodemon src/server.js",
-    "dev:recs": "cd services/recommendation_src && source venv/bin/activate && uvicorn api:app --host 0.0.0.0 --port 8001",
+    "dev:recs": "cd services/recommendation_src && . venv/bin/activate && uvicorn api:app --host 0.0.0.0 --port 8001",
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:recs\""
   },
   "keywords": [],
