@@ -11,8 +11,10 @@ const uploadRoutes = require("./routes/uploadRoutes");
 
 const app = express();
 
-const allowedOrigins = ["https://linklocalsite.onrender.com"];
-
+const allowedOrigins = [
+  "https://linklocalsite.onrender.com",
+  "https://linklocal-02n7.onrender.com",
+];
 // Setup redis client for Upstash
 const redisClient = createClient({
   url: process.env.UPSTASH_REDIS_REST_URL,
