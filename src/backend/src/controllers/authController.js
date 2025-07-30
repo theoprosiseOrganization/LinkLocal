@@ -103,6 +103,8 @@ exports.logout = async (req, res) => {
 // Check if the user is logged in
 exports.me = async (req, res) => {
   if (req.session && req.session.userId) {
+    console.log("User ID from session:", req.session.userId);
+    console.log("Session data:", req.session);
     res.json({ userId: req.session.userId });
   } else {
     res.status(401).json({ error: "Unauthorized" });
