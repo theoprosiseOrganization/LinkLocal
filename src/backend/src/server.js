@@ -11,9 +11,7 @@ const uploadRoutes = require("./routes/uploadRoutes");
 
 const app = express();
 
-const allowedOrigins = [
-  "https://linklocalsite.onrender.com",
-];
+const allowedOrigins = ["https://linklocalsite.onrender.com"];
 
 // Setup redis client for Upstash
 const redisClient = createClient({
@@ -43,7 +41,8 @@ app.use(
   cors({
     credentials: true,
     origin: function (origin, callback) {
-      if (allowedOrigins.includes(origin)) {
+      // Allow requests with no origin (like curl, Postman, or same-origin)
+      if (!origin || allowedOrigins.includes(origin)) {
         return callback(null, true);
       } else {
         return callback(new Error("Not allowed by CORS"));
