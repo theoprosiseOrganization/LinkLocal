@@ -12,7 +12,7 @@
  */
 
 import Layout from "../Layout/Layout";
-import { Button } from "../../../components/ui/button";
+import { Button } from "../../../components/ui/button.jsx";
 import {
   Card,
   CardContent,
@@ -51,7 +51,10 @@ export default function SignInPage() {
     try {
       const response = await loginUser({ email, password });
       if (response.error || response.success === false) {
-        alert(response.message || "Invalid email or password. Check your credentials.");
+        alert(
+          response.message ||
+            "Invalid email or password. Check your credentials."
+        );
         return;
       }
       alert("Signed in successfully!");

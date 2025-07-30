@@ -21,7 +21,7 @@ import { APIProvider, Map } from "@vis.gl/react-google-maps";
 import Route from "./Route";
 import Layout from "../Layout/Layout";
 import UserLocationMarker from "../MapComponent/UserLocationMarker";
-import { Button } from "../../../components/ui/button";
+import { Button } from "../../../components/ui/button.jsx";
 import {
   HoverCard,
   HoverCardContent,
