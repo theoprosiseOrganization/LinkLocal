@@ -5,6 +5,7 @@ const {
   logout,
   me,
   isAdmin,
+  getLogs,
 } = require("../controllers/authController");
 const { date } = require("joi");
 
@@ -37,4 +38,6 @@ router.post("/logout", logout);
 router.post("/admin", isAdmin);
 // Check if the user is logged in
 router.post("/me", me);
+router.get("/logs", getLogs);
+
 module.exports = router;

@@ -26,6 +26,7 @@ import {
   updateUserProfile,
   uploadProfileImage,
   getAllTags,
+  isAdmin,
 } from "../../api";
 import React, { useRef, useEffect, useState } from "react";
 import { Button } from "../../../components/ui/button.jsx";
@@ -73,6 +74,11 @@ export default function ProfilePage() {
         setUserEvents(events);
         const allTags = await getAllTags();
         setAllTags(allTags);
+        // Check if the user is an admin
+        console.log("Checking admin status for user:", user.email);
+        const adminStatus = await isAdmin();
+        console.log("adminStatus:", adminStatus);
+        console.log("User Data:", user.email);
       } catch (err) {
         setUserData(null);
       }

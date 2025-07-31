@@ -26,7 +26,7 @@ const {
   listInvitations,
   getPlanById,
   joinPlan,
-  shufflePlan
+  shufflePlan,
 } = require("../controllers/userController");
 
 const router = express.Router();

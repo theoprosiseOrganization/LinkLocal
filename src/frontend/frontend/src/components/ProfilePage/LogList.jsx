@@ -7,12 +7,15 @@
  * @returns {JSX.Element} The rendered LogList component.
  */
 import { useEffect, useState } from "react";
+import { getLogs } from "../../api/"; // Adjust the import path as necessary
 
 export default function LogList() {
   const [logs, setLogs] = useState([]);
 
   useEffect(() => {
-    getLogs().then(setLogs);
+    const data = getLogs();
+    console.log(data);
+    setLogs(data);
   }, []);
 
   if (logs.length === 0) {
