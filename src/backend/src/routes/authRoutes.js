@@ -5,13 +5,13 @@ const { date } = require("joi");
 const router = express.Router();
 
 router.use((req, res, next) => {
- fetch(`${process.env.LOGGING_SERVICE_URL}/log`, { 
+  if (!req.url.includes("me")) {
+    fetch(`${process.env.LOGGING_SERVICE_URL}/log`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        //Add console log data here
         date: new Date().toISOString(),
         method: req.method,
         url: req.originalUrl,
@@ -21,6 +21,7 @@ router.use((req, res, next) => {
         body: req.body,
       }),
     });
+  }
   next();
 });
 
