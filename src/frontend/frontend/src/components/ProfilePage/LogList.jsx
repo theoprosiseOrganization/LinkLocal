@@ -44,13 +44,15 @@ export default function LogList() {
           className="flex flex-col bg-[var(--card)] text-[var(--card-foreground)] border border-[var(--border)] rounded-xl shadow p-4 mb-4"
         >
           <div className="flex justify-between items-center">
-            <span className="font-semibold text-[var(--primary)]">
-              {new Date(log.date).toLocaleString()}
-            </span>
-            <span className="text-xs bg-gray-200 px-2 py-1 rounded">
-              {log.method}
-            </span>
-            <span className="text-xs text-gray-500">{log.url}</span>
+            <div className="flex flex-col items-start min-w-[120px]">
+              <span className="font-semibold text-[var(--primary)]">
+                {new Date(log.date).toLocaleString()}
+              </span>
+              <span className="text-xs bg-gray-200 px-2 py-1 rounded mt-1 w-[48px] text-center">
+                {log.method}
+              </span>
+            </div>
+            <span className="text-xs text-gray-500 flex-1 mx-2">{log.url}</span>
             <button
               className="ml-2 text-xs underline"
               onClick={() => setExpanded(expanded === idx ? null : idx)}
