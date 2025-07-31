@@ -264,27 +264,25 @@ export default function ProfilePage() {
                     </DialogContent>
                   </Dialog>
                   {isAdminBool && (
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button variant="outline" className="edit-profile-btn">
-                        Open Logs
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-[525px] max-h-[90vw] overflow-y-auto">
-                      <DialogHeader>
-                        <DialogTitle>View Logs</DialogTitle>
-                        <DialogDescription>
-                          View user logs here. Click close when you are done.
-                        </DialogDescription>
-                      </DialogHeader>
-                      <LogList />
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant="outline">Open Logs</Button>
+                      </DialogTrigger>
+                      <DialogContent className="dialog-content-wide max-h-[90vh] overflow-y-auto">
+                        <DialogHeader>
+                          <DialogTitle>View Logs</DialogTitle>
+                          <DialogDescription>
+                            View user logs here. Click close when you are done.
+                          </DialogDescription>
+                        </DialogHeader>
+                        <LogList />
                         <div className="mt-6 flex justify-end gap-2">
                           <DialogClose asChild>
                             <Button variant="outline">Close Logs</Button>
                           </DialogClose>
                         </div>
-                    </DialogContent>
-                  </Dialog>
+                      </DialogContent>
+                    </Dialog>
                   )}
                 </div>
               </div>

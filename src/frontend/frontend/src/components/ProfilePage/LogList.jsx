@@ -62,7 +62,7 @@ export default function LogList() {
             <div className="mt-2 text-sm">
               <div>
                 <strong>Headers:</strong>
-                <pre className="bg-gray-100 p-2 rounded overflow-x-auto">
+                <pre className="bg-gray-100 p-2 rounded whitespace-pre-wrap break-words">
                   {log.headers}
                 </pre>
               </div>
