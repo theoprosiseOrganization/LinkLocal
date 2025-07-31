@@ -8,3 +8,4 @@ __pycache__/
 *.pyc
 /src/services/recommendation_src/follows.csv
 /src/services/logging_src/log.csv
+*.csv
