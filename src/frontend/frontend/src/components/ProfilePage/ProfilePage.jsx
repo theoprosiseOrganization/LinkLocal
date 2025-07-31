@@ -277,13 +277,12 @@ export default function ProfilePage() {
                           View user logs here. Click close when you are done.
                         </DialogDescription>
                       </DialogHeader>
-                      <form onSubmit={handleProfileUpdate}>
+                      <LogList />
                         <div className="mt-6 flex justify-end gap-2">
                           <DialogClose asChild>
                             <Button variant="outline">Close Logs</Button>
                           </DialogClose>
                         </div>
-                      </form>
                     </DialogContent>
                   </Dialog>
                   )}

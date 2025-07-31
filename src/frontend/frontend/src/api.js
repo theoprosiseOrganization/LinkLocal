@@ -555,7 +555,6 @@ export async function searchEvents(query) {
 }
 
 export async function isAdmin() {
-  console.log("Checking admin status...");
   const res = await fetch(`${URL}/auth/admin`, {
     method: "GET",
     headers: {
@@ -571,7 +570,7 @@ export async function isAdmin() {
 }
 
 export async function getLogs() {
-  const res = await fetch(`${URL}/user/logs`, {
+  const res = await fetch(`${URL}/auth/logs`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

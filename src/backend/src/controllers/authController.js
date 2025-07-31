@@ -110,7 +110,7 @@ exports.me = async (req, res) => {
   }
 };
 
-exports.isAdmin = async (req, res) => {  
+exports.isAdmin = async (req, res) => {
   if (!req.session || !req.session.userId) {
     return res.status(401).json({ error: "Unauthorized" });
   }
@@ -126,17 +126,19 @@ exports.isAdmin = async (req, res) => {
 // Get user logs
 exports.getLogs = async (req, res) => {
   try {
-    await fetch(`${process.env.LOGGING_SERVICE_URL}/logs`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        limit: 100,
-        offset: 0,
-      }),
-    });
-    res.json({ message: "Logs fetched successfully" });
+    const limit = parseInt(req.query.limit) || 100;
+    const offset = parseInt(req.query.offset) || 0;
+    const response = await fetch(
+      `${process.env.LOGGING_SERVICE_URL}/logs?limit=${limit}&offset=${offset}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const data = await response.json();
+    res.json(data);
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }

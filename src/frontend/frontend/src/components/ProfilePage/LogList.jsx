@@ -7,15 +7,21 @@
  * @returns {JSX.Element} The rendered LogList component.
  */
 import { useEffect, useState } from "react";
-import { getLogs } from "../../api/"; // Adjust the import path as necessary
+import { getLogs } from "../../api/";
 
 export default function LogList() {
   const [logs, setLogs] = useState([]);
 
   useEffect(() => {
-    const data = getLogs();
-    console.log(data);
-    setLogs(data);
+    async function fetchLogs() {
+      try {
+        const data = await getLogs();
+        setLogs(data.logs || []);
+      } catch (err) {
+        setLogs([]);
+      }
+    }
+    fetchLogs();
   }, []);
 
   if (logs.length === 0) {
@@ -28,13 +34,13 @@ export default function LogList() {
 
   return (
     <div className="space-y-4">
-      {logs.map((log) => (
+      {logs.map((log, idx) => (
         <div
-          key={log.date}
+          key={idx}
           className="flex items-center justify-between bg-[var(--card)] text-[var(--card-foreground)] border border-[var(--border)] rounded-xl shadow p-4 mb-4"
         >
           <span className="font-semibold text-[var(--primary)]">
-            {log.data}
+            {log.date}
           </span>
         </div>
       ))}

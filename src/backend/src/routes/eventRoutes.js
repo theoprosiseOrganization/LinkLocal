@@ -23,7 +23,6 @@ router.use((req, res, next) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        //Add console log data here
         date: new Date().toISOString(),
         method: req.method,
         url: req.originalUrl,
