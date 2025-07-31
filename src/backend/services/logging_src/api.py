@@ -1,6 +1,7 @@
 import os
 import csv
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from typing import Any, Dict, Optional
 
@@ -34,5 +35,17 @@ def add_log_event(payload: LogPayload):
 
 
 @app.get("/logs")
-def get_logs(user_id: str, k: int = 3):
-    print("GETLOGS")
+def get_logs(
+    limit: int = Query(10, ge=1,le=100),
+    offset: int = Query(0, ge=0)
+):
+    fieldnames = ['date', 'method', 'url', 'headers', 'query', 'params', 'body']
+    logs = []
+    filename = "log.csv"
+    if os.path.isfile(filename):
+        with open(filename, newline='') as csvfile:
+            reader = csv.DictReader(csvfile, fieldnames=fieldnames)
+            next(reader, None)
+            logs = list(reader)
+    paginated_logs = logs[offset:offset+limit]
+    return JSONResponse(content={"logs": paginated_logs, "total": len(logs)})
