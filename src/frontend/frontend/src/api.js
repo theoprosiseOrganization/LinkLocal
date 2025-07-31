@@ -553,3 +553,32 @@ export async function searchEvents(query) {
   }
   return response;
 }
+
+export async function isAdmin() {
+  const res = await fetch(`${URL}/auth/admin`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+  });
+  if (!res.ok) {
+    throw new Error("Failed to check admin status");
+  }
+  const data = await res.json();
+  return data.isAdmin;
+}
+
+export async function getLogs() {
+  const res = await fetch(`${URL}/auth/logs`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  const response = await res.json();
+  if (!res.ok) {
+    throw new Error(response.error || "Failed to fetch logs");
+  }
+  return response;
+}

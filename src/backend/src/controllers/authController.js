@@ -4,6 +4,7 @@ const prisma = new PrismaClient();
 const bcrypt = require("bcrypt");
 const express = require("express");
 const joi = require("joi");
+const LOGGING_SERVICE_URL = process.env.LOGGING_SERVICE_URL;
 
 const userSchema = joi.object({
   name: joi.string().required(),
@@ -106,5 +107,39 @@ exports.me = async (req, res) => {
     res.json({ userId: req.session.userId });
   } else {
     res.status(401).json({ error: "Unauthorized" });
+  }
+};
+
+exports.isAdmin = async (req, res) => {
+  if (!req.session || !req.session.userId) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+  const user = await prisma.user.findUnique({
+    where: { id: req.session.userId },
+  });
+  if (!user) {
+    return res.status(404).json({ error: "User not found" });
+  }
+  res.json({ isAdmin: user.email === process.env.ADMIN_EMAIL });
+};
+
+// Get user logs
+exports.getLogs = async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 100;
+    const offset = parseInt(req.query.offset) || 0;
+    const response = await fetch(
+      `${process.env.LOGGING_SERVICE_URL}/logs?limit=${limit}&offset=${offset}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };

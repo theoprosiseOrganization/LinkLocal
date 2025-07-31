@@ -16,6 +16,25 @@ const {
 
 const router = express.Router();
 
+router.use((req, res, next) => {
+ fetch(`${process.env.LOGGING_SERVICE_URL}/log`, { 
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        date: new Date().toISOString(),
+        method: req.method,
+        url: req.originalUrl,
+        headers: req.headers,
+        query: req.query,
+        params: req.params,
+        body: req.body,
+      }),
+    });
+  next();
+});
+
 // Event endpoints
 router.get("/", getEvents);
 router.post("/within-radius", getEventsWithinRadius);

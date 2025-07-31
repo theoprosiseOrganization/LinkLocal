@@ -26,6 +26,7 @@ import {
   updateUserProfile,
   uploadProfileImage,
   getAllTags,
+  isAdmin,
 } from "../../api";
 import React, { useRef, useEffect, useState } from "react";
 import { Button } from "../../../components/ui/button.jsx";
@@ -43,6 +44,8 @@ import { Input } from "../../../components/ui/input";
 import { Label } from "../../../components/ui/label";
 import { APIProvider } from "@vis.gl/react-google-maps";
 import InvitesList from "./InvitesList";
+import LogList from "./LogList";
+import { set } from "date-fns";
 
 export default function ProfilePage() {
   const [userData, setUserData] = useState(null);
@@ -53,6 +56,7 @@ export default function ProfilePage() {
   const [allTags, setAllTags] = useState([]);
   const [tagsToAdd, setTagsToAdd] = useState([]);
   const fileInputRef = useRef();
+  const [isAdminBool, setIsAdmin] = useState(false);
 
   /**
    * useEffect hook to fetch user data and events when the component mounts.
@@ -71,6 +75,9 @@ export default function ProfilePage() {
         setUserEvents(events);
         const allTags = await getAllTags();
         setAllTags(allTags);
+        // Check if the user is an admin
+        const adminCheck = await isAdmin();
+        setIsAdmin(adminCheck);
       } catch (err) {
         setUserData(null);
       }
@@ -256,6 +263,27 @@ export default function ProfilePage() {
                       </form>
                     </DialogContent>
                   </Dialog>
+                  {isAdminBool && (
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant="outline">Open Logs</Button>
+                      </DialogTrigger>
+                      <DialogContent className="dialog-content-wide max-h-[90vh] overflow-y-auto">
+                        <DialogHeader>
+                          <DialogTitle>View Logs</DialogTitle>
+                          <DialogDescription>
+                            View user logs here. Click close when you are done.
+                          </DialogDescription>
+                        </DialogHeader>
+                        <LogList />
+                        <div className="mt-6 flex justify-end gap-2">
+                          <DialogClose asChild>
+                            <Button variant="outline">Close Logs</Button>
+                          </DialogClose>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  )}
                 </div>
               </div>
             ) : (
