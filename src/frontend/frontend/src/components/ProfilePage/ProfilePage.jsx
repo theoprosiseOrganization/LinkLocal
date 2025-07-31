@@ -43,6 +43,7 @@ import { Input } from "../../../components/ui/input";
 import { Label } from "../../../components/ui/label";
 import { APIProvider } from "@vis.gl/react-google-maps";
 import InvitesList from "./InvitesList";
+import LogList from "./LogList";
 
 export default function ProfilePage() {
   const [userData, setUserData] = useState(null);
@@ -53,6 +54,7 @@ export default function ProfilePage() {
   const [allTags, setAllTags] = useState([]);
   const [tagsToAdd, setTagsToAdd] = useState([]);
   const fileInputRef = useRef();
+  const [isAdmin, setIsAdmin] = useState(false);
 
   /**
    * useEffect hook to fetch user data and events when the component mounts.

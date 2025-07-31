@@ -553,3 +553,15 @@ export async function searchEvents(query) {
   }
   return response;
 }
+
+export async function isAdmin() {
+  const res = await fetch(`${URL}/auth/isAdmin`, {
+    method: "GET",
+    credentials: "include",
+  });
+  if (!res.ok) {
+    throw new Error("Failed to check admin status");
+  }
+  const data = await res.json();
+  return data.isAdmin;
+}

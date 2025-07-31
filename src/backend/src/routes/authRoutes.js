@@ -1,5 +1,11 @@
 const express = require("express");
-const { signup, login, logout, me } = require("../controllers/authController");
+const {
+  signup,
+  login,
+  logout,
+  me,
+  isAdmin,
+} = require("../controllers/authController");
 const { date } = require("joi");
 
 const router = express.Router();
@@ -28,6 +34,7 @@ router.use((req, res, next) => {
 router.post("/signup", signup);
 router.post("/login", login);
 router.post("/logout", logout);
+router.post("/admin", isAdmin);
 // Check if the user is logged in
 router.post("/me", me);
 module.exports = router;

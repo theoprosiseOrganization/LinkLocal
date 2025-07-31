@@ -108,3 +108,18 @@ exports.me = async (req, res) => {
     res.status(401).json({ error: "Unauthorized" });
   }
 };
+
+exports.isAdmin = async (req, res) => {
+  if (req.session && req.session.userId) {
+    const user = await prisma.user.findUnique({
+      where: { id: req.session.userId },
+    });
+    if (user && user.isAdmin) {
+      res.json({ isAdmin: true });
+    } else {
+      res.status(403).json({ error: "Forbidden" });
+    }
+  } else {
+    res.status(401).json({ error: "Unauthorized" });
+  }
+};
