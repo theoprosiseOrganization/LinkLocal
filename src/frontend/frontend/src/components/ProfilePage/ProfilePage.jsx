@@ -45,6 +45,7 @@ import { Label } from "../../../components/ui/label";
 import { APIProvider } from "@vis.gl/react-google-maps";
 import InvitesList from "./InvitesList";
 import LogList from "./LogList";
+import { set } from "date-fns";
 
 export default function ProfilePage() {
   const [userData, setUserData] = useState(null);
@@ -55,7 +56,7 @@ export default function ProfilePage() {
   const [allTags, setAllTags] = useState([]);
   const [tagsToAdd, setTagsToAdd] = useState([]);
   const fileInputRef = useRef();
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAdminBool, setIsAdmin] = useState(false);
 
   /**
    * useEffect hook to fetch user data and events when the component mounts.
@@ -75,10 +76,8 @@ export default function ProfilePage() {
         const allTags = await getAllTags();
         setAllTags(allTags);
         // Check if the user is an admin
-        console.log("Checking admin status for user:", user.email);
-        const adminStatus = await isAdmin();
-        console.log("adminStatus:", adminStatus);
-        console.log("User Data:", user.email);
+        const adminCheck = await isAdmin();
+        setIsAdmin(adminCheck);
       } catch (err) {
         setUserData(null);
       }
@@ -264,6 +263,7 @@ export default function ProfilePage() {
                       </form>
                     </DialogContent>
                   </Dialog>
+                  {isAdminBool && (
                   <Dialog>
                     <DialogTrigger asChild>
                       <Button variant="outline" className="edit-profile-btn">
@@ -286,6 +286,7 @@ export default function ProfilePage() {
                       </form>
                     </DialogContent>
                   </Dialog>
+                  )}
                 </div>
               </div>
             ) : (

@@ -555,8 +555,12 @@ export async function searchEvents(query) {
 }
 
 export async function isAdmin() {
-  const res = await fetch(`${URL}/auth/isAdmin`, {
+  console.log("Checking admin status...");
+  const res = await fetch(`${URL}/auth/admin`, {
     method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
     credentials: "include",
   });
   if (!res.ok) {

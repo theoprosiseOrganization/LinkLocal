@@ -110,19 +110,17 @@ exports.me = async (req, res) => {
   }
 };
 
-exports.isAdmin = async (req, res) => {
-  if (req.session && req.session.userId) {
-    const user = await prisma.user.findUnique({
-      where: { id: req.session.userId },
-    });
-    if (user && user.email === "admin@admin.com") {
-      res.json({ isAdmin: true });
-    } else {
-      res.json({ isAdmin: false });
-    }
-  } else {
-    res.status(401).json({ error: "Unauthorized" });
+exports.isAdmin = async (req, res) => {  
+  if (!req.session || !req.session.userId) {
+    return res.status(401).json({ error: "Unauthorized" });
   }
+  const user = await prisma.user.findUnique({
+    where: { id: req.session.userId },
+  });
+  if (!user) {
+    return res.status(404).json({ error: "User not found" });
+  }
+  res.json({ isAdmin: user.email === process.env.ADMIN_EMAIL });
 };
 
 // Get user logs
